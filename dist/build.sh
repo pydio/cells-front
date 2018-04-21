@@ -7,20 +7,20 @@ else
      BUILD_NAME = "ci"
 fi
 
-echo "Building Pydio9 Front"
+echo "Building Cells Front"
 
 # Remove previous src folder
 rm -rf src
 
 # Clone or update Git Repo
-if [ -d "pydio9-front" ]; then
-        cd pydio9-front
+if [ -d "cells-front" ]; then
+        cd cells-front
         git pull
         cd ..
 else
-        git clone https://github.com/pydio/pydio9-front.git
+        git clone https://github.com/pydio/cells-front.git
 fi
-cp -R pydio9-front src
+cp -R cells-front src
 
 # Copy to src and read commit ID into a variable
 cd src
@@ -63,7 +63,7 @@ rm -rf dist
 echo "Creating Archive Now"
 cd ..
 mkdir -p tar
-mv src pydio-front
-tar -czf "tar/pydio9-front-$COMMIT.tar.gz" "pydio-front"
+mv src cells-front
+tar -czf "tar/cells-front-$COMMIT.tar.gz" "cells-front"
 
-echo "Succesfully created tar/pydio9-front-$COMMIT.tar.gz"
+echo "Succesfully created tar/cells-front-$COMMIT.tar.gz"
