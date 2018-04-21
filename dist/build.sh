@@ -63,7 +63,7 @@ rm -rf dist
 echo "Creating Archive Now"
 cd ..
 mkdir -p tar
-mv src cells-front
-tar -czf "tar/cells-front-$COMMIT.tar.gz" "cells-front"
+mv src front
+tar -czf "tar/cells-front-$COMMIT.tar.gz" "front"
 
 echo "Succesfully created tar/cells-front-$COMMIT.tar.gz"
