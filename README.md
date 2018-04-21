@@ -1,9 +1,10 @@
-# pydio9-front
-Temporary Private Repo for the next generation PHP code
+# Cells Front
+
+PHP frontend for Pydio Cells
 
 ## Setting up your dev environment
 
-Pydio 9 requires **PHP5.5.9** and upper. 
+Cells Front requires **PHP5.5.9** and upper. 
 
 Create a virtual host to point to the root folder, set up your webserver to use index.php as default page. This is generally done by default. 
 
