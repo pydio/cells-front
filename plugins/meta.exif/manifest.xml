@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<meta id="meta.exif" label="CONF_MESSAGE[Exif Metadata]" description="CONF_MESSAGE[Extracts the EXIF metadata of a JPG image. Used in conjunction with editor.exif]"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:../core.pydio/pydio_registry.xsd">
+	<class_definition filename="plugins/meta.exif/ExifMetaManager.php" classname="Pydio\Access\Meta\Exif\ExifMetaManager"/>
+	<client_settings icon="plugins/access.mysql/resources/images/mysql_icon.png">
+		<resources>
+			<i18n namespace="meta.exif" path="plugins/meta.exif/res/i18n" />
+            <js file="plugins/meta.exif/res/build/PydioExif.js" className="PydioExif"/>
+		</resources>
+	</client_settings>
+	<server_settings>
+		<global_param name="meta_fields" type="string" label="CONF_MESSAGE[Info Panel Fields]" description="CONF_MESSAGE[Comma separated list of fields, use syntax 'EXIF_SECTION.ExifName'.]" mandatory="false" default="COMPUTED_GPS.GPS_Latitude,COMPUTED_GPS.GPS_Longitude,EXIF.Make,EXIF.Model"/>
+		<global_param name="meta_labels" type="string" label="CONF_MESSAGE[Info Panel Labels]" description="CONF_MESSAGE[Associated list of labels, be sure to define as many as fields!]" mandatory="false" default="Latitude,Longitude,Maker,Model"/>
+        <global_param name="extract_iptc" type="boolean" label="Extract IPTC" description="Extract IPTC Metadata. This is done frontend side and may slow down display" default="false"/>
+	</server_settings>
+	<registry_contributions>
+		<hooks>
+			<serverCallback hookName="node.info" methodName="extractMeta" applyCondition="$apply=($args[2]!='minimal');"/>
+		</hooks>
+		<client_configs>
+			<component_config component="InfoPanel">
+                <infoPanel mime="jpg,jpeg,tiff,riff" theme="material" reactComponent="PydioExif.Panel" weight="-10"/>
+			</component_config>
+		</client_configs>
+		<actions>
+			<action name="extract_exif">
+				<processing>
+					<serverCallback methodName="extractExif" restParams="/format/file+" developerComment="Extract all exif data from a compatible image (JPG).">
+                        <input_param name="file" type="path" description="Path to the file to analyze"/>
+                        <input_param name="format" type="string" description="json|xml: Get json instead of xml (default)"/>
+                        <output type="XML" description="An XML structure containing all Exif tags"/>
+					</serverCallback>
+				</processing>
+			</action>
+		</actions>
+	</registry_contributions>
+	<dependencies>
+		<!-- Wrapper type plugins only -->
+		<pluginClass pluginName="access.fs|access.ftp|access.demo"/>
+	</dependencies>
+</meta>

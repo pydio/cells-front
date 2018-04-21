@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<authdriver name="pydio" label="CONF_MESSAGE[Pydio Backend]"
+            description="CONF_MESSAGE[Authentication is performed via the pydio backend]"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="file:../core.pydio/pydio_registry.xsd"
+            mixins="authdriver_commons"
+        >
+    <client_settings>
+        <resources>
+            <i18n namespace="sql_auth" path="plugins/auth.pydio/i18n"/>
+        </resources>
+    </client_settings>
+	<server_settings></server_settings>
+	<class_definition filename="plugins/auth.pydio/PydioAuthDriver.php" classname="Pydio\Auth\Driver\PydioAuthDriver"/>
+	<registry_contributions>
+		<external_file filename="plugins/core.auth/standard_auth_actions.xml" include="actions/*" exclude=""/>
+	</registry_contributions>
+</authdriver>

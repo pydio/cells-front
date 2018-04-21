@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<registry_contributions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:../core.pydio/pydio_registry.xsd">
+	<actions>
+		<action name="get_i18n_messages">
+			<processing>
+				<serverCallback methodName="switchAction" restParams="/" developerComment="Load the list of translation strings">
+                    <output type="json" description="A JSON table of all strings contributed by all plugins."/>
+				</serverCallback>
+			</processing>
+		</action>
+		<action name="serve_favicon" skipSecureToken="true">
+			<processing>
+				<serverCallback methodName="switchAction" restParams="/" developerComment="Return site favicon"/>
+			</processing>
+		</action>
+		<action name="display_doc">
+			<processing>
+				<serverCallback methodName="switchAction" restParams="/doc_file" developerComment="Load a doc file">
+                    <input_param name="doc_file" type="string" description="Text file base name (without extension) located inside the doc folder."/>
+				</serverCallback>
+			</processing>
+		</action>
+		<action name="up_dir">
+			<gui text="148" title="24" iconClass="icon-chevron-left" hasAccessKey="true"
+				accessKey="parent_access_key">
+				<context selection="false" dir="false" recycle="false"
+					actionBar="true" contextMenu="true" infoPanel="false" actionBarGroup="00_navigation">
+				</context>
+			</gui>
+			<rightsContext noUser="true" userLogged="only" read="true" write="false" adminOnly=""/>
+			<processing>
+				<clientCallback module="PydioCoreActions.Navigation.up"/>
+			</processing>
+		</action>
+		<action name="refresh">
+			<gui text="149" title="149" iconClass="mdi mdi-refresh" hasAccessKey="true"
+				accessKey="refresh_access_key">
+				<context selection="false" dir="true" recycle="false"
+					actionBar="true" actionBarGroup="00_navigation,display_toolbar" contextMenu="true" infoPanel="false">
+				</context>
+			</gui>
+			<rightsContext noUser="true" userLogged="only" read="true" write="false" adminOnly=""/>
+			<processing>
+				<clientCallback module="PydioCoreActions.Navigation.refresh"/>
+			</processing>
+		</action>
+		<action name="bookmark">
+			<gui text="152" title="153" iconClass="mdi mdi-bookmark-check" hasAccessKey="true"
+				accessKey="bookmarks_access_key">
+				<context selection="true" dir="false" recycle="hidden"
+					actionBar="true" contextMenu="true" infoPanel="false"
+					actionBarGroup="other">
+				</context>
+                <selectionContext dir="true" file="true" recycle="false" unique="true"/>
+			</gui>
+			<rightsContext noUser="true" userLogged="only" read="true" write="false" adminOnly=""/>
+			<processing>
+				<clientCallback module="PydioCoreActions.Callbacks.toggleBookmark"/>
+			</processing>
+		</action>
+		<action name="splash">
+			<gui text="166" title="167" iconClass="mdi mdi-information-outline" hasAccessKey="true"
+				accessKey="about_access_key">
+				<context selection="false" dir="" recycle="false"
+					actionBar="false" contextMenu="false" infoPanel="false">
+				</context>
+			</gui>
+			<processing>
+				<clientCallback module="PydioCoreActions.Navigation.splash"/>
+			</processing>
+		</action>
+        <action name="packages_upgrade_script">
+            <processing>
+                <serverCallback methodName="packagesUpgradeScript" restParams="/"
+                                developerComment="Apply necessary upgrade after an external code update, typically when handled via Linux packages"/>
+            </processing>
+        </action>
+	</actions>
+</registry_contributions>

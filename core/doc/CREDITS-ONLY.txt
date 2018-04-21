@@ -1,0 +1,72 @@
+<h4>Pydio Core License</h4>
+<u>Pydio Core</u> is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+Pydio Core is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+You should have received a copy of the GNU Affero General Public License along with Pydio.  If not, see <http://www.gnu.org/licenses/>.
+
+<h4>Contributors</h4>
+Charles du Jeu, Greg Hecquet, c12simple, DepaMarco, Etienne CHAMPETIER, mtskar, Stage Nex, isma91, tran, Mathieu Baudier, Jaroslav Lichtblau, Salva-G, Thomas Cresson, Martin Schaible, Mathieu Simon, huzergackl, leobouilloux, Ellega, Jesus Perez (Ultreia), Nicolas, Axel Otterstätter, Florian Vogt, kainv, garnetius, Huzergackl, Frederico Passos, John Regan, Anael Mobilia, fdecourt, root, DutchCloud4Work, Levente Huszko, Letreguilly, GeraldST, leo, Danilo Reihardt, Dmitri Bosenko, Daniel Nauck, Nikita Rousseau, Noxx, andypmuc, Destroyer, lkho, Leo Marcotte, Afterster, BlackLionPT, Piter Dias, Ismail Aydogmus, David Perrin, Konstantin Dmitriev, Gerard, Florian, Gossler Karoly, Kyle Tuck, Martin Wittwer, Sergey Spivak, ghecquet, kluckow, smandon, wehr, Łukasz Lis, Robert McKenney, Adam Dobrawy, Joubert, Stefan Huber, Steve Ludovicy, Jesús Pérez (Ultreia), Uggy, Vorlif, adrianbj, Jason Grant, Infthitbox, ImaiTeki, elangenhan, Günter Kits, GoZOo, user, Gerrit Pannek, 7omate, josh4trunks, Flauschbaellchen, Ács Sándor, Eric Cappannelli, Chuso Pérez, leomarcotte, Christian Foellmann, millsdude, mquandalle, Arnold van Blanken, psy, raiatea, Andreas Tasch, sabas, sim1st, zertrin, spiorf, thomasfrivold, NHellFire, Max Ruman, Pavel Kirpichyov, Pino Silvaggio, Matthew Leffler, Joubert RedRat.
+
+<h4>Third Party Library</h4>
+
+<h5>JavaScript</h5>
+    ReactJS : reactjs.org  Facebook BSD
+	Modernizr 	http://modernizr.com (BSD / MIT)
+	PDFJS library is provided by the Mozilla Foundation (Apache 2): http://mozilla.github.io/pdf.js/
+	See a list of all libraries and licenses used under <u>core/doc/npm-licenses.csv folder</u>.
+
+<h5>Graphical Elements</h5>
+    Material Design is a design specification written by Google (see https://material.io/).
+    Material UI is the JS framework we use to implement Material Design, written by Call-Em-All (MIT License)
+    Material Design Icons : https://materialdesignicons.com/ (SIL Open Font License, Version 1.1.)
+	Font Awesome by Dave Gandy : http://fortawesome.github.com/Font-Awesome/ (SIL Open Font License)
+	Background Photos from https://unsplash.com/ - Brad Neathery, Dustin Lee, Luis Llerena, Tim Gouw, Though Catalog
+
+<h5>Core PHP Libraries</h5>
+    aws/aws-sdk-php                    3.19.18             Apache-2.0
+    commerceguys/guzzle-oauth2-plugin  v2.1.1              MIT
+    dapphp/securimage                  3.6.4               BSD
+    davegardnerisme/nsqphp             dev-master 60f12ad  none
+    evenement/evenement                v2.0.0              MIT
+    firebase/php-jwt                   v2.2.0              BSD-3-Clause
+    gimler/guzzle-description-loader   v0.0.4              MIT
+    guzzlehttp/command                 0.7.1               MIT
+    guzzlehttp/guzzle                  5.3.1               MIT
+    guzzlehttp/guzzle-services         0.5.0               MIT
+    guzzlehttp/promises                1.2.0               MIT
+    guzzlehttp/psr7                    1.3.1               MIT
+    guzzlehttp/ringphp                 1.1.0               MIT
+    guzzlehttp/streams                 3.0.0               MIT
+    meenie/javascript-packer           1.1                 LGPL 2.1
+    mtdowling/jmespath.php             2.3.0               MIT
+    nikic/fast-route                   v1.0.1              BSD-3-Clause
+    phpseclib/phpseclib                2.0.3               MIT
+    psr/http-message                   1.0.1               MIT
+    psr/log                            1.0.2               MIT
+    react/cache                        v0.4.1              MIT
+    react/child-process                v0.4.1              MIT
+    react/dns                          v0.4.3              MIT
+    react/event-loop                   v0.4.2              MIT
+    react/http                         v0.4.1              MIT
+    react/http-client                  v0.4.13             MIT
+    react/promise                      v2.4.1              MIT
+    react/react                        v0.4.2              MIT
+    react/socket                       v0.4.3              MIT
+    react/socket-client                v0.4.5              MIT
+    react/stream                       v0.4.4              MIT
+    sabre/dav                          1.8.10              BSD-3-Clause
+    sabre/vobject                      2.1.7               BSD-3-Clause
+    symfony/config                     v3.1.5              MIT
+    symfony/console                    v3.1.5              MIT
+    symfony/debug                      v3.1.5              MIT
+    symfony/filesystem                 v3.1.5              MIT
+    symfony/polyfill-mbstring          v1.2.0              MIT
+    symfony/yaml                       v3.1.5              MIT
+    zendframework/zend-diactoros       1.3.7               BSD-2-Clause
+
+<h5>Other Plugins</h5>
+	PThumb.php http://www.phpclasses.org (LPGL)
+	OpenLayers http://www.openlayers.org (BSD)
+	Video-js http://www.videojs.com/ (LGPL)
+	Zend Lucene http://www.zend.com/ (New BSD)
+	SoundManager : http://www.schillmania.com/projects/soundmanager2/ (BSD)
+	CAS Driver (Apache 2): https://github.com/Jasig/phpCAS

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<confdriver name="pydio" id="conf.pydio" label="CONF_MESSAGE[Pydio Backend]" description="CONF_MESSAGE[Stores the conf data inside the Pydio Backend.]"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:../core.pydio/pydio_registry.xsd" >
+	<class_definition filename="plugins/conf.pydio/PydioConfDriver.php" classname="Pydio\Conf\Pydio\PydioConfDriver"/>
+	<registry_contributions>
+		<external_file filename="plugins/core.conf/standard_conf_actions.xml" include="actions/*,client_configs/*" exclude=""/>
+	</registry_contributions>
+</confdriver>

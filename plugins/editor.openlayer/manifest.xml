@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<editor id="editor.openlayer" openable="true" mimes="ol_layer,jpg" iconClass="mdi mdi-google-maps" text="openlayer.1" title="openlayer.1"
+        className="PydioMaps" label="CONF_MESSAGE[Map viewer]"
+        description="CONF_MESSAGE[Geolocation feature to either display a WMS layer or simply place an exif-localized photo. Requires OpenLayers]" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:../core.pydio/pydio_registry.xsd">
+    <client_settings>
+        <resources>
+            <js file="plugins/editor.openlayer/openlayer/OpenLayers.js" className="OpenLayers"/>
+            <js file="plugins/editor.openlayer/res/build/PydioMaps.js" className="PydioMaps" depends="OpenLayers"/>
+            <css file="plugins/editor.openlayer/openlayer/theme/default/style.css"/>
+            <i18n namespace="openlayer" path="plugins/editor.openlayer/res/i18n"/>
+        </resources>
+    </client_settings>
+	<processing>
+	</processing>
+	<dependencies>
+		<activePlugin pluginName="meta.exif"/>
+	</dependencies>
+</editor>

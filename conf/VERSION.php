@@ -1,0 +1,5 @@
+<?php
+define("PYDIO_VERSION", "##VERSION_NUMBER##");
+define("PYDIO_VERSION_DATE", "##VERSION_DATE##");
+define("PYDIO_VERSION_REV", "##REVISION##");
+define("PYDIO_VERSION_DB", "##DB_VERSION##");

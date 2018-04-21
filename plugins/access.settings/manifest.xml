@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ajxpdriver name="settings" enabled="always" label="CONF_MESSAGE[Admin Driver]" description="CONF_MESSAGE[Access Pydio configuration data.]" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:../core.pydio/pydio_registry.xsd">
+    <plugin_info>
+        <core_relation packaged="true"/>
+        <plugin_author>Charles du Jeu</plugin_author>
+    </plugin_info>
+	<client_settings icon="plugins/access.settings/admin.png">
+		<resources>
+			<i18n namespace="settings" path="plugins/access.settings/res/i18n" />
+			<i18n namespace="role_editor" path="plugins/access.settings/res/i18n/role" />
+			<i18n namespace="pydio_role" path="plugins/access.settings/res/i18n/editor" />
+            <i18n namespace="ajxp_admin" path="plugins/access.settings/res/i18n/admin" />
+            <i18n namespace="admin_dashboard" path="plugins/access.settings/res/i18n/dashboard" />
+            <i18n namespace="action.scheduler" path="plugins/access.settings/res/i18n/scheduler" />
+            <i18n namespace="license" path="plugins/access.settings/res/i18n/license" />
+            <i18n namespace="updater" path="plugins/access.settings/res/i18n/updater" />
+            <i18n namespace="ldap" path="plugins/access.settings/res/i18n/ldap" />
+
+            <css file="plugins/access.settings/res/css/ajxp_admin.css" autoload="true"/>
+            <css file="plugins/access.settings/res/css/rolesEditor.css" autoload="true"/>
+            <css file="plugins/access.settings/res/css/codemirror.css" autoload="true"/>
+            <css file="plugins/access.settings/res/css/codemirror-hints.css" autoload="true"/>
+            <css file="plugins/access.settings/res/css/swagger-custom.css" autoload="true"/>
+
+            <js className="AdminComponents" file="plugins/access.settings/res/build/AdminComponents.js" depends="React,PydioComponents,PydioWorkspaces,PydioCoreActions"/>
+            <js className="AdminActions" file="plugins/access.settings/res/build/AdminActions.js" depends="AdminComponents"/>
+            <js className="AdminPeople" file="plugins/access.settings/res/build/AdminPeople.js" depends="React,PydioComponents,PydioForm"/>
+            <js className="AdminRoleEditor" file="plugins/access.settings/res/build/AdminRoleEditor.js" depends="React,AdminComponents,PydioComponents,PydioForm"/>
+            <js className="AdminWorkspaces" file="plugins/access.settings/res/build/AdminWorkspaces.js" depends="PydioForm"/>
+            <js className="AdminPlugins" file="plugins/access.settings/res/build/AdminPlugins.js" depends="React,AdminComponents,PydioComponents,PydioForm"/>
+            <js className="AdminLogs" file="plugins/access.settings/res/build/AdminLogs.js" depends="React,PydioComponents"/>
+            <js className="AdminScheduler" file="plugins/access.settings/res/build/AdminScheduler.js" depends="React,PydioForm,PydioComponents"/>
+            <js className="AdminServices" file="plugins/access.settings/res/build/AdminServices.js" depends="React"/>
+
+		</resources>
+	</client_settings>
+	<registry_contributions>
+		<client_configs>
+            <template_part ajxpId="orbit_content" theme="material" namespace="AdminComponents" component="AdminDashboard" dependencies="PydioComponents,PydioForm"/>
+        </client_configs>
+		<external_file filename="plugins/access.settings/settingsActions.xml" include="actions/*"/>
+		<external_file filename="plugins/access.settings/settingsActions.xml" include="client_configs/*"/>
+	</registry_contributions>
+	<class_definition filename="plugins/access.settings/src/ConfAccessDriver.php" classname="Pydio\Access\Driver\DataProvider\Provisioning\ConfAccessDriver"/>
+</ajxpdriver>

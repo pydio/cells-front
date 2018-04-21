@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ajxpdriver name="gateway" label="CONF_MESSAGE[Gateway]" description="CONF_MESSAGE[Pydio S3 Gateway]" mixins="slug_provider,template_provider" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:../core.pydio/pydio_registry.xsd">
+    <class_definition filename="plugins/access.gateway/GatewayAccessDriver.php" classname="Pydio\Access\Driver\StreamProvider\Gateway\GatewayAccessDriver"/>
+
+    <client_settings icon="plugins/access.fs/icon.png" iconClass="icon-sitemap">
+        <resources>
+            <i18n namespace="s3_access" path="plugins/access.s3/i18n"/>
+            <js className="FSActions" file="plugins/access.fs/res/build/FSActions.js" depends="PydioComponents"/>
+            <js className="S3Actions" file="plugins/access.s3/res/build/S3Actions.js" depends="PydioComponents"/>
+        </resources>
+    </client_settings>
+
+    <server_settings>
+        <param name="ROOT_NODES" type="autocomplete-tree" choices="admin_list_tree" label="CONF_MESSAGE[Path]" description="CONF_MESSAGE[Path to the folder on the server]" mandatory="true"
+               replicationGroup="CONF_MESSAGE[ROOTS]" replicationDescription="CONF_MESSAGE[Absolute path to one or more root nodes]"
+               replicationMandatory="true" replicationTitle="CONF_MESSAGE[Root Nodes]"/>
+	</server_settings>
+
+	<registry_contributions>
+        <external_file filename="plugins/access.fs/fsTemplatePart.xml" include="client_configs/*" exclude=""/>
+        <external_file filename="plugins/access.fs/fsActions.xml" include="actions/*" exclude="actions/action[@name='ls']|actions/action[@name='download_all']"/>
+        <external_file filename="plugins/access.fs/manifest.xml" include="registry_contributions/client_configs/*" exclude=""/>
+        <external_file filename="plugins/access.fs/fsActions.xml" include="client_configs/*" exclude=""/>
+        <external_file filename="plugins/access.fs/manifest.xml" include="registry_contributions/hooks/*" exclude=""/>
+        <actions>
+            <action name="ls" dirDefault="true">
+                <gui text="32" title="32" iconClass="mdi mdi-folder-open"
+                     accessKey="folder_access_key">
+                    <context selection="true" dir="" recycle="false"
+                             actionBar="true" actionBarGroup="put" contextMenu="true" infoPanel="true"/>
+                    <selectionContext dir="true" file="true" recycle="false" enableRoot="true"
+                                      unique="true" allowedMimes="ajxp_folder,PYDIO_MIMES_ZIP" behaviour="hidden">
+                    </selectionContext>
+                </gui>
+                <rightsContext noUser="true" userLogged="only" read="true"
+                               write="false" adminOnly="false">
+                </rightsContext>
+                <processing>
+                    <clientCallback module="FSActions.Callbacks.ls"/>
+                    <serverCallback methodName="lsAction" restParams="/dir+" preferredHttp="GET" sdkMethodName="listNodes" checkParams="false" developerComment="Standard listing action
+				    to retrieve the list of children for a given directory. For the main parameters, use {nodes} parameter, the {dir}+{file} are kept for backward compatibility.">
+                        <input_param description="Directory to browse, from the repository root" name="dir" type="string" mandatory="false"/>
+                        <input_param description="One file to check" name="file" type="string" mandatory="false"/>
+                        <input_param description="One folder to list or one or more files to check" name="nodes" type="PYDIO_NODE[]" mandatory="false"/>
+                        <input_param description="Details to send back" name="options" type="string" mandatory="false" default="al"/>
+                        <input_param description="Recursively list all folders" name="recursive" type="boolean" mandatory="false" default="false"/>
+                        <input_param description="If recursive listing, maximum depth" name="max_depth" type="integer" mandatory="false"/>
+                        <input_param description="If recursive listing, maximum number of nodes gathered (soft limit)" name="max_nodes" type="integer" mandatory="false"/>
+                        <input_param description="Trigger remote order" name="remote_order" type="boolean" mandatory="false" default="false"/>
+                        <input_param description="Remote order column" name="order_column" type="string" mandatory="false"/>
+                        <input_param description="Remote order direction" name="order_direction" type="string" mandatory="false"/>
+                        <input_param description="Find page position of required file for multipage listing" name="page_position" type="boolean" mandatory="false"/>
+                        <output type="PYDIO_NODE[]"/>
+                    </serverCallback>
+                </processing>
+            </action>
+            <action name="download_folder">
+                <gui text="88" title="88" iconClass="mdi mdi-download" accessKey="download_access_key" hasAccessKey="true">
+                    <context selection="true" dir="" recycle="false"
+                             actionBar="true" contextMenu="true" infoPanel="true"
+                             actionBarGroup="0_get,inline,info_panel,minisite_toolbar">
+                    </context>
+                    <selectionContext dir="true" file="false" recycle="false" unique="true" enableRoot="true"/>
+                </gui>
+                <processing>
+                    <clientCallback module="S3Actions.Callbacks.downloadFolder"/>
+                </processing>
+                <rightsContext noUser="true" userLogged="only" read="true" write="false" adminOnly=""/>
+            </action>
+            <action name="presigned">
+                <processing>
+                    <serverCallback methodName="getPresignedUrl" restParams="/node+"/>
+                </processing>
+            </action>
+            <action name="download_version">
+                <processing>
+                    <serverCallback methodName="downloadVersion" restParams="/node+"/>
+                </processing>
+            </action>
+            <action name="restore_version">
+                <processing>
+                    <serverCallback methodName="restoreVersion" restParams="/node+"/>
+                </processing>
+            </action>
+            <action name="stat_hash">
+                <rightsContext adminOnly="false" noUser="false" read="true" userLogged="true" write="false"/>
+                <processing>
+                    <serverCallback methodName="statHashAction" checkParams="false" restParams="/file+" developerComment="Returns an fstat() structure including the hash of the file">
+                        <input_param description="One or more nodes to stat." name="nodes" type="AJXP_NODE[]"/>
+                        <output type="json"/>
+                    </serverCallback>
+                </processing>
+            </action>
+            <action name="changes">
+                <processing>
+                    <serverCallback methodName="changesAction" restParams="/seq_id" developerComment="List all changes on this workspace starting at a given sequence id">
+                        <input_param name="filter" type="path" description="Path to a directory: will return changes as if this dir was the root"/>
+                        <input_param name="flatten" type="boolen" description="Flatten results or not, i.e. send the full sequence of changes, or try to reduce the ones that cancel the others (like move a to b plus move b to c = move a to c)."/>
+                        <input_param name="stream" type="boolean" description="Return json as a stream or as a whole"/>
+                        <output type="JSON" description="Json OR Streamable JSON : json structures that are line separated, giving the ability to parse the answer as a stream by http clients."/>
+                    </serverCallback>
+                </processing>
+            </action>
+        </actions>
+	</registry_contributions>
+    <dependencies>
+        <pluginClass pluginName="access.s3"/>
+        <pluginResources pluginName="access.s3"/>
+    </dependencies>
+    <class_stream_wrapper filename="plugins/access.s3/S3AccessWrapper.php" classname="Pydio\Access\Driver\StreamProvider\S3\S3AccessWrapper" protocol="ajxp.s3"/>
+</ajxpdriver>
