@@ -109,9 +109,10 @@ class RepositoryXML
             $streamString .= " user_editable_repository=\"true\" ";
         }
 
-        if($repoObject->getAccessType() === "gateway") {
-            $streamString .= " meta_syncable_REPO_SYNCABLE=\"true\" ";
-        }
+//        if($repoObject->getAccessType() === "gateway") {
+//            $streamString .= " meta_syncable_REPO_SYNCABLE=\"true\" ";
+//        }
+        
         $slugString = "";
         $slug = $repoObject->getSlug();
         if (!empty($slug)) {
