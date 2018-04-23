@@ -107,11 +107,11 @@ let Dashboard = React.createClass({
 
         // ADMIN GUIDE BUTTONS
         const guidesButtons = [
-            {icon:'clock-start', id:'start', link:'https://pydio.com/en/docs/v8/getting-started'},
-            {icon:'network', id:'ws', link:'https://pydio.com/en/docs/v8/setup-workspaces-and-users'},
-            {icon:'account-multiple', id:'users', link:'https://pydio.com/en/docs/v8/groups-admin-and-delegation'},
-            {icon:'settings', id:'parameters', link:'https://pydio.com/en/docs/v8/pydio-advanced-configuration'},
-            {icon:'professional-hexagon', id:'advanced', link:'https://pydio.com/en/docs/v8/pydio-advanced-configuration'}
+            {icon:'clock-start', id:'start', link:'https://github.com/pydio/cells/wiki'},
+            {icon:'network', id:'ws', link:'https://github.com/pydio/cells/wiki'},
+            {icon:'account-multiple', id:'users', link:'https://github.com/pydio/cells/wiki'},
+            {icon:'settings', id:'parameters', link:'https://github.com/pydio/cells/wiki'},
+            {icon:'professional-hexagon', id:'advanced', link:'https://github.com/pydio/cells/wiki'}
         ];
 
         // DOCS LIST
@@ -156,8 +156,8 @@ let Dashboard = React.createClass({
                 <List style={{overflow: 'auto', flex:1, maxHeight: 320}}>{kbItems}</List>
                 <Divider/>
                 <CardActions style={{textAlign:'right'}}>
-                    <FlatButton label={message('kb.btn.alldocs')} primary={true} onTouchTap={()=>{window.open('https://pydio.com/en/docs/')}}/>
-                    <FlatButton label={message('kb.btn.forum')} primary={true} onTouchTap={()=>{window.open('https://pydio.com/forum/f/')}}/>
+                    <FlatButton label={message('kb.btn.alldocs')} primary={true} onTouchTap={()=>{window.open('https://github.com/pydio/cells/wiki')}}/>
+                    <FlatButton label={message('kb.btn.forum')} primary={true} onTouchTap={()=>{window.open('https://forum.pydio.com/')}}/>
                 </CardActions>
             </Card>
         );
@@ -169,18 +169,18 @@ let Dashboard = React.createClass({
                     <div className="mdi mdi-github-circle" style={{fontSize: 60, display:'inline-block', float:'left', marginRight:10, marginBottom:10}}/>
                     {message('cont.intro')}
                     <List>
+                        <ListItem disabled={true} primaryText={message('cont.topic.report')} rightIconButton={this.getOpenIcon('https://forum.pydio.com/')}/>
+                        <Divider/>
+                        <ListItem disabled={true} primaryText={message('cont.topic.report.2')} rightIconButton={this.getOpenIcon('https://github.com/pydio/cells')}/>
+                        <Divider/>
+                        <ListItem disabled={true} primaryText={message('cont.topic.pr')} rightIconButton={this.getOpenIcon('https://github.com/pydio/cells')}/>
+                        <Divider/>
                         <ListItem disabled={true} primaryText={message('cont.topic.translate')} rightIconButton={this.getOpenIcon('https://pydio.com/en/community/contribute/adding-translation-pydio')} />
-                        <Divider/>
-                        <ListItem disabled={true} primaryText={message('cont.topic.report')} rightIconButton={this.getOpenIcon('https://pydio.com/forum/f/')}/>
-                        <Divider/>
-                        <ListItem disabled={true} primaryText={message('cont.topic.report.2')} rightIconButton={this.getOpenIcon('https://github.com/pydio/pydio-core')}/>
-                        <Divider/>
-                        <ListItem disabled={true} primaryText={message('cont.topic.pr')} rightIconButton={this.getOpenIcon('https://github.com/pydio/pydio-core')}/>
                     </List>
                 </CardText>
                 <Divider/>
                 <CardActions style={{textAlign:'center'}}>
-                    <FlatButton label={message('cont.btn.github')} primary={true} icon={<FontIcon className="mdi mdi-github-box" />} onTouchTap={()=>{window.open('https://github.com/pydio/pydio-core')}} />
+                    <FlatButton label={message('cont.btn.github')} primary={true} icon={<FontIcon className="mdi mdi-github-box" />} onTouchTap={()=>{window.open('https://github.com/pydio/cells')}} />
                     <FlatButton label={message('cont.btn.tw')} primary={true} icon={<FontIcon className="mdi mdi-twitter-box" />} onTouchTap={()=>{window.open('https://twitter.com/Pydio')}} />
                     <FlatButton label={message('cont.btn.fb')} primary={true} icon={<FontIcon className="mdi mdi-facebook-box" />} onTouchTap={()=>{window.open('https://facebook.com/Pydio/')}} />
                 </CardActions>
@@ -213,9 +213,7 @@ let Dashboard = React.createClass({
             <div style={{flex:'1', overflow: 'auto', height: '100%', paddingBottom: 10}}>
                 <div style={{display:'flex', alignItems:'top', flexWrap:'wrap'}}>
                     {WELCOME_COMMUNITY_CARD}
-                    {GET_SOME_HELP_CARD}
                     {PAY_IT_FORWARD_CARD}
-                    {DISCOVER_ENTERPRISE_CARD}
                 </div>
             </div>
         )

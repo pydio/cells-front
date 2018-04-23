@@ -2,11 +2,11 @@
 $mess = [
 
     // Welcome Card
-    'welc.title' => 'Welcome on Pydio Community Dashboard',
+    'welc.title' => 'Welcome to Pydio Cells Dashboard',
     'welc.subtitle' => 'The place to administrate and monitor the activity of your platform',
-    'welc.intro' => 'This is your dashboard for managing Pydio. Using the left menu you can create <a class="doc-link" data-path="/data/repositories">workspaces</a> and <a class="doc-link" data-path="/data/users">users</a>,
+    'welc.intro' => 'This is your dashboard for managing Pydio. Using the left menu you can create <a class="doc-link" data-path="/data/workspaces">workspaces</a> and <a class="doc-link" data-path="/idm/users">users</a>,
                             check all <a class="doc-link" data-path="/admin/logs">events</a> that happened on the platform, and manage <a class="doc-link" data-path="/parameters/core">configurations</a> and <a class="doc-link" data-path="/plugins/manager">plugins</a>.',
-    'welc.guide' => 'If you don\'t know where to start, the <u>Administrator Guide</u> is definitely a good read:',
+    'welc.guide' => 'If you don\'t know where to start, the Administrator Guide is definitely a good read:',
     'welc.btn.start' => 'Getting Started',
     'welc.btn.ws' => 'About Workspaces',
     'welc.btn.users' => 'About Users Management',
@@ -22,8 +22,8 @@ $mess = [
 
     // Contribute
     'cont.title'=> 'Pay it forward!',
-    'cont.subtitle' => 'Pydio is free open source software. Contribute back!',
-    'cont.intro' => 'Pydio code is available publicly on Github. Do you want to fix a bug, help others in the forum or push the next killer feature? Get involved!
+    'cont.subtitle' => 'Pydio Cells is free open source software. Contribute back!',
+    'cont.intro' => 'Code is available publicly on Github. Do you want to fix a bug, help others in the forum or push the next killer feature? Get involved!
                             Or show your love on social networks!',
     'cont.topic.translate' => 'How-to create or complete a language translation ?',
     'cont.topic.report' => 'I think I found a bug! Post in the forum.',

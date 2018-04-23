@@ -4,7 +4,7 @@ $mess = [
     // Welcome Card
     'welc.title' => 'Willkommen zum Community-Dashboard',
     'welc.subtitle' => 'Verwalten und überwachen Sie Ihre Pydio-Installation',
-    'welc.intro' => 'Über das Menü auf der linken Seite können Sie <a class="doc-link" data-path="/data/repositories">Arbeitusmgebungen</a> oder <a class="doc-link" data-path="/data/users">Benutzer</a> erstellen. Zudem haben Sie die Möglichkeit,
+    'welc.intro' => 'Über das Menü auf der linken Seite können Sie <a class="doc-link" data-path="/data/workspaces">Arbeitusmgebungen</a> oder <a class="doc-link" data-path="/idm/users">Benutzer</a> erstellen. Zudem haben Sie die Möglichkeit,
                             die <a class="doc-link" data-path="/admin/logs">Protokolle</a> zu überprüfen oder Einstellungen des <a class="doc-link" data-path="/parameters/core">Systems</a>, oder einer <a class="doc-link" data-path="/plugins/manager">Erweiterung</a> zu ändern.',
     'welc.guide' => 'Bitte lesen Sie zum Einstieg die Administrations-Anleitung:',
     'welc.btn.start' => 'Erste Schritte',
@@ -22,8 +22,8 @@ $mess = [
 
     // Contribute
     'cont.title'=> 'Pay it forward!',
-    'cont.subtitle' => 'Pydio ist freie Open-Source-Software. Tragen Sie bei!',
-    'cont.intro' => 'Der Pydio Quelltext ist auf Github verfügbar. Tragen Sie bei, indem Sie einen Fehler beheben, anderen über das Forum helfen, oder eine neue Funktion implementieren!
+    'cont.subtitle' => 'Pydio Cells ist freie Open-Source-Software. Tragen Sie bei!',
+    'cont.intro' => 'Der Quelltext ist auf Github verfügbar. Tragen Sie bei, indem Sie einen Fehler beheben, anderen über das Forum helfen, oder eine neue Funktion implementieren!
                             Verbreiten Sie über soziale Medien, dass Ihnen Pydio gefällt!',
     'cont.topic.translate' => 'Wie wird eine Übersetzung erstellt oder vervollständigt?',
     'cont.topic.report' => 'Ich denke, dass ich einen Fehler gefunden haben! Einen Beitrag ins Forum schreiben.',

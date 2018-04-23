@@ -2,11 +2,11 @@
 $mess = [
 
     // Welcome Card
-    'welc.title' => 'Bienvenido al Panel de Pydio Community',
+    'welc.title' => 'Bienvenido al Panel de Pydio Cells',
     'welc.subtitle' => 'El lugar para administrar y monitorizar la actividad de su plataforma',
-    'welc.intro' => 'Este es su panel para gestionar Pydio. Usando el menu de la izquierda puede crear <a class="doc-link" data-path="/data/repositories">workspaces</a> y <a class="doc-link" data-path="/data/users">usuarios</a>,
+    'welc.intro' => 'Este es su panel para gestionar Pydio. Usando el menu de la izquierda puede crear <a class="doc-link" data-path="/data/workspaces">workspaces</a> y <a class="doc-link" data-path="/idm/users">usuarios</a>,
                             compruebe todos los <a class="doc-link" data-path="/admin/logs">eventos</a> que ocurren en la plataforma y gestione la <a class="doc-link" data-path="/parameters/core">configuración</a> y los <a class="doc-link" data-path="/plugins/manager">plugins</a>.',
-    'welc.guide' => 'Si no sabe por dónde empezar, la <u>Administrator Guide</u> es un buen sitio:',
+    'welc.guide' => 'Si no sabe por dónde empezar, la Administrator Guide es un buen sitio:',
     'welc.btn.start' => 'Comenzando',
     'welc.btn.ws' => 'Sobre Workspaces',
     'welc.btn.users' => 'Sobre Gestión de Usuario',
@@ -22,8 +22,8 @@ $mess = [
 
     // Contribute
     'cont.title'=> '¡Devuelva el favor!',
-    'cont.subtitle' => 'Pydio es software libre y código abierto. ¡Contribuya!',
-    'cont.intro' => 'El código de Pydio está disponible públicamente en Github. ¿Quiere arreglar un bug, ayudar a otros en el foro o añadir funciones nuevas? ¡Involúcrese!
+    'cont.subtitle' => 'Pydio Cells es software libre y código abierto. ¡Contribuya!',
+    'cont.intro' => 'El código está disponible públicamente en Github. ¿Quiere arreglar un bug, ayudar a otros en el foro o añadir funciones nuevas? ¡Involúcrese!
                             ¡O muestre su amor por Pydio en las redes sociales!',
     'cont.topic.translate' => '¿Cómo crear o completar una traducción?',
     'cont.topic.report' => '¡Creo que he encontrado un bug! Abra un hilo en el foro.',
