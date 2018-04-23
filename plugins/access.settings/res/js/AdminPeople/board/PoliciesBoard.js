@@ -216,6 +216,9 @@ let PoliciesBoard = React.createClass({
         };
 
         const lists = Object.keys(policies).map((k) => {
+            if (readonly && k === 'acl') {
+                return null;
+            }
             const title = ResourceGroups[k].title;
             const legend = ResourceGroups[k].legend;
             const data = policies[k];
