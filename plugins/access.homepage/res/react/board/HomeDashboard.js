@@ -152,7 +152,7 @@ let AltDashboard = React.createClass({
                         <div id="workspace_toolbar" style={{display: "flex", justifyContent: "space-between"}}>
                             <span className="drawer-button"><IconButton style={{color: 'white'}} iconClassName="mdi mdi-menu" onTouchTap={this.openDrawer}/></span>
                             <span style={{flex:1}}></span>
-                            <div style={{textAlign:'center', width: 330}}>
+                            <div style={{textAlign:'center', width: 250}}>
                                 <ConfigLogo
                                     className="home-top-logo"
                                     pydio={this.props.pydio}
