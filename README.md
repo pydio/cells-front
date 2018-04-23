@@ -32,10 +32,6 @@ You should be good to go. When modifying JS files that require transpilation, th
 
 Use the `dist/build.sh` script to prepare the whole frontend then copy the content of the resulting `front/` folder inside Pydio Cells code (under `assets/src/pydio`).
 
-## Contributing
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
-
 ## Authors
 
 See the list of [contributors](https://github.com/pydio/cells/graphs/contributors) who participated in this project. Pydio Cells is also a continuation of the Pydio project and many contributions were ported from [pydio-core](https://github.com/pydio/pydio-core) to the [cells-front](https://github.com/pydio/cells-front) code.
