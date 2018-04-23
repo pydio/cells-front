@@ -1,4 +1,4 @@
-![Pydio Cells](https://github.com/pydio/cells/wiki/images/PydioCellsColor.png)
+<img src="https://github.com/pydio/cells/wiki/images/PydioCellsColor.png" width="400" />
 
 ![License Badge](https://img.shields.io/badge/License-AGPL%203%2B-blue.svg)
 
