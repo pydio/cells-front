@@ -56,7 +56,8 @@ let DirectoriesBoard = React.createClass({
             } else {
                 this.setState({directories: []});
             }
-        }).finally(() => {
+            this.setState({loading: false});
+        }).catch(() => {
             this.setState({loading: false});
         });
     },

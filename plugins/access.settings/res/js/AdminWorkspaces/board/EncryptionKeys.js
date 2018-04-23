@@ -52,11 +52,11 @@ class EncryptionKeys extends React.Component{
                     this.setState({exportedKey: '', showDialog: false})
                 }, 10000);
             });
+            this.setState({showExportKey: null});
         }).catch(reason => {
             pydio.UI.displayMessage('ERROR', 'Something went wrong: ' + reason.message);
-        }).finally(() => {
             this.setState({showExportKey: null});
-        })
+        });
     }
 
     createKey(){
@@ -66,7 +66,8 @@ class EncryptionKeys extends React.Component{
         req.Label = this.refs['createKeyLabel'].getValue();
         api.createEncryptionKey(req).then((result) => {
             this.load();
-        }).finally(() => {
+            this.setState({showDialog: false})
+        }).catch(() => {
             this.setState({showDialog: false})
         })
     }
@@ -107,8 +108,9 @@ class EncryptionKeys extends React.Component{
             } else {
                 pydio.UI.displayMessage('ERROR', 'Something went wrong!');
             }
-        }).finally(() => {
             this.load();
+            this.setState({showImportKey: false, showDialog: false});
+        }).catch(() => {
             this.setState({showImportKey: false, showDialog: false});
         })
 

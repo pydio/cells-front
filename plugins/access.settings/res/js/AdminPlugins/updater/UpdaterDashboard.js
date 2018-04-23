@@ -55,7 +55,8 @@ const UpdaterDashboard = React.createClass({
             const node = pydio.getContextNode();
             node.getMetadata().set('flag', hasBinary);
             AdminComponents.MenuItemListener.getInstance().notify("item_changed");
-        }).finally(() => {
+            this.setState({loading: false});
+        }).catch(() => {
             this.setState({loading: false});
         });
 

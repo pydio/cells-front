@@ -111,7 +111,7 @@ class JobBoard extends React.Component {
         const {job} = this.props;
         const store = JobsStore.getInstance();
         this.setState({working: true});
-        store.deleteTasks(job.ID, selectedRows).finally(()=>{
+        store.deleteTasks(job.ID, selectedRows).then(()=>{
             this.setState({working: false, selectedRows:[], mode:'log'})
         })
     }
@@ -120,7 +120,7 @@ class JobBoard extends React.Component {
         this.setState({working: true});
         const {job} = this.props;
         const store = JobsStore.getInstance();
-        store.deleteAllTasksForJob(job.ID).finally(() => {
+        store.deleteAllTasksForJob(job.ID).then(() => {
             this.setState({working: false});
         })
     }

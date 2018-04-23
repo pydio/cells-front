@@ -88,8 +88,8 @@ class AutocompleteTree extends React.Component{
         listRequest.Path = basePath;
         this.setState({loading: true});
         api.listPeerFolders(peerAddress, listRequest).then(nodesColl => {
-            this.setState({nodes: nodesColl.Children || []});
-        }).finally(() => {
+            this.setState({nodes: nodesColl.Children || [], loading: false});
+        }).catch(() => {
             this.setState({loading: false});
         })
     }
