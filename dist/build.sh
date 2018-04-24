@@ -2,9 +2,9 @@
 
 # Use a given Build name or it's just a CI build
 if [ "$#" -ne 1 ]; then
-     BUILD_NAME="$1"
-else
      BUILD_NAME="ci"
+else
+     BUILD_NAME="$1"
 fi
 
 echo "Building Cells Front $BUILD_NAME"
