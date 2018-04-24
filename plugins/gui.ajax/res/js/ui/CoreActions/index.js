@@ -26,7 +26,7 @@ const Callbacks = {
     clearPluginsCache: require('./callbacks/clearPluginsCache'),
     dismissUserAlert: require('./callbacks/dismissUserAlert'),
     activateDesktopNotifications: require('./callbacks/activateDesktopNotifications')
-}
+};
 
 const Navigation = {
     splash: require('./navigation/splash'),
@@ -35,10 +35,9 @@ const Navigation = {
     externalSelection: require('./navigation/externalSelection'),
     openGoPro: require('./navigation/openGoPro'),
     switchToSettings: require('./navigation/switchToSettings')
-}
+};
 
 import SplashDialog from './dialog/SplashDialog'
 import PasswordDialog from './dialog/PasswordDialog'
-import Pydio9Card from './dialog/Pydio9Card'
 
-export {Callbacks, Navigation, SplashDialog, PasswordDialog, Pydio9Card}
+export {Callbacks, Navigation, SplashDialog, PasswordDialog}
