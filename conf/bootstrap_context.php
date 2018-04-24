@@ -32,11 +32,10 @@ if (function_exists("xdebug_disable")) {
 
 @include_once("VERSION.php");
 if(!defined("PYDIO_VERSION")){
-    list($vNmber,$vDate,$vRevision,$vDbVersion) = explode("__",file_get_contents(PYDIO_CONF_PATH."/VERSION"));
+    list($vNmber,$vDate,$vRevision) = explode("__",file_get_contents(PYDIO_CONF_PATH."/VERSION"));
     define("PYDIO_VERSION", $vNmber);
     define("PYDIO_VERSION_DATE", $vDate);
     if(!empty($vRevision)) define("PYDIO_VERSION_REV", $vRevision);
-    if(!empty($vDbVersion)) define("PYDIO_VERSION_DB", intval($vDbVersion));
 }
 
 define("PYDIO_EXEC", true);

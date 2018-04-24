@@ -20,20 +20,20 @@
 
 import {Component} from 'react'
 const {PydioContextConsumer} = require('pydio').requireLib('boot');
-import {Card, CardActions, Divider, FontIcon, CardMedia, CardTitle, CardText, FlatButton} from 'material-ui'
+import {Card, CardActions, Divider, FontIcon, CardTitle, CardText, FlatButton} from 'material-ui'
 
-class Pydio9Card extends Component {
+class AboutCellsCard extends Component {
 
     openDocs(){
-        open("http://pydio9-tech-preview.readthedocs.io/");
+        open("https://github.com/pydio/cells/wiki");
     }
 
-    openSlack(){
-        open("https://join.slack.com/t/pydio9/shared_invite/enQtMjgwNjg4NzY3NDQwLTJlNzUxYTZiMDVjMWNjYTg0NDMxZjQxMWM0NmQ1ZmEyYjVjOTI5NjM0ODEwNmFlODkyMDBhYmU4NmJiOWU5MTk");
+    openForum(){
+        open("https://forum.pydio.com");
     }
 
     openGithub(){
-        open("https://github.com/pydio/pydio9-beta-docs/issues");
+        open("https://github.com/pydio/cells/issues");
     }
 
     render(){
@@ -42,20 +42,19 @@ class Pydio9Card extends Component {
 
         return (
             <Card style={style}>
-                <CardMedia><img src={imgBase + "/Pydio9-arch.png"} /></CardMedia>
-                <CardTitle title="Welcome to Pydio9 Beta" subtitle="This is a tech preview of Pydio9" />
+                <CardTitle title="About Pydio Cells" subtitle="Future-proof file-sharing platform" />
                 <CardText>
-                    Thank you for taking the time to take a glance at the future of Pydio! This version is a technology preview,
-                    please beware that it is <u>NOT PRODUCTION READY</u>! Particularly on the security level, the backend API's are
-                    not secured yet. <br/><br/>
-                    Pydio 9 is a full rewrite of the PHP server into #Go, the server language used by Google on their own datacenters all
+                    Pydio Cells is a full rewrite of the PHP server into #Go, the server language used by Google on their own datacenters all
                     over the world. It is designed with scalability and open standards in mind, and based on a micro-services architecture.
                     Please refer to the dedicated documentation to read more about this new architecture and how you can help testing it.
+                    <br/>
+                    Contributions and bug reports are welcome on our Github repository. Please make sure to read the Contributing instructions
+                     and to give as much details as possible to provide a reproducible scenario!
                 </CardText>
                 <Divider/>
                 <CardActions>
-                    <FlatButton primary={true} icon={<FontIcon className="mdi mdi-book-variant" />} label="P9 Docs" onTouchTap={this.openDocs} />
-                    <FlatButton primary={true} icon={<FontIcon className="mdi mdi-slack" />} label="Channel" onTouchTap={this.openSlack}/>
+                    <FlatButton primary={true} icon={<FontIcon className="mdi mdi-book-variant" />} label="Docs" onTouchTap={this.openDocs} />
+                    <FlatButton primary={true} icon={<FontIcon className="mdi mdi-slack" />} label="Forums" onTouchTap={this.openForum}/>
                     <FlatButton primary={true} icon={<FontIcon className="mdi mdi-github-box" />} label="Issues" onTouchTap={this.openGithub}/>
                 </CardActions>
             </Card>
@@ -64,6 +63,6 @@ class Pydio9Card extends Component {
 
 }
 
-Pydio9Card = PydioContextConsumer(Pydio9Card);
+AboutCellsCard = PydioContextConsumer(AboutCellsCard);
 
-export {Pydio9Card as default}
+export {AboutCellsCard as default}

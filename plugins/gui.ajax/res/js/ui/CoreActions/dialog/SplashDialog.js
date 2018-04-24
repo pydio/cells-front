@@ -22,8 +22,8 @@ const React = require('react');
 const PydioApi = require('pydio/http/api');
 const BootUI = require('pydio/http/resources-manager').requireLib('boot');
 const {ActionDialogMixin, SubmitButtonProviderMixin, Loader} = BootUI;
-import Pydio9Card from './Pydio9Card'
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText, FlatButton} from 'material-ui'
+import AboutCellsCard from './AboutCellsCard'
+import {Card, CardTitle, CardText} from 'material-ui'
 
 const SplashDialog = React.createClass({
 
@@ -35,7 +35,7 @@ const SplashDialog = React.createClass({
     getDefaultProps: function(){
         return {
             dialogTitle: '',
-            dialogSize:'md',
+            dialogSize:'lg',
             dialogIsModal: false,
             dialogPadding: false,
             dialogScrollBody: true
@@ -85,7 +85,7 @@ const SplashDialog = React.createClass({
         );
         return (
             <div style={{height:'100%', backgroundColor: '#CFD8DC'}}>
-                <Pydio9Card style={{margin:10}}/>
+                <AboutCellsCard style={{margin:10}}/>
                 {credit}
             </div>
         );

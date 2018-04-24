@@ -1,32 +1,20 @@
 Version __PYDIO_VERSION__ - __PYDIO_VERSION_DATE__
-Copyright 2007-2017 Abstrium SAS
+Copyright 2018 Abstrium SAS
 The latest code can be found at https://pydio.com/.
 
 ++ License ++
-Pydio is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Pydio Cells is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+Pydio Cells is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
 
-Pydio is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with Pydio.  If not, see <http://www.gnu.org/licenses/>.
-
-
+You should have received a copy of the GNU Affero General Public License along with Pydio Cells.  If not, see <http://www.gnu.org/licenses/>.
 
 ++ Third Party Library ++
 [JavaScript]
-
     ReactJS : reactjs.org  Facebook BSD
 	PDFJS library is provided by the Mozilla Foundation (Apache 2): http://mozilla.github.io/pdf.js/
 	See a list of all libraries and licenses used under /core/doc/npm-licenses.csv folder.
 
 [Graphical Elements]
-
     Material Design is a design specification written by Google (see https://material.io/).
     Material UI is the JS framework we use to implement Material Design, written by Call-Em-All (MIT License)
     Material Design Icons : https://materialdesignicons.com/ (SIL Open Font License, Version 1.1.)
@@ -34,12 +22,9 @@ along with Pydio.  If not, see <http://www.gnu.org/licenses/>.
 	Background Photos from https://unsplash.com/ - Brad Neathery, Dustin Lee, Luis Llerena, Tim Gouw, Though Catalog
 
 [PHP Libraries]
-
     aws/aws-sdk-php                    3.19.18             Apache-2.0
-    commerceguys/guzzle-oauth2-plugin  v2.1.1              MIT
     dapphp/securimage                  3.6.4               BSD
     evenement/evenement                v2.0.0              MIT
-    firebase/php-jwt                   v2.2.0              BSD-3-Clause
     gimler/guzzle-description-loader   v0.0.4              MIT
     guzzlehttp/command                 0.7.1               MIT
     guzzlehttp/guzzle                  5.3.1               MIT
@@ -65,8 +50,6 @@ along with Pydio.  If not, see <http://www.gnu.org/licenses/>.
     react/socket                       v0.4.3              MIT
     react/socket-client                v0.4.5              MIT
     react/stream                       v0.4.4              MIT
-    sabre/dav                          1.8.10              BSD-3-Clause
-    sabre/vobject                      2.1.7               BSD-3-Clause
     symfony/config                     v3.1.5              MIT
     symfony/console                    v3.1.5              MIT
     symfony/debug                      v3.1.5              MIT
@@ -74,7 +57,6 @@ along with Pydio.  If not, see <http://www.gnu.org/licenses/>.
     symfony/polyfill-mbstring          v1.2.0              MIT
     symfony/yaml                       v3.1.5              MIT
     zendframework/zend-diactoros       1.3.7               BSD-2-Clause
-
 
 [Other Plugins]
 	OpenLayers http://www.openlayers.org (BSD)

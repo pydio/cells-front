@@ -2,12 +2,12 @@
 
 # Use a given Build name or it's just a CI build
 if [ "$#" -ne 1 ]; then
-     BUILD_NAME = "$1"
+     BUILD_NAME="$1"
 else
-     BUILD_NAME = "ci"
+     BUILD_NAME="ci"
 fi
 
-echo "Building Cells Front"
+echo "Building Cells Front $BUILD_NAME"
 
 # Remove previous src folder
 rm -rf src
