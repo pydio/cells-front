@@ -363,6 +363,7 @@ class PydioApi{
         const childs = xmlResponse.documentElement.childNodes;
         let reloadNodes = [], error = false;
         this.LAST_ERROR_ID = null;
+        this.LAST_ERROR = null;
 
         for(let i=0; i<childs.length;i++)
         {
@@ -373,6 +374,7 @@ class PydioApi{
                 if(child.firstChild) messageTxt = child.firstChild.nodeValue;
                 if(child.getAttribute('type') == 'ERROR') {
                     Logger.error(messageTxt);
+                    this.LAST_ERROR = messageTxt;
                     error = true;
                 }else{
                     Logger.log(messageTxt);
@@ -386,7 +388,7 @@ class PydioApi{
                 }
                 return false;
 
-            } else if(child.tagName == "reload_instruction") {
+            } else if(child.tagName === "reload_instruction") {
 
                 const obName = child.getAttribute('object');
                 if(obName === 'data') {
@@ -400,18 +402,18 @@ class PydioApi{
                         }
                         reloadNodes.push(this._pydioObject.getContextNode());
                     }
-                } else if(obName == 'repository_list') {
+                } else if(obName === 'repository_list') {
                     this._pydioObject.reloadRepositoriesList();
                 }
 
-            } else if(child.nodeName == 'nodes_diff') {
+            } else if(child.nodeName === 'nodes_diff') {
 
                 const dm = this._pydioObject.getContextHolder();
                 if(dm.getAjxpNodeProvider().parseAjxpNodesDiffs){
                     dm.getAjxpNodeProvider().parseAjxpNodesDiffs(childs[i], dm, this._pydioObject.user.activeRepository, !window.currentLightBox);
                 }
 
-            } else if(child.tagName == "logging_result") {
+            } else if(child.tagName === "logging_result") {
 
                 if(child.getAttribute("secure_token")){
 
@@ -455,7 +457,7 @@ class PydioApi{
                     Logger.error(this._pydioObject.MessageHash[errorId]);
                 }
 
-            } else if(child.tagName == "trigger_bg_action") {
+            } else if(child.tagName === "trigger_bg_action") {
 
                 const name = child.getAttribute("name");
                 const messageId = child.getAttribute("messageId");
@@ -463,18 +465,18 @@ class PydioApi{
                 let callback;
                 for(let j=0;j<child.childNodes.length;j++){
                     const paramChild = child.childNodes[j];
-                    if(paramChild.tagName == 'param'){
+                    if(paramChild.tagName === 'param'){
 
                         parameters[paramChild.getAttribute("name")] = paramChild.getAttribute("value");
 
-                    }else if(paramChild.tagName == 'clientCallback' && paramChild.firstChild && paramChild.firstChild.nodeValue){
+                    }else if(paramChild.tagName === 'clientCallback' && paramChild.firstChild && paramChild.firstChild.nodeValue){
 
                         const callbackCode = paramChild.firstChild.nodeValue;
                         callback = new Function(callbackCode);
 
                     }
                 }
-                if(name == "javascript_instruction" && callback){
+                if(name === "javascript_instruction" && callback){
                     callback();
                 }
             }

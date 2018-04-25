@@ -94,26 +94,13 @@
 
             let dataModel = global.pydio.getContextHolder();
             let nodeName = PathUtils.getBasename(this._file.name);
-            var newNode = new AjxpNode(fullPath+"/"+nodeName);
-            if(this._file.size){
-                newNode.getMetadata().set("filesize", this._file.size);
-            }
-            try{
-                let params = null;
-                if(currentRepo !== this._repositoryId) {
-                    params = {tmp_repository_id:this._repositoryId};
-                }
-                dataModel.applyCheckHook(newNode, params);
-            }catch(e){
-                throw new Error(global.pydio.MessageHash['html_uploader.3']);
-            }
             let overwriteStatus = UploaderConfigs.getInstance().getOption("DEFAULT_EXISTING", "upload_existing");
             if(overwriteStatus === 'rename'){
                 queryString += '&auto_rename=true';
             }else if(overwriteStatus === 'alert' && !this._relativePath && currentRepo === this._repositoryId){
                 if(dataModel.fileNameExists(nodeName, false, this._targetNode)){
-                    if(!global.confirm(global.pydio.MessageHash[124])){
-                        throw new Error(global.pydio.MessageHash[71]);
+                    if(!global.confirm(global.pydio.MessageHash['124'])){
+                        throw new Error(global.pydio.MessageHash['71']);
                     }
                 }
             }
@@ -163,7 +150,7 @@
 
             // Checks applied.
 
-            this.tryAlternativeUpload(complete, progress, function(e){
+            this.uploadPresigned(complete, progress, function(e){
 
                 // Failed, switch back to normal upload.
                 if(this.getSize() > maxUpload){
@@ -173,8 +160,6 @@
                 }
                 this.onError(e.message);
                 completeCallback();
-                // DO NOT FALLBACK TO STANDARD UPLOAD FOR NOW // TODO REACTIVATE?
-                //this.xhr = PydioApi.getClient().uploadFile(this._file,'userfile_0',queryString,complete,error,progress);
 
             }.bind(this));
 
@@ -188,7 +173,7 @@
             }
         }
 
-        tryAlternativeUpload(completeCallback, progressCallback, errorCallback){
+        uploadPresigned(completeCallback, progressCallback, errorCallback){
 
             let fullPath = this._targetNode.getPath();
             if(this._relativePath) {
@@ -201,12 +186,20 @@
                 file_0:fullPath,
                 cmd:'PUT'
             };
-            PydioApi.getClient().request(params,function(t){
-                let response = t.responseJSON;
-                const url = response.signedUrl;
-                const jwt = response.jwt;
-                this.xhr = PydioApi.getClient().uploadFile(this._file,'','',completeCallback,errorCallback,progressCallback, url, {method: 'PUT', customHeaders:{'X-Pydio-Bearer':jwt}});
-            }.bind(this));
+            const client = PydioApi.getClient();
+            client.request(params,(t) => {
+                if(t.responseJSON){
+                    let response = t.responseJSON;
+                    const url = response.signedUrl;
+                    const jwt = response.jwt;
+                    this.xhr = client.uploadFile(this._file,'','',completeCallback,errorCallback,progressCallback, url, {method: 'PUT', customHeaders:{'X-Pydio-Bearer':jwt}});
+                } else  if(t.responseXML){
+                    const res = client.parseXmlMessage(t.responseXML);
+                    if (res === false){
+                        errorCallback(new Error(client.LAST_ERROR));
+                    }
+                }
+            });
 
         }
     }

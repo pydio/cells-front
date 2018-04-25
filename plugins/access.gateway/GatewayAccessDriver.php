@@ -206,6 +206,7 @@ class GatewayAccessDriver extends S3AccessDriver
      * Create a Presigned Url
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
+     * @throws PydioException
      */
     public function getPresignedUrl(ServerRequestInterface $request, ResponseInterface &$response) {
 
