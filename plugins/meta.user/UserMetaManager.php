@@ -238,7 +238,7 @@ class UserMetaManager extends AbstractMetaSource
         foreach($nodes as $node){
 
             $node->loadNodeInfo();
-            if($node->ajxp_readonly === 'true'){
+            if($node->node_readonly === 'true'){
                 throw new PydioException("You are not allowed to perform this action");
             }
             $nodeUuid = $node->getUuid();

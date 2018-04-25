@@ -146,7 +146,7 @@ export default class Builder{
             const selectedMime = PathUtils.getAjxpMimeType(selectedNode);
             const editors = this._pydio.Registry.findEditorsForMime(selectedMime, false);
             if(editors.length && editors[0].openable && (editors[0].mimes && (editors[0].mimes[0] !== '*' || editors[0].mimes.indexOf(selectedMime) !== -1))
-                && !(editors[0].write && selectedNode.getMetadata().get("ajxp_readonly") === "true")){
+                && !(editors[0].write && selectedNode.getMetadata().get("node_readonly") === "true")){
                 editorData = editors[0];
             }
         }

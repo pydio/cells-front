@@ -658,7 +658,7 @@
                     />
                 );
             }
-            if(!this.props.node.getMetadata().has('ajxp_readonly')){
+            if(!this.props.node.getMetadata().has('node_readonly')){
                 actions.push(
                     <MaterialUI.FlatButton
                         key="edit"

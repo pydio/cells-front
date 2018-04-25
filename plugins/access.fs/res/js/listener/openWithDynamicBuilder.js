@@ -33,7 +33,7 @@ export default function(pydio) {
         }
         const node = pydio.getUserSelection().getUniqueNode();
         const selectedMime = PathUtils.getAjxpMimeType(node);
-        const nodeHasReadonly = node.getMetadata().get("ajxp_readonly") === "true";
+        const nodeHasReadonly = node.getMetadata().get("node_readonly") === "true";
 
         const user = pydio.user;
         // Patch editors list before looking for available ones

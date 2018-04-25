@@ -175,8 +175,8 @@ export default class Action extends Observable{
 	/**
 	 * Updates the action status on context change
      * @param PydioDataModel dataModel
-     * @param boolean usersEnabled
-     * @param string crtUser
+     * @param usersEnabled boolean
+     * @param crtUser string
 	 * @returns void
 	 */
 	fireContextChange(dataModel, usersEnabled, crtUser){
@@ -189,11 +189,12 @@ export default class Action extends Observable{
 
         var crtNode = dataModel.getContextNode();
         if(crtNode){
-            crtIsRecycle = (crtNode.getAjxpMime() == "ajxp_recycle");
+            crtIsRecycle = (crtNode.getAjxpMime() === "ajxp_recycle");
             crtInZip = crtNode.hasAjxpMimeInBranch("ajxp_browsable_archive");
             crtIsRoot = crtNode.isRoot();
             crtAjxpMime = crtNode.getAjxpMime();
-            crtIsReadOnly = crtNode.hasMetadataInBranch("ajxp_readonly", "true");
+            crtIsReadOnly = crtNode.hasMetadataInBranch("node_readonly", "true")
+                || (crtNode.getMetadata().has("level_readonly") && crtNode.getMetadata().get("level_readonly") === "true");
         }
 
 		if(this.options.listeners["contextChange"]){

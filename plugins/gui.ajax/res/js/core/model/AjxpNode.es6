@@ -340,10 +340,10 @@ export default class AjxpNode extends Observable{
      * @returns Boolean
      */
     hasAjxpMimeInBranch(ajxpMime){
-        if(this.getAjxpMime() == ajxpMime.toLowerCase()) return true;
+        if(this.getAjxpMime() === ajxpMime.toLowerCase()) return true;
         let parent, crt = this;
         while(parent =crt._parentNode){
-            if(parent.getAjxpMime() == ajxpMime.toLowerCase()){return true;}
+            if(parent.getAjxpMime() === ajxpMime.toLowerCase()){return true;}
             crt = parent;
         }
         return false;
@@ -357,16 +357,16 @@ export default class AjxpNode extends Observable{
     hasMetadataInBranch(metadataKey, metadataValue){
         if(this.getMetadata().has(metadataKey)) {
             if(metadataValue) {
-                return this.getMetadata().get(metadataKey) == metadataValue;
+                return this.getMetadata().get(metadataKey) === metadataValue;
             }else {
                 return true;
             }
         }
         let parent, crt = this;
-        while(parent =crt._parentNode){
+        while(parent = crt._parentNode){
             if(parent.getMetadata().has(metadataKey)){
                 if(metadataValue){
-                    return (parent.getMetadata().get(metadataKey) == metadataValue);
+                    return (parent.getMetadata().get(metadataKey) === metadataValue);
                 }else{
                     return true;
                 }

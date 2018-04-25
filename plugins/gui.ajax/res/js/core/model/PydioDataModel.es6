@@ -544,7 +544,7 @@ export default class PydioDataModel extends Observable{
         var test = false;
         try{
             this._selectedNodes.forEach(function(node){
-                if(node.hasMetadataInBranch("ajxp_readonly", "true")) {
+                if(node.hasMetadataInBranch("node_readonly", "true")) {
                     test = true;
                     throw $break;
                 }

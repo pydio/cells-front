@@ -529,7 +529,7 @@ class Node implements \JsonSerializable, ContextProviderInterface
     }
 
     public function isWriteable(){
-        return !isSet($this->_metadata["ajxp_readonly"]);
+        return !isSet($this->_metadata["node_readonly"]);
     }
 
     /**

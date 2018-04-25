@@ -139,7 +139,7 @@ export default class User{
 	canWrite(){
         try{
             const metaRoot = this._pydioObject.getContextHolder().getRootNode().getMetadata();
-            return !metaRoot.has("ajxp_readonly") || !metaRoot.get("ajxp_readonly")
+            return !metaRoot.has("node_readonly") || !metaRoot.get("node_readonly")
         } catch(e){
             return false;
         }

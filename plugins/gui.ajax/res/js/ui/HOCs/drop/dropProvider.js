@@ -31,7 +31,7 @@ export default function(PydioComponent, filterFunction = null ){
             return;
         }
         const ctxNode = pydio.getContextHolder().getContextNode();
-        if(ctxNode.getMetadata().get('ajxp_readonly') === 'true'){
+        if(ctxNode.getMetadata().get('node_readonly') === 'true' || ctxNode.getMetadata().get('level_readonly') === 'true'){
             pydio.UI.displayMessage('ERROR', 'You are not allowed to upload files here');
             return;
         }

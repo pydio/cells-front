@@ -1460,9 +1460,9 @@ class FsAccessDriver extends AbstractAccessDriver implements IPydioWrapperProvid
 
         $metaData["file_group"] = @filegroup($node->getUrl()) || "unknown";
         $metaData["file_owner"] = @fileowner($node->getUrl()) || "unknown";
-        $metaData["ajxp_readonly"] = "false";
+        $metaData["node_readonly"] = "false";
         if (!@$this->isWriteable($node)) {
-           $metaData["ajxp_readonly"] = "true";
+           $metaData["node_readonly"] = "true";
         }
         $fPerms = @fileperms($node->getUrl());
         if ($fPerms !== false) {

@@ -100,7 +100,7 @@ class Driver extends Plugin
 
             $node->loadNodeInfo();
             $uuid = $node->getUuid();
-            $read_only = $node->__get("ajxp_readonly");
+            $read_only = $node->node_readonly;
 
             $token = DexApi::getValidToken();
 
