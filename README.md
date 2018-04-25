@@ -13,7 +13,7 @@ Cells Front requires **PHP5.5.9** and upper.
 It uses Composer and NPM to manage dependencies respectively in PHP and JavaScript, and uses Grunt to build javascript sources. In order to start Cells Front locally after a fresh `git clone`, you will first have to run these tools in both the core and inside plugins. 
 
  - First install Composer (see https://getcomposer.org) and NPM (https://docs.npmjs.com/getting-started/installing-node)
- - Install Grunt globally by running `npm install -g grunt-cli``
+ - Install Grunt globally by running `npm install -g grunt-cli`
  - Inside the core/ folder, run `composer install`
  - For each plugin that contains a composer.json file, run `composer install` as well.
  - For each plugin tat contains a package.json file, run
