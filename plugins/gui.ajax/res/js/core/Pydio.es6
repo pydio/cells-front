@@ -314,6 +314,7 @@ class Pydio extends Observable{
         this._contextHolder.setRootNode(rootNode);
         rootNode.observeOnce('first_load', function(){
             this._contextHolder.notify('context_changed', rootNode);
+            this.Controller.fireContextChange();
             firstLoadObs();
         }.bind(this));
         this.repositoryId = repositoryId;

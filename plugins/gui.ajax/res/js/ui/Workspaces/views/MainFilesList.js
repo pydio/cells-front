@@ -26,6 +26,7 @@ import ReactDOM from 'react-dom'
 
 import FilePreview from './FilePreview'
 import {IconButton} from 'material-ui'
+import CellsMessageToolbar from './CellsMessageToolbar'
 const {SimpleList} = Pydio.requireLib('components');
 const {moment} = Pydio.requireLib('boot');
 
@@ -502,6 +503,7 @@ let MainFilesList = React.createClass({
                 emptyStateProps={emptyStateProps}
                 defaultSortingInfo={{sortType:'file-natural',attribute:'',direction:'asc'}}
                 hideToolbar={true}
+                customToolbar={<CellsMessageToolbar pydio={pydio}/>}
             />
         );
     }

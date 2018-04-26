@@ -826,13 +826,17 @@ class ShareCenter extends Plugin
     {
         $metaWsShares = $node->workspaces_shares;
         $decodeShares = $node->pydio_shares;
+        $wsRoot       = $node->ws_root;
         if(!empty($metaWsShares) && empty($decodeShares)){
             $merge = array(
                 "pydio_is_shared"  => "true",
-                "overlay_icon"     => "shared.png",
-                "overlay_class"    => "mdi mdi-share-variant",
                 "pydio_shares"     => json_encode($metaWsShares)
             );
+            if(empty($wsRoot)){
+                $merge["overlay_class"] = "mdi mdi-share-variant";
+            } else if(!$node->isLeaf()) {
+                $node->fonticon = "folder-star";
+            }
             $node->mergeMetadata($merge, true);
         }
         return;
