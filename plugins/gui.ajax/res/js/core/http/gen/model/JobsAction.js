@@ -13,7 +13,6 @@
 
 
 import ApiClient from '../ApiClient';
-import JobsAction from './JobsAction';
 import JobsNodesSelector from './JobsNodesSelector';
 import JobsSourceFilter from './JobsSourceFilter';
 import JobsUsersSelector from './JobsUsersSelector';
