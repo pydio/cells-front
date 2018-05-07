@@ -21,6 +21,7 @@
 namespace Pydio\Core\Utils;
 
 use Pydio\Core\Model\Context;
+use Pydio\Core\Services\ConfService;
 use Pydio\Core\Utils\Vars\StringHelper;
 use Pydio\Core\Utils\Vars\VarsFilter;
 
@@ -181,6 +182,9 @@ class FileHelper
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+            if (ConfService::bootstrapCoreConf("SKIP_SSL_VERIFY") === true){
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+            }
             $return = curl_exec($ch);
             curl_close($ch);
             return $return;
