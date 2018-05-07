@@ -335,6 +335,8 @@ class PluginsService
      * @param callable $typeChecker
      * @param callable $callback
      * @return mixed
+     * @throws PydioException
+     * @throws \Exception
      */
     public static function searchManifestsWithCache($query, $callback, $typeChecker = null){
         $coreInstance = self::getInstance(Context::emptyContext());
@@ -361,6 +363,7 @@ class PluginsService
      * @param bool $limitToEnabledPlugins
      * @param bool $loadExternalFiles
      * @return \DOMNode[]
+     * @throws PydioException
      */
     public function searchAllManifests($query, $stringOrNodeFormat = "string", $limitToActivePlugins = false, $limitToEnabledPlugins = false, $loadExternalFiles = false)
     {
@@ -501,6 +504,7 @@ class PluginsService
      * @param String $pluginFolder
      * @param AbstractConfDriver $confStorage
      * @param AbstractCacheDriver|null $cacheStorage
+     * @throws \Exception
      */
     private function loadPlugins($pluginFolder, $confStorage, $cacheStorage)
     {
@@ -533,7 +537,7 @@ class PluginsService
         // Load remote plugins
         $root = ConfService::bootstrapCoreConf("ENDPOINT_FRONT_PLUGINS");
         if(!empty($root)) {
-            $json = @file_get_contents( $root."/index.json");
+            $json = FileHelper::getRemoteContent($root."/index.json");
             if(!empty($json)){
                 $data = json_decode($json, true);
                 if(!empty($data)){

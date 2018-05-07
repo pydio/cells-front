@@ -175,9 +175,7 @@ class FileHelper
      */
     public static function getRemoteContent($url)
     {
-        if (ini_get("allow_url_fopen")) {
-            return file_get_contents($url);
-        } else if (function_exists("curl_init")) {
+        if (function_exists("curl_init")) {
             $ch = curl_init();
             $timeout = 30; // set to zero for no timeout
             curl_setopt($ch, CURLOPT_URL, $url);
@@ -186,6 +184,8 @@ class FileHelper
             $return = curl_exec($ch);
             curl_close($ch);
             return $return;
+        } else if (ini_get("allow_url_fopen")) {
+            return file_get_contents($url);
         }
     }
 

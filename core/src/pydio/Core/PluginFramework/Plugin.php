@@ -24,6 +24,7 @@ use Pydio\Access\Core\MetaStreamWrapper;
 use Pydio\Core\Model\Context;
 use Pydio\Core\Model\ContextInterface;
 use Pydio\Core\Services\ConfService;
+use Pydio\Core\Utils\FileHelper;
 use Pydio\Core\Utils\Vars\XMLFilter;
 use Pydio\Log\Core\Logger;
 use Swagger\Client\Model\IdmWorkspaceScope;
@@ -441,7 +442,7 @@ class Plugin implements \Serializable
         $file = $this->baseDir."/manifest.xml";
         $remote = strpos($file, "http") === 0;
         if($remote) {
-            $xmlString = @file_get_contents($file);
+            $xmlString = FileHelper::getRemoteContent($file);
             if(!empty($xmlString)){
                 $this->manifestDoc = new \DOMDocument();
                 try{
