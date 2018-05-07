@@ -105,9 +105,8 @@ class Driver extends Plugin
             $token = DexApi::getValidToken();
 
             $resp = [
-                'host'       => ApplicationState::detectServerURL(false),
-                'uri'        => "/wopi/files/".$uuid,
-                'jwt'        => $token,
+                'uri' => "/wopi/files/".$uuid,
+                'jwt'      => $token,
                 'permission' => $read_only == "true" ? 'readonly' : 'edit'
             ];
 
