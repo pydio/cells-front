@@ -176,6 +176,6 @@ class DiagnosticRunner
         if(!file_exists(dirname(PYDIO_TESTS_RESULT_FILE))){
             mkdir(dirname(PYDIO_TESTS_RESULT_FILE), 0666, true);
         }
-        file_put_contents(PYDIO_TESTS_RESULT_FILE, $content);
+        @file_put_contents(PYDIO_TESTS_RESULT_FILE, $content);
     }
 }
