@@ -49,7 +49,7 @@ class CellsMessageToolbar extends React.Component{
 
     componentWillUnmount(){
         const {pydio} = this.props;
-        pydio.stopObserving('context_changed');
+        pydio.stopObserving('context_changed', this._observer);
     }
 
     /**
