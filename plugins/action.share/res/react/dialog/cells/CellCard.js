@@ -78,9 +78,14 @@ class CellCard extends React.Component{
                 }
                 if(model.isEditable()){
                     deleteAction = ()=>{model.deleteCell().then(res=>{this.props.onDismiss()})};
-                    editAction = () => {this.setState({edit: true})};
+                    editAction = () => {
+                        this.setState({edit: true});
+                        if(this.props.onHeightChange){
+                            this.props.onHeightChange(500);
+                        }
+                    };
                     moreMenuItems.push(<MenuItem primaryText={"Edit Cell"} onTouchTap={()=>this.setState({edit:true})}/>);
-                    moreMenuItems.push(<MenuItem primaryText={"Delete Cell"} onTouchTap={()=>{}}/>);
+                    moreMenuItems.push(<MenuItem primaryText={"Delete Cell"} onTouchTap={deleteAction}/>);
                 }
             }
             content = (

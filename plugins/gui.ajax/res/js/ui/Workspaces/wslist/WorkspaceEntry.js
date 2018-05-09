@@ -23,6 +23,7 @@ const {muiThemeable} = require('material-ui/styles')
 import Color from 'color'
 import {CircularProgress, Popover} from 'material-ui'
 import { DragSource, DropTarget, flow } from 'react-dnd';
+import DOMUtils from 'pydio/util/dom'
 
 const Pydio = require('pydio');
 const PydioApi = require('pydio/http/api');
@@ -77,7 +78,7 @@ const Confirm = React.createClass({
                 { text: messages[548], ref: 'decline', onClick: this.props.onDecline},
                 { text: messages[547], ref: 'accept', onClick: this.props.onAccept}
             ];
-        if(this.props.mode == 'reject_accepted'){
+        if(this.props.mode === 'reject_accepted'){
             messageBody = messages[549];
             actions = [
                 { text: messages[54], ref: 'decline', onClick: this.props.onDecline},
@@ -190,8 +191,8 @@ let WorkspaceEntry =React.createClass({
                 {...this.props}
                 mode={mode}
                 replacements={replacements}
-                onAccept={mode == 'new_share' ? this.handleAccept.bind(this) : this.handleDecline.bind(this)}
-                onDecline={mode == 'new_share' ? this.handleDecline.bind(this) : this.handleCloseAlert.bind(this)}
+                onAccept={mode === 'new_share' ? this.handleAccept.bind(this) : this.handleDecline.bind(this)}
+                onDecline={mode === 'new_share' ? this.handleDecline.bind(this) : this.handleCloseAlert.bind(this)}
                 onDismiss={this.handleCloseAlert}
             />, this.wrapper);
     },
@@ -247,17 +248,25 @@ let WorkspaceEntry =React.createClass({
     roomPopover(event){
         event.stopPropagation();
         const {target} = event;
+        const offsetTop  = target.getBoundingClientRect().top;
+        const viewport = DOMUtils.getViewportHeight();
+        const popoverTop = (viewport - offsetTop < 250);
         ResourcesManager.loadClassesAndApply(["ShareDialog"], () => {
-            const popoverContent = <ShareDialog.CellCard pydio={this.props.pydio} cellId={this.props.workspace.getId()} onDismiss={()=>{this.setState({popoverOpen: false})}}/>;
-            this.setState({popoverAnchor:target, popoverOpen: true, popoverContent:popoverContent})
+            const popoverContent = (<ShareDialog.CellCard
+                pydio={this.props.pydio}
+                cellId={this.props.workspace.getId()}
+                onDismiss={()=>{this.setState({popoverOpen: false})}}
+                onHeightChange={()=>{this.setState({popoverHeight: 500})}}
+            />);
+            this.setState({popoverAnchor:target, popoverOpen: true, popoverContent:popoverContent, popoverTop: popoverTop, popoverHeight: null})
         });
     },
 
-    render:function(){
+    render(){
 
         const {workspace, pydio, onHoverLink, onOutLink, showFoldersTree} = this.props;
 
-        let current = (pydio.user.getActiveRepository() == workspace.getId()),
+        let current = (pydio.user.getActiveRepository() === workspace.getId()),
             currentClass="workspace-entry",
             messages = pydio.MessageHash,
             onHover, onOut, onClick,
@@ -304,10 +313,10 @@ let WorkspaceEntry =React.createClass({
         if (workspace.getOwner() && !workspace.getAccessStatus() && !workspace.getLastConnection()) {
             //newWorkspace = <Badge>NEW</Badge>;
             // Dialog for remote shares
-            if (workspace.getRepositoryType() == "remote") {
+            if (workspace.getRepositoryType() === "remote") {
                 onClick = this.handleOpenAlert.bind(this, 'new_share');
             }
-        }else if(workspace.getRepositoryType() == "remote" && !current){
+        }else if(workspace.getRepositoryType() === "remote" && !current){
             // Remote share but already accepted, add delete
             additionalAction = <span className="workspace-additional-action mdi mdi-close" onClick={this.handleOpenAlert.bind(this, 'reject_accepted')} title={messages['550']}/>;
         }else if(workspace.userEditable && !current){
@@ -336,6 +345,7 @@ let WorkspaceEntry =React.createClass({
             */
         }
 
+        const {popoverOpen, popoverAnchor, popoverTop, popoverHeight} = this.state;
 
         let wsBlock = (
             <ContextMenuWrapper
@@ -353,14 +363,16 @@ let WorkspaceEntry =React.createClass({
                 </span>
                 {additionalAction}
                 <Popover
-                    open={this.state.popoverOpen}
-                    anchorEl={this.state.popoverAnchor}
+                    open={popoverOpen}
+                    anchorEl={popoverAnchor}
                     useLayerForClickAway={true}
+                    autoCloseWhenOffScreen={false}
+                    canAutoPosition={true}
                     onRequestClose={() => {this.setState({popoverOpen: false})}}
-                    anchorOrigin={{horizontal:"right",vertical:"center"}}
-                    targetOrigin={{horizontal:"left",vertical:"center"}}
+                    anchorOrigin={{horizontal:"right",vertical:popoverTop?"bottom":"center"}}
+                    targetOrigin={{horizontal:"left",vertical:popoverTop?"bottom":"center"}}
                     zDepth={3}
-                    style={{overflow:'hidden', borderRadius: 10}}
+                    style={{overflow:'hidden', borderRadius: 10, height: popoverHeight}}
                 >{this.state.popoverContent}</Popover>
             </ContextMenuWrapper>
         );
