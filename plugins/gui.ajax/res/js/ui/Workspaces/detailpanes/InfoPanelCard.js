@@ -19,7 +19,7 @@
  */
 
 import React from 'react'
-import {IconButton} from 'material-ui'
+import {IconButton, Paper} from 'material-ui'
 
 const styles = {
     card: {
@@ -27,26 +27,39 @@ const styles = {
     }
 };
 
+let CardsStates  = {};
+
 /**
  * Default InfoPanel Card
  */
-let InfoPanelCard = React.createClass({
+class InfoPanelCard extends React.Component{
 
-    propTypes: {
-        title:React.PropTypes.string,
-        actions:React.PropTypes.array
-    },
-
-    render: function(){
-        let iconStyle = this.props.iconStyle || {};
-        iconStyle = {...iconStyle, color:this.props.iconColor, float:'right'};
-        let icon;
-        if(this.props.iconClick){
-            icon = this.props.icon ? <div className="panelIcon" style={{position: 'absolute', right: 3, top: 8}}><IconButton onClick={this.props.iconClick} iconStyle={iconStyle} iconClassName={"mdi mdi-" + this.props.icon}/></div> : null;
+    constructor(props){
+        super(props);
+        if (props.identifier && CardsStates[props.identifier] !== undefined){
+            this.state = {open: CardsStates[props.identifier]};
         } else {
-            icon = this.props.icon ? <div style={iconStyle} className={"panelIcon mdi mdi-" + this.props.icon}/> : null;
+            this.state = {open: true};
         }
-        let title = this.props.title ? <div className="panelHeader" style={{position:'relative'}}>{icon}{this.props.title}</div> : null;
+    }
+
+    toggle(){
+        const newState = !this.state.open;
+        this.setState({open: newState});
+        if(this.props.identifier){
+            CardsStates[this.props.identifier] = newState;
+        }
+    }
+
+    render(){
+        const {open} = this.state;
+        const icon = <div className="panelIcon" style={{position: 'absolute', right: 2, top: open?8:2}}><IconButton onClick={()=>{this.toggle()}} iconClassName={"mdi mdi-chevron-" + (open?'up':'down')}/></div>;
+
+        let openStyle;
+        if(!open){
+            openStyle = {paddingTop: 16};
+        }
+        let title = this.props.title ? <Paper zDepth={0} className="panelHeader" style={{position:'relative', ...openStyle}}>{icon}{this.props.title}</Paper> : null;
         let actions = this.props.actions ? <div className="panelActions">{this.props.actions}</div> : null;
         let rows, toolBar;
         if(this.props.standardData){
@@ -83,19 +96,28 @@ let InfoPanelCard = React.createClass({
         }
 
         return (
-            <MaterialUI.Paper zDepth={1} className="panelCard" style={{...this.props.style, ...styles.card}}>
+            <Paper zDepth={1} className="panelCard" style={{...this.props.style, ...styles.card}}>
                 {title}
-                <div className="panelContent" style={this.props.contentStyle}>
-                    {this.props.children}
-                    {rows}
-                    {toolBar}
-                </div>
-                {actions}
-            </MaterialUI.Paper>
+                {open &&
+                    <div className="panelContent" style={this.props.contentStyle}>
+                        {this.props.children}
+                        {rows}
+                        {toolBar}
+                    </div>
+                }
+                {open && actions}
+            </Paper>
         );
     }
 
-});
+}
+
+InfoPanelCard.PropTypes = {
+    identifier: React.PropTypes.string,
+    title:React.PropTypes.string,
+    actions:React.PropTypes.array
+};
 
 InfoPanelCard = MaterialUI.Style.muiThemeable()(InfoPanelCard);
+
 export {InfoPanelCard as default}

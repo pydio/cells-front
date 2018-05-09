@@ -68,7 +68,7 @@ function LinkWrapper(pydio, activity) {
                 }
             } else if (href.startsWith('user://')) {
                 const userId = href.replace('user://', '');
-                return (<UserAvatar userId={userId} displayAvatar={false} richOnHover={true} style={{display:'inline-block', color: 'rgb(66, 140, 179)'}} pydio={pydio}/>)
+                return (<UserAvatar userId={userId} displayAvatar={false} richOnClick={true} style={{cursor:'pointer', display:'inline-block', color: 'rgb(66, 140, 179)'}} pydio={pydio}/>)
             }
             return <a title={title} style={{cursor: 'pointer', color: 'rgb(66, 140, 179)'}} onClick={onClick}>{children}</a>
 

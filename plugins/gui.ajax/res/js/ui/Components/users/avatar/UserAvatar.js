@@ -151,7 +151,7 @@ class UserAvatar extends React.Component{
                 }
             }
         }
-        let reloadAction, onEditAction, onMouseOver, onMouseOut, popover;
+        let reloadAction, onEditAction, onMouseOver, onMouseOut, onClick, popover;
         if(richCard){
 
             displayAvatar = true;
@@ -176,7 +176,7 @@ class UserAvatar extends React.Component{
                     this.props.onEditAction();
                 }
             }
-        }else if(!local && this.props.richOnHover){
+        } else if(!local && this.props.richOnHover){
 
             onMouseOut = () => {
                 if(!this.lockedBySubPopover){
@@ -217,6 +217,47 @@ class UserAvatar extends React.Component{
                 </Popover>
             );
 
+        } else if(!local && this.props.richOnClick){
+
+            onMouseOut = () => {
+                if(!this.lockedBySubPopover){
+                    this.setState({showPopover: false});
+                }
+            };
+            onMouseOut = debounce(onMouseOut, 350);
+            onClick = (e) => {
+                this.setState({showPopover: true, popoverAnchor: e.currentTarget});
+                onMouseOut.cancel();
+            };
+            const onMouseOverInner = (e) =>{
+                this.setState({showPopover: true});
+                onMouseOut.cancel();
+            };
+
+            const lockOnSubPopoverOpen = (status) => {
+                this.lockedBySubPopover = status;
+                onMouseOverInner();
+            };
+            const {style, ...popoverProps} = this.props;
+            popover = (
+                <Popover
+                    open={this.state.showPopover}
+                    anchorEl={this.state.popoverAnchor}
+                    onRequestClose={(reason) => {
+                        if(reason !== 'clickAway' || !this.lockedBySubPopover){
+                            this.setState({showPopover: false})
+                        }
+                    }}
+                    anchorOrigin={{horizontal:"left",vertical:"bottom"}}
+                    targetOrigin={{horizontal:"left",vertical:"top"}}
+                    useLayerForClickAway={false}
+                >
+                    <Paper zDepth={2} style={{width: 220, height: 320, overflowY: 'auto'}} onMouseOver={onMouseOverInner}  onMouseOut={onMouseOut}>
+                        <UserAvatar {...popoverProps} richCard={true} richOnHover={false} cardSize={220} lockOnSubPopoverOpen={lockOnSubPopoverOpen} />
+                    </Paper>
+                </Popover>
+            );
+
         }
 
         let avatarComponent = (
@@ -238,7 +279,7 @@ class UserAvatar extends React.Component{
         }
 
         return (
-            <div className={className} style={style} onMouseOver={onMouseOver} onMouseOut={onMouseOut}>
+            <div className={className} style={style} onMouseOver={onMouseOver} onMouseOut={onMouseOut} onClick={onClick}>
                 {displayAvatar && (avatar || avatarContent || avatarIcon) && avatarComponent}
                 {displayLabel && !richCard && <div
                     className={labelClassName}
@@ -284,6 +325,10 @@ UserAvatar.propTypes = {
      * If not rich, display a rich card as popover on mouseover
      */
     richOnHover: React.PropTypes.bool,
+    /**
+     * If not rich, display a rich card as popover on click
+     */
+    richOnClick: React.PropTypes.bool,
 
     /**
      * Add edit action to the card

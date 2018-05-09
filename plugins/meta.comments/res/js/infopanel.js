@@ -45,7 +45,7 @@ class InfoPanel extends React.Component {
             icon = "close";
         }
         return (
-            <InfoPanelCard style={this.props.style} title={pydio.MessageHash['meta.comments.1']} iconClick={iconClick} icon={icon} iconColor="#7cb342">
+            <InfoPanelCard identifier={"meta-comments"} style={this.props.style} title={pydio.MessageHash['meta.comments.1']} iconClick={iconClick} icon={icon} iconColor="#7cb342">
                 {!chatOpen &&
                     <div style={{textAlign: 'center', paddingBottom:20}}>
                         <RaisedButton onClick={this.toggleChatOpen.bind(this)} primary={true} label={"OPEN DISCUSSION"}/>

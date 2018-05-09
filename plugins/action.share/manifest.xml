@@ -183,7 +183,7 @@
                       namespace="ShareTemplates" component="DropZoneMinisite" props='{"containerId":"pydio_dropbox_template","minisiteMode":"embed","imageBackgroundFromConfigs":"gui.ajax/CUSTOM_SHAREPAGE_BACKGROUND_"}'/>
 
             <component_config component="InfoPanel">
-                <infoPanel mime="meta:pydio_is_shared" reactComponent="ShareDialog.InfoPanel" weight="-20"/>
+                <infoPanel mime="meta:pydio_is_shared" reactComponent="ShareDialog.InfoPanel" weight="-600"/>
             </component_config>
         </client_configs>
         <hooks>

@@ -137,7 +137,7 @@ class LocaleService
         if (($dh = opendir($langDir)) !== FALSE) {
             while (($file = readdir($dh)) !== false) {
                 $matches = array();
-                if (preg_match("/(.*)\.php/", $file, $matches) == 1) {
+                if (preg_match("/(.*)\.php$/", $file, $matches) == 1) {
                     $fRadical = $matches[1];
                     include($langDir . "/" . $fRadical . ".php");
                     $langName = isSet($mess["languageLabel"]) ? $mess["languageLabel"] : "Not Found";

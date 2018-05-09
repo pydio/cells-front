@@ -669,7 +669,7 @@
             }
 
             return (
-                <PydioWorkspaces.InfoPanelCard style={this.props.style} title={this.props.pydio.MessageHash['meta.user.1']} actions={actions.length ? actions : null} icon="tag-multiple" iconColor="#00ACC1">
+                <PydioWorkspaces.InfoPanelCard identifier={"meta-user"} style={this.props.style} title={this.props.pydio.MessageHash['meta.user.1']} actions={actions.length ? actions : null} icon="tag-multiple" iconColor="#00ACC1">
                     <UserMetaPanel
                         ref="panel"
                         node={this.props.node}

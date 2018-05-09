@@ -92,7 +92,7 @@ class Panel extends Component {
             textOverflow:'ellipsis',
             whiteSpace:'nowrap'
         };
-        if (this.state && this.state.items) {
+        if (this.state && this.state.items && this.state.items.length) {
 
             const fields = this.state.items.map(function(object){
                 return (
@@ -129,7 +129,7 @@ class Panel extends Component {
             return null;
         }
         return (
-            <PydioWorkspaces.InfoPanelCard style={this.props.style} title={this.props.pydio.MessageHash['meta.exif.3']} actions={actions} icon="camera" iconColor="#607d8b">
+            <PydioWorkspaces.InfoPanelCard identifier={"meta-exif"} style={this.props.style} title={this.props.pydio.MessageHash['meta.exif.3']} actions={actions} icon="camera" iconColor="#607d8b">
                 {items}
             </PydioWorkspaces.InfoPanelCard>
         );

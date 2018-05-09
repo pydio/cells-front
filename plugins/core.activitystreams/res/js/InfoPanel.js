@@ -30,7 +30,7 @@ class InfoPanel extends React.Component {
     render(){
 
         return (
-            <InfoPanelCard title={"Activity"}>
+            <InfoPanelCard identifier={"activity"} title={"Activity"}>
                 <ActivityList
                     context="NODE_ID"
                     contextData={this.props.node.getMetadata().get('uuid')}

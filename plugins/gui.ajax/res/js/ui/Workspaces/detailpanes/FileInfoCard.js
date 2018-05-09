@@ -54,6 +54,7 @@ class FileInfoCard extends React.Component {
         return (
             <InfoPanelCard
                 {...this.props}
+                identifier={"file-info"}
                 title={getMessage('341')}
                 standardData={data}
                 contentStyle={{paddingBottom: 10}}

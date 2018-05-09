@@ -97,13 +97,13 @@ class SimpleLockManager extends AbstractMetaSource
         if(!empty($lockUser)){
             if ($lockUser != $node->getContext()->getUser()->getId()) {
                 $displayName = $lockUser;
-                $node->setLabel($node->getLabel() . " (locked by ".$displayName.")");
+                //$node->setLabel($node->getLabel() . " (locked by ".$displayName.")");
                 $node->mergeMetadata(array(
                     "sl_locked" => "true",
                     "overlay_class" => "icon-lock"
                 ), true);
             } else {
-                $node->setLabel($node->getLabel() . " (locked by you)");
+                //$node->setLabel($node->getLabel() . " (locked by you)");
                 $node->mergeMetadata(array(
                     "sl_locked" => "true",
                     "sl_mylock" => "true",

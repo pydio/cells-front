@@ -87,7 +87,7 @@ export default React.createClass({
         }
 
         return (
-            <InfoPanelCard title={messages[249]} style={this.props.style} standardData={panelData} icon="account-multiple-outline" iconColor="00838f">{content}</InfoPanelCard>
+            <InfoPanelCard identifier={"file-info"} title={messages[249]} style={this.props.style} standardData={panelData} icon="account-multiple-outline" iconColor="00838f">{content}</InfoPanelCard>
         );
     }
 

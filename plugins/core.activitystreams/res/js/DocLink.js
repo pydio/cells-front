@@ -26,8 +26,9 @@ const RemoteNodeProvider = require('pydio/model/remote-node-provider');
 const {PydioContextConsumer} = Pydio.requireLib('boot');
 const {FilePreview} = Pydio.requireLib('workspaces');
 
-function nodesFromObject(object){
+function nodesFromObject(object, pydio){
     let nodes = [];
+    const currentRepository = pydio.user.getActiveRepository();
     if (!object.partOf || !object.partOf.items || !object.partOf.items.length){
         return nodes;
     }
@@ -40,6 +41,9 @@ function nodesFromObject(object){
         const node = new AjxpNode(relPath, (object.type === 'Document'));
         node.getMetadata().set('repository_id', ws.id);
         node.getMetadata().set('repository_label', ws.name);
+        if(ws.id === currentRepository) {
+            return [node];
+        }
         nodes.push(node);
     }
     return nodes;
@@ -49,7 +53,7 @@ class DocPreview extends React.Component {
 
     constructor(props){
         super(props);
-        const nodes = nodesFromObject(this.props.activity.object);
+        const nodes = nodesFromObject(props.activity.object, props.pydio);
         if (nodes.length && !nodes[0].isLeaf()) {
             this.state = {
                 previewLoaded: true,
@@ -74,7 +78,7 @@ class DocPreview extends React.Component {
         const fPreviewStyle = {
             height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 70
         };
-        if (previewNode) {
+        if (previewNode && previewNode.isLeaf()) {
             if (previewLoaded && !previewFailed) {
                 fPreview = (
                     <FilePreview style={fPreviewStyle}
@@ -123,7 +127,7 @@ class DocPreview extends React.Component {
                     <IconButton iconClassName={"mdi mdi-open-in-new"} tooltip="Open" tooltipPosition={"top-center"} onClick={()=>{pydio.goTo(node)}}/>
                 </div>
             );
-            if(node.getMetadata().get('repository_id') == currentRepository) {
+            if(node.getMetadata().get('repository_id') === currentRepository) {
                 currentRepoButton = (
                     <div style={{display:'flex', alignItems:'center'}}>
                         <span style={{flex:1}}></span> <FlatButton label={"Open"} iconClassName={"mdi mdi-open-in-new"} tooltip="Open" tooltipPosition={"top-right"} onClick={()=>{pydio.goTo(node)}}/>
@@ -142,8 +146,6 @@ class DocPreview extends React.Component {
 
         return (
             <div>
-                {fPreviewLoading}
-                {fPreview}
                 {!previewFailed && <div style={{padding: 6}}>{buttons}</div>}
             </div>
         );
@@ -164,45 +166,52 @@ class DocLink extends React.Component{
     render(){
 
         const {pydio, activity, children} = this.props;
+        const nodes = nodesFromObject(activity.object, pydio);
+
+        let onClick, onMouseOver, onMouseOut, popover;
 
         let pathParts = activity.object.name.replace('doc://', '').split('/');
         pathParts.shift();
-        const path = '/' + pathParts.join('/');
-        const onClick = () => {pydio.goTo(path)};
-        const title = "Open " + path;
+        const title = '/' + pathParts.join('/');
+
+        if(nodes.length > 1) {
+
+            onClick = () => {pydio.goTo(nodes[0])};
+            onMouseOut = debounce(() => {
+                this.setState({showPopover: false});
+            }, 350);
+            onMouseOver = (e) => {
+                this.setState({showPopover: true, popoverAnchor: e.currentTarget});
+                onMouseOut.cancel();
+            };
+            const onMouseOverInner = (e) =>{
+                this.setState({showPopover: true});
+                onMouseOut.cancel();
+            };
+
+            popover = (
+                <Popover
+                    open={this.state.showPopover}
+                    anchorEl={this.state.popoverAnchor}
+                    onRequestClose={(reason) => {
+                        if(reason !== 'clickAway'){
+                            this.setState({showPopover: false})
+                        }
+                    }}
+                    anchorOrigin={{horizontal:"left",vertical:"bottom"}}
+                    targetOrigin={{horizontal:"left",vertical:"top"}}
+                    useLayerForClickAway={false}
+                >
+                    <Paper zDepth={2} style={{width: 200, height: 'auto', overflowY: 'auto'}} onMouseOver={onMouseOverInner}  onMouseOut={onMouseOut}>
+                        <DocPreview pydio={pydio} activity={activity}/>
+                    </Paper>
+                </Popover>
+            );
 
 
-        const onMouseOut = debounce(() => {
-            this.setState({showPopover: false});
-        }, 350);
-        const onMouseOver = (e) => {
-            this.setState({showPopover: true, popoverAnchor: e.currentTarget});
-            onMouseOut.cancel();
-        };
-        const onMouseOverInner = (e) =>{
-            this.setState({showPopover: true});
-            onMouseOut.cancel();
-        };
-
-        const popover = (
-            <Popover
-                open={this.state.showPopover}
-                anchorEl={this.state.popoverAnchor}
-                onRequestClose={(reason) => {
-                    if(reason !== 'clickAway'){
-                        this.setState({showPopover: false})
-                    }
-                }}
-                anchorOrigin={{horizontal:"left",vertical:"bottom"}}
-                targetOrigin={{horizontal:"left",vertical:"top"}}
-                useLayerForClickAway={false}
-            >
-                <Paper zDepth={2} style={{width: 200, height: 'auto', overflowY: 'auto'}} onMouseOver={onMouseOverInner}  onMouseOut={onMouseOut}>
-                    <DocPreview pydio={pydio} activity={activity}/>
-                </Paper>
-            </Popover>
-        );
-
+        } else if(nodes.length === 1) {
+            onClick = () => {pydio.goTo(nodes[0])};
+        }
 
 
         return (
