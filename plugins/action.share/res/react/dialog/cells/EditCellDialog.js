@@ -59,7 +59,7 @@ export default React.createClass({
         const dirtyRoots = model.hasDirtyRootNodes();
         model.save().then(result => {
             this.forceUpdate();
-            if(model.getUuid() === pydio.user.getActiveRepository()) {
+            if(dirtyRoots && model.getUuid() === pydio.user.getActiveRepository()) {
                 pydio.goTo('/');
                 pydio.fireContextRefresh();
             }
