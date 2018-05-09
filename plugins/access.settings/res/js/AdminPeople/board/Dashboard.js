@@ -58,7 +58,15 @@ let Dashboard = React.createClass({
         if(node.getMetadata().get("avatar")){
             const avatar = node.getMetadata().get("avatar");
             const imgSrc = pydio.Parameters.get("ajxpServerAccess") + "&get_action=get_binary_param&user_id="+ PathUtils.getBasename(node.getPath()) +"&binary_id=" + avatar;
-            return <img src={imgSrc} style={{borderRadius:30,width:33}}/>;
+            return <div style={{
+                width:          33,
+                height:         33,
+                backgroundImage:"url("+imgSrc+")",
+                backgroundSize: 'cover',
+                borderRadius:   '50%',
+                backgroundPosition:'center',
+                margin:          16,
+            }}/>;
         }
         const style={
             backgroundColor: '#BDBDBD',

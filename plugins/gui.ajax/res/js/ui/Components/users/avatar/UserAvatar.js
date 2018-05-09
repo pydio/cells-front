@@ -260,9 +260,20 @@ class UserAvatar extends React.Component{
 
         }
 
+        if(avatar){
+            avatarIcon = <FontIcon style={{
+                backgroundImage:"url("+avatar+")",
+                backgroundSize:'cover',
+                margin:0,
+                width:'100%',
+                height:'100%',
+                borderRadius:'50%',
+                backgroundPosition:'center'
+            }} />
+        }
+
         let avatarComponent = (
             <Avatar
-                src={avatar}
                 icon={avatarIcon}
                 size={avatarSize}
                 style={this.props.avatarOnly ? this.props.style : avatarStyle}
