@@ -55,9 +55,14 @@ export default React.createClass({
     },
 
     submit(){
-        const {model} = this.props;
+        const {model, pydio} = this.props;
+        const dirtyRoots = model.hasDirtyRootNodes();
         model.save().then(result => {
             this.forceUpdate();
+            if(model.getUuid() === pydio.user.getActiveRepository()) {
+                pydio.goTo('/');
+                pydio.fireContextRefresh();
+            }
         }).catch(reason => {
             pydio.UI.displayMessage('ERROR', reason.message);
         });

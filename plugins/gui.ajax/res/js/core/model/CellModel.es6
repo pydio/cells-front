@@ -150,7 +150,6 @@ class CellModel extends Observable{
      * @param value bool
      */
     updateUserRight(roleId, right, value){
-        console.log(roleId, right, value);
         if (value) {
             const acl = this.cell.ACLs[roleId];
             let action = new IdmACLAction();
@@ -210,6 +209,32 @@ class CellModel extends Observable{
         return this.cell.RootNodes.filter(root => {
             return root.Uuid === nodeId;
         }).length;
+    }
+
+    /**
+     * Check if there are differences between current root nodes and original ones
+     * @return {boolean}
+     */
+    hasDirtyRootNodes(){
+        if(!this.originalCell) {
+            return false;
+        }
+        let newNodes = [], deletedNodes = [];
+        this.cell.RootNodes.map(n => {
+            if (this.originalCell.RootNodes.filter(root => {
+                return root.Uuid === n.Uuid;
+            }).length === 0) {
+                newNodes.push(n.Uuid);
+            }
+        });
+        this.originalCell.RootNodes.map(n => {
+            if (this.cell.RootNodes.filter(root => {
+                return root.Uuid === n.Uuid;
+            }).length === 0) {
+                deletedNodes.push(n.Uuid);
+            }
+        });
+        return newNodes.length > 0 || deletedNodes.length > 0;
     }
 
     /**
