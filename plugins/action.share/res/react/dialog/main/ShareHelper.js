@@ -68,7 +68,7 @@ class ShareHelper {
         if(!tmpl.length){
             return [];
         }
-        if(tmpl.length == 1){
+        if(tmpl.length === 1){
             return [{LAYOUT_NAME:tmpl[0].getAttribute('element'), LAYOUT_LABEL:''}];
         }
         const crtTheme = pydio.Parameters.get('theme');
@@ -76,15 +76,15 @@ class ShareHelper {
         let noEditorsFound = false;
         tmpl.map(function(node){
             const theme = node.getAttribute('theme');
-            if(theme && theme != crtTheme) {
+            if(theme && theme !== crtTheme) {
                 return;
             }
             const element = node.getAttribute('element');
             const name = node.getAttribute('name');
             let label = node.getAttribute('label');
-            if(currentExt && name == "unique_preview_file"){
+            if(currentExt && name === "unique_preview_file"){
                 const editors = pydio.Registry.findEditorsForMime(currentExt);
-                if(!editors.length || (editors.length == 1 && editors[0].editorClass == "OtherEditorChooser")) {
+                if(!editors.length || (editors.length === 1 && editors[0].editorClass === "OtherEditorChooser")) {
                     noEditorsFound = true;
                     return;
                 }
@@ -179,73 +179,16 @@ class ShareHelper {
         return {
             templateId, templateData, message, linkModel
         };
-        /*
-        const MessageHash = global.pydio.MessageHash;
-        const ApplicationTitle = global.pydio.appTitle;
+    }
 
-        let s, message, link;
-
-        if(linkModel){
-            const linkObject = linkModel.getLink();
-            s = MessageHash["share_center.42"];
-            if(s) {
-                s = s.replace("%s", ApplicationTitle);
-            }
-            link = linkModel.getPublicUrl();
-            let additionalData = '';
-            let password = linkObject.PasswordRequired || linkModel.updatePassword;
-            if(password){
-                additionalData += '\n - ' + MessageHash['share_center.170'];
-            }
-            let dlLimit = linkObject.MaxDownloads;
-            if(dlLimit){
-                additionalData += '\n - ' + MessageHash['share_center.22'] + ': ' + dlLimit;
-            }
-            let expirationDate = linkObject.AccessEnd;
-            if(expirationDate){
-                let today = new Date();
-                let expDate = new Date();
-                expDate.setDate(today.getDate() + parseInt(expirationDate));
-                additionalData += '\n - ' + MessageHash['share_center.21'] + ': ' + expDate.toLocaleDateString();
-            }
-            if(ShareHelper.forceMailerOldSchool()){
-                message = s + additionalData + "\n\n: " + link;
-            }else{
-                message = s + additionalData + "\n\n" + "<a href='"+link+"'>"+link+"</a>";
-            }
-        }else{
-            if(!this._data['repository_url']){
-                //throw new Error(MessageHash['share_center.230']);
-            }
-            s = MessageHash["share_center." + (node.isLeaf() ? "42" : "43")];
-            if(s) s = s.replace("%s", ApplicationTitle);
-            let linkMessage = '';
-            if(this._data['repository_url']){
-                if(node.isLeaf()){
-                    link = this._data['repository_url'].split('/ws-').shift() + '/ws-inbox';
-                    let sharedFilesString = MessageHash["share_center.100"];
-                    if(ShareHelper.forceMailerOldSchool()){
-                        linkMessage = MessageHash["share_center.234"].replace('%s', sharedFilesString) + " ("+ link +")";
-                    }else{
-                        linkMessage = MessageHash["share_center.234"].replace('%s', '<a href="'+link+'">'+ sharedFilesString +'</a>');
-                    }
-                }else{
-                    link = this._data['repository_url'];
-                    if(ShareHelper.forceMailerOldSchool()){
-                        linkMessage = ": " + link;
-                    }else{
-                        linkMessage = "<a href='" + link +"'>" + MessageHash["share_center.46"].replace("%s1", this.getGlobal("label")).replace("%s2", ApplicationTitle) + "</a>";
-                    }
-                }
-            }
-            message = s + "\n\n " + linkMessage;
-        }
-        const subject = MessageHash["share_center.44"].replace("%s", ApplicationTitle);
-        return {
-            subject: subject,
-            message: message
-        };
-        */
+    // Check if there are available editors for node with Write ability
+    static fileHasWriteableEditors(pydio, node) {
+        const previewEditors = pydio.Registry.findEditorsForMime(node.getAjxpMime()).filter(function(entry){
+            return !(entry.editorClass === "OtherEditorChooser" || entry.editorClass === "BrowserOpener");
+        });
+        return previewEditors.filter(function(entry){
+            return (entry.canWrite);
+        }).length > 0;
     }
 
 

@@ -41,16 +41,14 @@ export default React.createClass({
         const messages = this.props.pydio.MessageHash;
         return {
             messages: messages,
-            getMessage: function(messageId, namespace='share_center'){
+            getMessage: (messageId, namespace = 'share_center') => {
                 try{
                     return messages[namespace + (namespace?".":"") + messageId] || messageId;
                 }catch(e){
                     return messageId;
                 }
             },
-            isReadonly: function(){
-                return false;
-            }.bind(this)
+            isReadonly: (() => false)
         };
     },
 

@@ -21,6 +21,7 @@ import React from 'react'
 import ShareContextConsumer from '../ShareContextConsumer'
 import {Checkbox} from 'material-ui'
 import LinkModel from './LinkModel'
+import ShareHelper from '../main/ShareHelper'
 import {RestShareLinkAccessType} from 'pydio/http/rest-api'
 
 let PublicLinkPermissions = React.createClass({
@@ -45,9 +46,8 @@ let PublicLinkPermissions = React.createClass({
     },
 
     render: function(){
-        const {linkModel} = this.props;
+        const {linkModel, compositeModel, pydio} = this.props;
         let perms = [], previewWarning;
-        //var currentIsFolder = !this.props.shareModel.getNode().isLeaf();
         perms.push({
             NAME:'Preview',
             LABEL:this.props.getMessage('72'),
@@ -57,18 +57,19 @@ let PublicLinkPermissions = React.createClass({
             NAME:'Download',
             LABEL:this.props.getMessage('73')
         });
-        perms.push({
-            NAME:'Upload',
-            LABEL:this.props.getMessage('74')
-        });
-        /*
-        if(currentIsFolder){
-        }else if(this.props.shareModel.fileHasWriteableEditors()){
+
+        if(!compositeModel.getNode().isLeaf()){
+            perms.push({
+                NAME:'Upload',
+                LABEL:this.props.getMessage('74')
+            });
+        }else if(ShareHelper.fileHasWriteableEditors(pydio, compositeModel.getNode())){
             perms.push({
                 NAME:'Upload',
                 LABEL:this.props.getMessage('74b')
             });
         }
+        /*
         if(this.props.shareModel.isPublicLinkPreviewDisabled() && this.props.shareModel.getPublicLinkPermission(linkId, 'read')){
             previewWarning = <div>{this.props.getMessage('195')}</div>;
         }

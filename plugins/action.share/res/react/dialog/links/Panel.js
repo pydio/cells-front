@@ -64,7 +64,7 @@ let PublicLinkPanel = React.createClass({
 
     render: function(){
 
-        const {linkModel, pydio} = this.props;
+        const {linkModel, pydio, compositeModel} = this.props;
 
         let publicLinkPanes, publicLinkField;
         if(linkModel.getLinkUuid()) {
@@ -78,7 +78,9 @@ let PublicLinkPanel = React.createClass({
             publicLinkPanes = [
                 <Divider/>,
                 <PublicLinkPermissions
+                    compositeModel={compositeModel}
                     linkModel={linkModel}
+                    pydio={pydio}
                     key="public-perm"
                 />,
             ];
