@@ -355,7 +355,7 @@ class Connexion{
         const xhr = this.initializeXHRForUpload(uploadUrl, onComplete, onError, onProgress, xhrSettings);
         if (xhrSettings && xhrSettings.method === 'PUT') {
             xhr.send(file);
-            return;
+            return xhr;
         }
         if(window.FormData){
             this.sendFileUsingFormData(xhr, file, fileParameterName);

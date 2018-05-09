@@ -141,7 +141,7 @@ class PydioWebSocket {
                 if (target === null) {
                     return;
                 }
-                dm.addNode(target, true);
+                dm.addNode(target, false);
                 break;
             case "UPDATE_PATH":
             case "UPDATE_META":
@@ -156,14 +156,13 @@ class PydioWebSocket {
                 } else {
                     target.getMetadata().set("original_path", target.getPath());
                 }
-                dm.updateNode(target, true);
+                dm.updateNode(target, false);
                 break;
             case "DELETE":
                 let source = PydioWebSocket.parseJSONNode(event.Source, currentRepoId, currentRepoSlug);
                 if (source === null) {
                     return;
                 }
-                console.log("DELETE", source.getPath());
                 dm.removeNodeByPath( '/' + source.getPath());
                 break;
             default:

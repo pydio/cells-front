@@ -124,11 +124,10 @@
                 this._parseXHRResponse();
                 completeCallback();
             }.bind(this);
-            let error = function(){
-                this.setStatus('error');
-                completeCallback();
-            }.bind(this);
             let progress = function(computableEvent){
+                if(this._status === 'error'){
+                    return;
+                }
                 let percentage = Math.round((computableEvent.loaded * 100) / computableEvent.total);
                 let bytesLoaded = computableEvent.loaded;
                 this.setProgress(percentage, bytesLoaded);
@@ -138,29 +137,18 @@
 
             let maxUpload = parseFloat(UploaderConfigs.getInstance().getOption('UPLOAD_MAX_SIZE'));
 
-            let queryString;
             try{
                 UploaderConfigs.getInstance().extensionAllowed(this);
-                queryString = this.buildQueryString();
+                this.buildQueryString();
             }catch(e){
                 this.onError(e.message);
                 completeCallback();
                 return;
             }
 
-            // Checks applied.
-
             this.uploadPresigned(complete, progress, function(e){
-
-                // Failed, switch back to normal upload.
-                if(this.getSize() > maxUpload){
-                    this.onError(global.pydio.MessageHash[211]);
-                    completeCallback();
-                    return;
-                }
-                this.onError(e.message);
+                this.onError(global.pydio.MessageHash[210]+": " +e.message);
                 completeCallback();
-
             }.bind(this));
 
 
@@ -171,6 +159,7 @@
                     this.xhr.abort();
                 }catch(e){}
             }
+            this.setStatus('error');
         }
 
         uploadPresigned(completeCallback, progressCallback, errorCallback){
@@ -397,20 +386,22 @@
             UploadTask.getInstance().setIdle();
         }
         processNext(){
-            let processable = this.getNext();
-            if(processable){
-                this._processing.push(processable);
-                UploadTask.getInstance().setRunning(this.getQueueSize());
-                processable.process(function(){
-                    this._processing = LangUtils.arrayWithout(this._processing, this._processing.indexOf(processable));
-                    if(processable.getStatus() === 'error') {
-                        this._errors.push(processable)
-                    } else {
-                        this._processed.push(processable);
-                    }
-                    this.processNext();
-                    this.notify("update");
-                }.bind(this));
+            let processables = this.getNexts();
+            if(processables.length){
+                processables.map(processable => {
+                    this._processing.push(processable);
+                    UploadTask.getInstance().setRunning(this.getQueueSize());
+                    processable.process(function(){
+                        this._processing = LangUtils.arrayWithout(this._processing, this._processing.indexOf(processable));
+                        if(processable.getStatus() === 'error') {
+                            this._errors.push(processable)
+                        } else {
+                            this._processed.push(processable);
+                        }
+                        this.processNext();
+                        this.notify("update");
+                    }.bind(this));
+                });
             }else{
                 UploadTask.getInstance().setIdle();
                 if(this.hasErrors()){
@@ -422,13 +413,19 @@
                 }
             }
         }
-        getNext(){
+        getNexts(max = 3){
             if(this._folders.length){
-                return this._folders.shift();
+                return [this._folders.shift()];
             }
-            if(this._uploads.length){
-                return this._uploads.shift();
+            let items = [];
+            const processing = this._processing.length;
+            for (let i = 0; i < (max - processing); i++){
+                if(this._uploads.length){
+                    items.push(this._uploads.shift());
+                }
             }
+            console.log('Returning ' + items.length + ' items');
+            return items;
         }
         stopOrRemoveItem(item){
             item.abort();
