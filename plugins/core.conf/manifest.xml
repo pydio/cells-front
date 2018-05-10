@@ -34,6 +34,7 @@
         <global_param name="ENDPOINT_DEX_CLIENTSECRET" type="string" label="CONF_MESSAGE[DEX Client Secret]" description="CONF_MESSAGE[Application secret for OpenIDConnect]" mandatory="true"/>
         <global_param name="SKIP_SSL_VERIFY" type="boolean" label="CONF_MESSAGE[Skip Ssl Verification]"
                       description="CONF_MESSAGE[This is NOT recommended, but can be useful for staging environments with self-signed certificates]"/>
+        <global_param name="IO_HOST_SIGNATURE_HEADER" type="string" label="CONF_MESSAGE[Replace Host header for S3 signature]" description="CONF_MESSAGE[When behind a proxy, you may have to make sure the Host header used to compute signature correspond to the internal value.]" mandatory="false" default=""/>
         <global_param name="DEFAULT_LANGUAGE" type="select" choices="PYDIO_AVAILABLE_LANGUAGES" label="CONF_MESSAGE[Default Language]" description="CONF_MESSAGE[Default language when a user does not have set his/her own.]" mandatory="true" default="en"/>
 
         <global_param name="FRONTEND_URL" group="CONF_MESSAGE[Frontend]" type="string" label="CONF_MESSAGE[Server URL]" description="CONF_MESSAGE[Server URL used to build share links and notifications. It will be detected if empty.]" mandatory="false" expose="true"/>

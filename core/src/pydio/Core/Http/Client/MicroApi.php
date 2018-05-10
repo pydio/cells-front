@@ -94,6 +94,10 @@ class MicroApi {
             $headers["User-Agent"] = $_SERVER["HTTP_USER_AGENT"];
             if($authAsXPydio){
                 $headers["X-Pydio-Bearer"] = $token;
+                $host = ConfService::bootstrapCoreConf("IO_HOST_SIGNATURE_HEADER");
+                if(!empty($host)){
+                    $headers["Host"] = $host;
+                }
             } else {
                 $headers["Authorization"] = "Bearer " . $token;
             }
