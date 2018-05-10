@@ -75,9 +75,12 @@ let CreateCellDialog = React.createClass({
         });
     },
 
+    m(id){
+        return this.props.pydio.MessageHash['share_center.' + id];
+    },
+
     computeSummaryString(){
         const {model} = this.state;
-        const template = "You will create a cell shared with %USERS. Pick some folders you want to share or just let Pydio create an empty folder for you!";
         let users = 0;
         let groups = 0;
         let teams = 0;
@@ -89,18 +92,18 @@ let CreateCellDialog = React.createClass({
             else if(acl.Role) teams ++;
             else users ++;
         });
-        if(users) userString.push( users + ' users');
-        if(groups) userString.push( groups + ' groups');
-        if(teams) userString.push( teams + ' teams');
+        if(users) userString.push( users + ' ' + this.m(270));
+        if(groups) userString.push( groups + ' ' + this.m(271));
+        if(teams) userString.push( teams + ' ' + this.m(272));
         let finalString;
         if (userString.length === 3) {
-            finalString = userString[0] + ', ' + userString[1] + ' and ' + userString[3];
+            finalString = userString[0] + ', ' + userString[1] + this.m(274) + userString[3];
         } else if (userString.length === 0) {
-            finalString = 'nobody';
+            finalString = this.m(273);
         } else {
-            finalString = userString.join(' and ');
+            finalString = userString.join(this.m(274));
         }
-        return template.replace('%USERS', finalString);
+        return this.m(269).replace('%USERS', finalString);
     },
 
     render: function(){
@@ -114,9 +117,9 @@ let CreateCellDialog = React.createClass({
 
             content = (
                 <div>
-                    <div>You can create a cell to share data with some users. First start by describing the object of this cell.</div>
-                    <TextField ref={"title"} floatingLabelText={"Title of your cell"} value={model.getLabel()} onChange={(e,v)=>{model.setLabel(v)}} fullWidth={true}/>
-                    <TextField floatingLabelText={"Optionally add a description"} value={model.getDescription()} onChange={(e,v)=>{model.setDescription(v)}} fullWidth={true}/>
+                    <div>{this.m(275)}</div>
+                    <TextField ref={"title"} floatingLabelText={this.m(276)} value={model.getLabel()} onChange={(e,v)=>{model.setLabel(v)}} fullWidth={true}/>
+                    <TextField floatingLabelText={this.m(277)} value={model.getDescription()} onChange={(e,v)=>{model.setDescription(v)}} fullWidth={true}/>
                 </div>
             );
 
@@ -124,7 +127,7 @@ let CreateCellDialog = React.createClass({
                 key="next1"
                 disabled={!model.getLabel()}
                 primary={true}
-                label="Next"
+                label={pydio.MessageHash['179']} // Next
                 onTouchTap={()=>{this.setState({step:'data'})}} />
             );
 
@@ -132,7 +135,7 @@ let CreateCellDialog = React.createClass({
 
             content = (
                 <div>
-                    <div>Choose who you will share data with</div>
+                    <div>{this.m(278)}</div>
                     <SharedUsers
                         pydio={pydio}
                         cellAcls={model.getAcls()}
@@ -145,8 +148,8 @@ let CreateCellDialog = React.createClass({
                 </div>
             );
 
-            buttons.push(<FlatButton key="prev1" primary={false} label="Back" onTouchTap={()=>{this.setState({step:'users'})}} />);
-            buttons.push(<FlatButton key="next2" primary={true} label="Next" onTouchTap={()=>this.setState({step:'label'})} />);
+            buttons.push(<FlatButton key="prev1" primary={false} label={pydio.MessageHash['304']} onTouchTap={()=>{this.setState({step:'users'})}} />);
+            buttons.push(<FlatButton key="next2" primary={true} label={pydio.MessageHash['179']} onTouchTap={()=>this.setState({step:'label'})} />);
 
         } else {
 
@@ -159,8 +162,8 @@ let CreateCellDialog = React.createClass({
                 </div>
             );
 
-            buttons.push(<FlatButton key="prev2" primary={false} label="Back" onTouchTap={()=>{this.setState({step:'data'})}} />);
-            buttons.push(<FlatButton key="submit" primary={true} label="Go!" onTouchTap={this.submit.bind(this)} />);
+            buttons.push(<FlatButton key="prev2" primary={false} label={pydio.MessageHash['304']} onTouchTap={()=>{this.setState({step:'data'})}} />);
+            buttons.push(<FlatButton key="submit" primary={true} label={this.m(279)} onTouchTap={this.submit.bind(this)} />);
 
         }
 

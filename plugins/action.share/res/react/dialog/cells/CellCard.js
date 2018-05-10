@@ -56,6 +56,7 @@ class CellCard extends React.Component{
     render(){
         const {mode, pydio} = this.props;
         const {edit, model} = this.state;
+        const m = (id) => pydio.MessageHash['share_center.' + id];
 
         let rootStyle = {width: 350, minHeight: 270};
         let content;
@@ -71,7 +72,7 @@ class CellCard extends React.Component{
             if(mode !== 'infoPanel'){
                 moreMenuItems = [];
                 if(model.getUuid() !== pydio.user.activeRepository){
-                    moreMenuItems.push(<MenuItem primaryText={"Go to Cell"} onTouchTap={()=>{
+                    moreMenuItems.push(<MenuItem primaryText={m(246)} onTouchTap={()=>{
                         pydio.triggerRepositoryChange(model.getUuid());
                         this.props.onDismiss();
                     }}/>);
@@ -84,12 +85,13 @@ class CellCard extends React.Component{
                             this.props.onHeightChange(500);
                         }
                     };
-                    moreMenuItems.push(<MenuItem primaryText={"Edit Cell"} onTouchTap={()=>this.setState({edit:true})}/>);
-                    moreMenuItems.push(<MenuItem primaryText={"Delete Cell"} onTouchTap={deleteAction}/>);
+                    moreMenuItems.push(<MenuItem primaryText={m(247)} onTouchTap={()=>this.setState({edit:true})}/>);
+                    moreMenuItems.push(<MenuItem primaryText={m(248)} onTouchTap={deleteAction}/>);
                 }
             }
             content = (
                 <GenericCard
+                    pydio={pydio}
                     title={model.getLabel()}
                     onDismissAction={this.props.onDismiss}
                     onDeleteAction={deleteAction}
@@ -98,10 +100,10 @@ class CellCard extends React.Component{
                     moreMenuItems={moreMenuItems}
                 >
                     {model.getDescription() &&
-                        <GenericLine iconClassName="mdi mdi-information" legend="Description" data={model.getDescription()}/>
+                        <GenericLine iconClassName="mdi mdi-information" legend={m(145)} data={model.getDescription()}/>
                     }
-                    <GenericLine iconClassName="mdi mdi-account-multiple" legend="Shared with..." data={model.getAclsSubjects()}/>
-                    <GenericLine iconClassName="mdi mdi-folder" legend="Contains" data={nodes}/>
+                    <GenericLine iconClassName="mdi mdi-account-multiple" legend={m(54)} data={model.getAclsSubjects()}/>
+                    <GenericLine iconClassName="mdi mdi-folder" legend={m(249)} data={nodes}/>
                 </GenericCard>
             );
             if(mode === 'infoPanel'){

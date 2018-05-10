@@ -44,7 +44,7 @@ class CompositeModel extends Observable {
         const treeNode = new TreeNode();
         treeNode.Uuid = node.getMetadata().get('uuid');
         link.getLink().Label = node.getLabel();
-        link.getLink().Description = "Created on " + moment(new Date()).format("YYYY/MM/DD");
+        link.getLink().Description = pydio.MessageHash['share_center.257'].replace('%s', moment(new Date()).format("YYYY/MM/DD"));
         link.getLink().RootNodes.push(treeNode);
         link.getLink().ViewTemplateName = node.isLeaf() ? "pydio_unique_strip" : "pydio_shared_folder";
         link.observe("update", ()=> {this.notify("update")});

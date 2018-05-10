@@ -84,6 +84,7 @@ class ShareView extends React.Component {
 
         const {loading, resources} = this.state;
         const {pydio, style} = this.props;
+        const m = id => pydio.MessageHash['share_center.' + id];
         resources.sort((a,b) => {
             const kA = a.Node.Path;
             const kB = b.Node.Path;
@@ -99,8 +100,8 @@ class ShareView extends React.Component {
                         underlineStyle={{display:'none'}}
                         style={{width: 160}}
                     >
-                        <MenuItem value={"LINKS"} primaryText={"Public Links"}/>
-                        <MenuItem value={"CELLS"} primaryText={"Cells"}/>
+                        <MenuItem value={"LINKS"} primaryText={m(243)}/>
+                        <MenuItem value={"CELLS"} primaryText={m(250)}/>
                     </SelectField>
                 </div>
                 {loading &&
@@ -110,7 +111,7 @@ class ShareView extends React.Component {
                     <EmptyStateView
                         pydio={pydio}
                         iconClassName={"mdi mdi-share-variant"}
-                        primaryTextId={"No items shared"}
+                        primaryTextId={m(131)}
                         style={{flex: 1, height: 300}}
                     />
                 }
@@ -132,7 +133,7 @@ class ShareView extends React.Component {
                             }
                             return <ListItem
                                 primaryText={basename}
-                                secondaryText={res.Link ? 'Public link : ' + res.Link.Description : 'Shared in ' + res.Cells.length +  ' cells'}
+                                secondaryText={res.Link ? m(251) + ': ' + res.Link.Description : m(284).replace('%s', res.Cells.length)}
                                 onTouchTap={()=>{this.goTo(appearsIn)}}
                                 leftIcon={<FontIcon className={icon}/>}
                             />

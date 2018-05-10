@@ -31,6 +31,7 @@ class CellsList extends React.Component {
     render(){
 
         const {compositeModel, pydio, usersInvitations} = this.props;
+        const m = (id) => pydio.MessageHash['share_center.' + id];
         const {edit} = this.state;
         let cells = [];
         compositeModel.getCells().map(cellModel => {
@@ -52,7 +53,7 @@ class CellsList extends React.Component {
             };
             let rightIcon;
             if(isEdit){
-                rightIcon = <IconButton iconClassName={"mdi mdi-close"} tooltip={"Close"} onTouchTap={toggleState}/>;
+                rightIcon = <IconButton iconClassName={"mdi mdi-close"} tooltip={pydio.MessageHash['86']} onTouchTap={toggleState}/>;
             } else if (cellModel.isEditable()) {
                 rightIcon = (
                     <IconMenu
@@ -60,8 +61,8 @@ class CellsList extends React.Component {
                         anchorOrigin={{horizontal:'right', vertical:'top'}}
                         targetOrigin={{horizontal:'right', vertical:'top'}}
                     >
-                        <MenuItem primaryText={"Edit cell users"} onTouchTap={toggleState}/>
-                        <MenuItem primaryText={"Remove from this cell"} onTouchTap={removeNode}/>
+                        <MenuItem primaryText={m(258)} onTouchTap={toggleState}/>
+                        <MenuItem primaryText={m(259)} onTouchTap={removeNode}/>
                     </IconMenu>
                 );
             }
@@ -98,11 +99,11 @@ class CellsList extends React.Component {
 
         let legend;
         if(cells.length && edit !== 'NEWCELL') {
-            legend = <div>Folder is shared in the following cells. You can edit the users or create a new cell.</div>
+            legend = <div>{m(260)}</div>
         } else if (cells.length && edit==='NEWCELL') {
-            legend = <div>Pick users or groups who will have access to this cell</div>
+            legend = <div>{m(261)}</div>
         } else {
-            legend = <div style={{padding:'21px 16px'}}>Share this folder with other users by creating a new cell</div>
+            legend = <div style={{padding:'21px 16px'}}>{m(262)}</div>
         }
 
         const addCellItems = this.addToCellsMenuItems();
@@ -112,7 +113,7 @@ class CellsList extends React.Component {
                 <RaisedButton
                     style={{marginLeft: 10}}
                     primary={true}
-                    label={"Add to cell..."}
+                    label={m(263)}
                     onTouchTap={(event)=>{this.setState({addMenuOpen:true, addMenuAnchor:event.target})}}
                 />
                 <Popover
@@ -130,7 +131,7 @@ class CellsList extends React.Component {
         return (
             <div>
                 <div style={{paddingBottom: 20}}>
-                    <RaisedButton label={"+ New Cell"} primary={true} onTouchTap={()=>{compositeModel.createEmptyCell();this.setState({edit:'NEWCELL'})}}/>
+                    <RaisedButton label={m(264)} primary={true} onTouchTap={()=>{compositeModel.createEmptyCell();this.setState({edit:'NEWCELL'})}}/>
                     {addToCellMenu}
                 </div>
                 <div style={{fontSize: 13, fontWeight: 500, color: 'rgba(0, 0, 0, 0.43)'}}>{legend}</div>

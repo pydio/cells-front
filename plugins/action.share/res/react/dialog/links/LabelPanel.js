@@ -28,6 +28,7 @@ class LabelPanel extends React.Component {
     render(){
 
         const {pydio, linkModel} = this.props;
+        const m = (id) => pydio.MessageHash['share_center.' + id];
         const link = linkModel.getLink();
         const updateLabel = (e,v) => {
             link.Label = v;
@@ -41,8 +42,8 @@ class LabelPanel extends React.Component {
 
         return (
             <div>
-                <TextField style={{marginTop: -14}} floatingLabelText={"Link Label"} value={link.Label} onChange={updateLabel} fullWidth={true}/>
-                <TextField style={{marginTop: -14}} floatingLabelText={"Link Description"} value={link.Description} onChange={updateDescription} fullWidth={true}/>
+                <TextField style={{marginTop: -14}} floatingLabelText={m(265)} value={link.Label} onChange={updateLabel} fullWidth={true}/>
+                <TextField style={{marginTop: -14}} floatingLabelText={m(266)} value={link.Description} onChange={updateDescription} fullWidth={true}/>
             </div>
         );
 

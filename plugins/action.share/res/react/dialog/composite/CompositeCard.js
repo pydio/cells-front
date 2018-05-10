@@ -48,7 +48,7 @@ class CompositeCard extends React.Component {
 
     attachClipboard(){
         const {pydio} = this.props;
-        const {MessageHash} = pydio;
+        const m = (id) => pydio.MessageHash['share_center.' + id];
         const {model} = this.state;
         this.detachClipboard();
         if(!model.getLinks().length){
@@ -65,16 +65,16 @@ class CompositeCard extends React.Component {
                 }.bind(this)
             });
             this._clip.on('success', function(){
-                this.setState({copyMessage: MessageHash['share_center.192']}, ()=>{
+                this.setState({copyMessage: m('192')}, ()=>{
                     setTimeout(()=>{this.setState({copyMessage:null})}, 2500);
                 })
             }.bind(this));
             this._clip.on('error', function(){
                 let copyMessage;
                 if( global.navigator.platform.indexOf("Mac") === 0 ){
-                    copyMessage = MessageHash['share_center.144'];
+                    copyMessage = m(144);
                 }else{
-                    copyMessage = MessageHash['share_center.143'];
+                    copyMessage = m(143);
                 }
                 this.setState({copyMessage}, ()=>{
                     setTimeout(()=>{this.setState({copyMessage:null})}, 2500);
@@ -140,6 +140,7 @@ class CompositeCard extends React.Component {
 
         const {node, mode, pydio} = this.props;
         const {model, mailerData, linkTooltip, copyMessage} = this.state;
+        const m = (id) => pydio.MessageHash['share_center.' + id];
 
         if (mode === 'edit') {
 
@@ -159,14 +160,14 @@ class CompositeCard extends React.Component {
                 header = (
                     <div style={{fontSize: 24, padding: '26px 10px 0 ', lineHeight: '26px'}}>
                         <Mailer {...mailerData} pydio={pydio} onDismiss={this.dismissMailer.bind(this)}/>
-                        {"Shares for " + node.getLabel()}
+                        {m(256).replace('%s', node.getLabel())}
                     </div>
                 );
 
             }
             let tabs = {left:[], right:[], leftStyle:{padding:0}};
             tabs.right.push({
-                Label:"Cells",
+                Label:m(250),
                 Value:"cells",
                 Component:(
                     <CellsList pydio={pydio} compositeModel={model} usersInvitations={this.usersInvitations.bind(this)}/>
@@ -175,7 +176,7 @@ class CompositeCard extends React.Component {
             const links = model.getLinks();
             if (publicLinkModel){
                 tabs.left.push({
-                    Label:'Link',
+                    Label:m(251),
                     Value:'public-link',
                     Component:(<Panel
                         pydio={pydio}
@@ -192,7 +193,7 @@ class CompositeCard extends React.Component {
                         templatePane = <PublicLinkTemplate linkModel={links[0]} pydio={pydio} layoutData={layoutData} style={{padding: '10px 16px'}}/>;
                     }
                     tabs.left.push({
-                        Label:'Access',
+                        Label:m(252),
                         Value:'link-secure',
                         Component:(
                             <div>
@@ -203,7 +204,7 @@ class CompositeCard extends React.Component {
                         )
                     });
                     tabs.left.push({
-                        Label:'Visibility',
+                        Label:m(253),
                         Value:'link-visibility',
                         Component:( <VisibilityPanel pydio={pydio} linkModel={links[0]}/> )
                     })
@@ -213,6 +214,7 @@ class CompositeCard extends React.Component {
             return (
                 <GenericEditor
                     tabs={tabs}
+                    pydio={pydio}
                     header={header}
                     saveEnabled={model.isDirty()}
                     onSaveAction={this.submit.bind(this)}
@@ -231,14 +233,14 @@ class CompositeCard extends React.Component {
             });
             if(cells.length){
                 lines.push(
-                    <GenericLine iconClassName="mdi mdi-account-multiple" legend="Shared in cells..." data={cells.join(', ')}/>
+                    <GenericLine iconClassName="mdi mdi-account-multiple" legend={m(254)} data={cells.join(', ')}/>
                 );
             }
             const links = model.getLinks();
             if (links.length && links[0].getLink()){
                 const publicLink = ShareHelper.buildPublicUrl(pydio, links[0].getLink().LinkHash, mode === 'infoPanel');
                 lines.push(
-                    <GenericLine iconClassName="mdi mdi-link" legend="Public Link" style={{overflow:'visible'}} dataStyle={{overflow:'visible'}} data={
+                    <GenericLine iconClassName="mdi mdi-link" legend={m(121)} style={{overflow:'visible'}} dataStyle={{overflow:'visible'}} data={
                         <div
                             ref="copy-button"
                             style={{cursor:'pointer', position:'relative'}}
@@ -246,7 +248,7 @@ class CompositeCard extends React.Component {
                             onMouseOut={()=>{this.setState({linkTooltip:false})}}
                         >
                             <Tooltip
-                                label={copyMessage ? copyMessage : pydio.MessageHash['share_center.191']}
+                                label={copyMessage ? copyMessage : m(191)}
                                 horizontalPosition={"left"}
                                 verticalPosition={"top"}
                                 show={linkTooltip}
@@ -257,7 +259,7 @@ class CompositeCard extends React.Component {
                 )
             }
             const deleteAction = () => {
-                if(confirm('Are you sure you want to delete links and cells on this item?')){
+                if(confirm(m(255))){
                     model.stopObserving('update');
                     model.deleteAll().then(res => {
                         model.updateUnderlyingNode();
@@ -266,6 +268,7 @@ class CompositeCard extends React.Component {
             };
             return (
                 <GenericCard
+                    pydio={pydio}
                     title={pydio.MessageHash['share_center.50']}
                     onDismissAction={this.props.onDismiss}
                     onDeleteAction={deleteAction}

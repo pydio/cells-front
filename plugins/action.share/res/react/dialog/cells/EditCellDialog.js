@@ -69,17 +69,18 @@ export default React.createClass({
     render: function(){
 
         const {pydio, model, sendInvitations} = this.props;
+        const m = (id) => pydio.MessageHash['share_center.' + id];
 
         const header = (
             <div>
-                <TextField style={{marginTop: -14}} floatingLabelText={"Cell Label"} value={model.getLabel()} onChange={(e,v)=>{model.setLabel(v)}} fullWidth={true}/>
-                <TextField style={{marginTop: -14}} floatingLabelText={"Cell Description"} value={model.getDescription()} onChange={(e,v)=>{model.setDescription(v)}} fullWidth={true}/>
+                <TextField style={{marginTop: -14}} floatingLabelText={m(267)} value={model.getLabel()} onChange={(e,v)=>{model.setLabel(v)}} fullWidth={true}/>
+                <TextField style={{marginTop: -14}} floatingLabelText={m(268)} value={model.getDescription()} onChange={(e,v)=>{model.setDescription(v)}} fullWidth={true}/>
             </div>
         );
         const tabs = {
             left: [
                 {
-                    Label:'Shared with',
+                    Label:m(54),
                     Value:'users',
                     Component:(<SharedUsers
                         pydio={pydio}
@@ -92,7 +93,7 @@ export default React.createClass({
                     />)
                 },
                 {
-                    Label:'Visibility',
+                    Label:m(253),
                     Value:'permissions',
                     Component:(
                         <ResourcePoliciesPanel
@@ -110,7 +111,7 @@ export default React.createClass({
             ],
             right: [
                 {
-                    Label:'Cell Content',
+                    Label:m(249),
                     Value:'content',
                     Component:(<NodesPicker pydio={pydio} model={model} mode="edit"/>)
                 }
@@ -119,6 +120,7 @@ export default React.createClass({
 
         return (
             <GenericEditor
+                pydio={pydio}
                 tabs={tabs}
                 header={header}
                 saveEnabled={model.isDirty()}

@@ -76,7 +76,7 @@ class GenericEditor extends React.Component {
 
     render(){
 
-        const {tabs, header, onSaveAction, onCloseAction, onRevertAction, saveEnabled, style} = this.props;
+        const {tabs, header, onSaveAction, onCloseAction, onRevertAction, saveEnabled, style, pydio} = this.props;
         const {left, right} = this.state;
 
         return (
@@ -84,9 +84,9 @@ class GenericEditor extends React.Component {
                 <div style={{display:'flex', padding: '10px 20px 20px'}}>
                     <div style={{flex: 1, paddingRight: 20}}>{header}</div>
                     <div style={{paddingTop: 10}}>
-                        <RaisedButton disabled={!saveEnabled} primary={true} label={"Save"} onTouchTap={onSaveAction}/>
-                        <FlatButton disabled={!saveEnabled} label={"Revert"} onTouchTap={onRevertAction} style={{marginLeft: 10}}/>
-                        <IconButton iconClassName={"mdi mdi-close"} tooltip={"Close"} onTouchTap={onCloseAction} style={{marginLeft: 10}}/>
+                        <RaisedButton disabled={!saveEnabled} primary={true} label={pydio.MessageHash['53']} onTouchTap={onSaveAction}/>
+                        <FlatButton disabled={!saveEnabled} label={pydio.MessageHash['628']} onTouchTap={onRevertAction} style={{marginLeft: 10}}/>
+                        <IconButton iconClassName={"mdi mdi-close"} tooltip={pydio.MessageHash['86']} onTouchTap={onCloseAction} style={{marginLeft: 10}}/>
                     </div>
                 </div>
                 <div style={{display:'flex'}}>

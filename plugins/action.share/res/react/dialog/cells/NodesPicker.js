@@ -125,7 +125,8 @@ class NodesPicker extends React.Component{
 
     render(){
 
-        const {model, muiTheme, mode} = this.props;
+        const {model, muiTheme, mode, pydio} = this.props;
+        const m = (id) => pydio.MessageHash['share_center.' + id];
         const nodes = model.getRootNodes();
         let nodeLines = [], emptyStateString;
         nodes.map(node => {
@@ -135,9 +136,9 @@ class NodesPicker extends React.Component{
         nodeLines.pop();
         if(!nodes.length){
             if(mode === 'edit'){
-                emptyStateString = <span style={{color:'rgba(0,0,0,.54)', fontStyle:'italic'}}>Cell has its own folder</span>;
+                emptyStateString = <span style={{color:'rgba(0,0,0,.54)', fontStyle:'italic'}}>{m(280)}</span>;
             } else {
-                emptyStateString = <span style={{color:'rgba(0,0,0,.54)', fontStyle:'italic'}}>Cell will be created in a new folder</span>;
+                emptyStateString = <span style={{color:'rgba(0,0,0,.54)', fontStyle:'italic'}}>{m(281)}</span>;
             }
         }
         const {node, availableWs, crtWs} = this.state;
@@ -145,7 +146,7 @@ class NodesPicker extends React.Component{
         return (
             <div>
                 <FlatButton
-                    label={"Add an existing folder..."}
+                    label={m(282)}
                     onTouchTap={this.handleTouchTap.bind(this)}
                     primary={true}
                     style={{marginBottom: 10}}
@@ -186,7 +187,7 @@ class NodesPicker extends React.Component{
                                 <div style={{flex: 1, color:'rgba(0,0,0,.87)'}}>{node && node.getPath()}</div>
                             }
                             {!node &&
-                                <div style={{flex: 1, color:'rgba(0,0,0,.54)', fontWeight:500}}>Select a node in the tree...</div>
+                                <div style={{flex: 1, color:'rgba(0,0,0,.54)', fontWeight:500}}>{m(283)}</div>
                             }
                             <IconButton iconStyle={{color:muiTheme.palette.primary1Color}} disabled={!node} iconClassName={"mdi mdi-plus-circle-outline"} onTouchTap={this.onValidateNode.bind(this)}/>
                         </div>
