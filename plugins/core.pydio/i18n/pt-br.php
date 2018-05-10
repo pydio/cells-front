@@ -729,6 +729,19 @@ $mess=array(
 "629" => "No records yet",
 "630" => "Folders shared with me",
 "631" => "This cell is empty!",
-/* END SENTENCE */
-/* testador de força de senha */
+"632" => "No cells yet",
+"633" => "Cells are spaces shared with others to collaborate on documents",
+"634" => "You",
+"634b"=> "Your group",
+"634c"=> "All users",
+"635" => "Chat Room",
+"636" => "Start typing and hit Enter",
+"637" => "No messages yet, start typing to chat with users of this cell!",
+"638" => "Cell contains multiple root folders (you cannot upload data directly here, open one of them)",
+"639" => "In this cell",
+"640" => "Create a cell with %s",
+"641" => "Remove from current cell",
+"642" => "Add to current cell",
+"643" => "You now share a cell with %s",
+"644" => "Could not create cell: %s",
 );

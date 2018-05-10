@@ -102,7 +102,12 @@ class Message extends React.Component {
             if(hover){
                 deleteStyle.opacity = 1;
             }
-            deleteBox = <span onClick={onDeleteMessage} className="mdi mdi-close" style={styles.commentDeleteBox}/>
+            deleteBox = <span
+                onClick={onDeleteMessage}
+                className="mdi mdi-close"
+                style={styles.commentDeleteBox}
+                title={pydio.MessageHash['7']}
+            />
         }
         const text = (
             <Paper zDepth={0} style={textStyle}>

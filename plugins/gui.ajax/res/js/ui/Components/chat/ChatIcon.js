@@ -39,7 +39,7 @@ class ChatIcon extends React.Component{
 
     componentWillReceiveProps(nextProps){
         const {roomType, objectId} = this.props;
-        if(nextProps.roomType != roomType || nextProps.objectId != objectId){
+        if(nextProps.roomType !== roomType || nextProps.objectId !== objectId){
             this.leaveRoom(roomType, objectId);
             this.setState({newMessages: 0}, () => {
                 this.listenToRoom(nextProps.roomType, nextProps.objectId);

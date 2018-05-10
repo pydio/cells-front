@@ -28,15 +28,16 @@ import ActivityList from './ActivityList'
 class InfoPanel extends React.Component {
 
     render(){
+        const {node, pydio} = this.props;
 
         return (
-            <InfoPanelCard identifier={"activity"} title={"Activity"}>
+            <InfoPanelCard identifier={"activity"} title={node.isLeaf()?pydio.MessageHash['notification_center.11']:pydio.MessageHash['notification_center.10']}>
                 <ActivityList
                     context="NODE_ID"
-                    contextData={this.props.node.getMetadata().get('uuid')}
+                    contextData={node.getMetadata().get('uuid')}
                     boxName="outbox"
                     style={{overflowY:'scroll', maxHeight: 380}}
-                    listContext={"NODE-" + (this.props.node.isLeaf() ? "LEAF" : "COLLECTION")}
+                    listContext={"NODE-" + (node.isLeaf() ? "LEAF" : "COLLECTION")}
                     pointOfView={"ACTOR"}
                     displayContext="infoPanel"
                 />

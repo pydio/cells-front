@@ -48,16 +48,6 @@ let FSTemplate = React.createClass({
         INFO_PANEL_WIDTH: 270
     },
 
-    componentDidMount: function(){
-        this.props.pydio.getController().updateGuiActions(this.getPydioActions());
-    },
-
-    componentWillUnmount: function(){
-        this.getPydioActions(true).map(function(key){
-            this.props.pydio.getController().deleteFromGuiActions(key);
-        }.bind(this));
-    },
-
     openRightPanel: function(name){
         this.setState({rightColumnState: name}, () => {
             let {infoPanelOpen} = this.state;
@@ -73,82 +63,6 @@ let FSTemplate = React.createClass({
             this.resizeAfterTransition();
         });
     },
-
-    getPydioActions: function(keysOnly = false){
-        if(keysOnly){
-            return ['toggle_info_panel', 'toggle_chat_panel', 'close_right_panel'];
-        }
-        const multiAction = new Action({
-            name:'toggle_info_panel',
-            icon_class:'mdi mdi-information',
-            text_id:341,
-            title_id:341,
-            text:this.props.pydio.MessageHash[341],
-            title:this.props.pydio.MessageHash[341],
-            hasAccessKey:false,
-            subMenu:false,
-            subMenuUpdateImage:false,
-            callback: () => {
-                this.openRightPanel('info-panel');
-            }
-        }, {
-            selection:false,
-            actionBar:true,
-            actionBarGroup:'right_column_toolbar,put',
-            contextMenu:true,
-            infoPanel:false
-        }, {dir:true,file:true}, {}, {});
-
-        const toggleChatAction = new Action({
-            name:'toggle_chat_panel',
-            icon_class:'mdi mdi-comment-processing',
-            text_id:341,
-            title_id:341,
-            text:'Open Chat',
-            title:'Open chat for the current cell',
-            hasAccessKey:false,
-            subMenu:false,
-            subMenuUpdateImage:false,
-            callback: () => {
-                this.openRightPanel('chat');
-            }
-        }, {
-            selection:false,
-            actionBar:true,
-            actionBarGroup:'right_column_toolbar,put',
-            contextMenu:false,
-            infoPanel:false
-        }, {dir:true,file:true}, {}, {});
-
-        const closeAction = new Action({
-            name:'close_right_panel',
-            icon_class:'mdi mdi-close',
-            text_id:341,
-            title_id:341,
-            text:'Close right column',
-            title:'Close right column',
-            hasAccessKey:false,
-            subMenu:false,
-            subMenuUpdateImage:false,
-            callback: () => {
-                this.closeRightPanel();
-            }
-        }, {
-            selection:false,
-            actionBar:true,
-            actionBarGroup:'right_column_toolbar',
-            contextMenu:false,
-            infoPanel:false
-        }, {dir:true,file:true}, {}, {});
-
-
-        let buttons = new Map();
-        buttons.set('toggle_info_panel', multiAction);
-        buttons.set('toggle_chat_panel', toggleChatAction);
-        buttons.set('close_right_panel', closeAction);
-        return buttons;
-    },
-
 
     getInitialState: function(){
         return {
@@ -239,8 +153,12 @@ let FSTemplate = React.createClass({
         let {rightColumnState} = this.state;
 
         let classes = ['vertical_layout', 'vertical_fit', 'react-fs-template'];
-        if(infoPanelOpen && infoPanelToggle) classes.push('info-panel-open');
-        if(drawerOpen) classes.push('drawer-open');
+        if(infoPanelOpen && infoPanelToggle) {
+            classes.push('info-panel-open');
+        }
+        if(drawerOpen) {
+            classes.push('drawer-open');
+        }
 
         let mainToolbars = ["info_panel", "info_panel_share"];
         let mainToolbarsOthers = ["change", "other"];
@@ -258,7 +176,9 @@ let FSTemplate = React.createClass({
         const repo = pydio.user.getRepositoriesList().get(pydio.user.activeRepository);
         if(repo && !repo.getOwner()){
             showChatTab = false;
-            if(rightColumnState === 'chat') rightColumnState = 'info-panel';
+            if(rightColumnState === 'chat') {
+                rightColumnState = 'info-panel';
+            }
         }
         if (pydio.getPluginConfigs("action.advanced_settings").get("GLOBAL_DISABLE_CHATS")) {
             showChatTab = false;
@@ -325,7 +245,7 @@ let FSTemplate = React.createClass({
                                     style={rightColumnState === 'info-panel' ? styles.activeButtonStyle : {borderBottom:0}}
                                     iconStyle={rightColumnState === 'info-panel' ? styles.activeButtonIconStyle : styles.rightButtonStyle}
                                     onTouchTap={()=>{this.openRightPanel('info-panel')}}
-                                    tooltip="File Information"
+                                    tooltip={pydio.MessageHash['341']}
                                 />
                                 {showChatTab &&
                                     <IconButton
@@ -333,7 +253,7 @@ let FSTemplate = React.createClass({
                                         style={rightColumnState === 'chat' ? styles.activeButtonStyle : {borderBottom:0}}
                                         iconStyle={rightColumnState === 'chat' ? styles.activeButtonIconStyle : styles.rightButtonStyle}
                                         onTouchTap={()=>{this.openRightPanel('chat')}}
-                                        tooltip="Chat Room"
+                                        tooltip={pydio.MessageHash['635']}
                                     />
                                 }
                                 {showAddressBook &&
@@ -342,7 +262,7 @@ let FSTemplate = React.createClass({
                                         style={rightColumnState === 'address-book' ? styles.activeButtonStyle : {borderBottom:0}}
                                         iconStyle={rightColumnState === 'address-book' ? styles.activeButtonIconStyle : styles.rightButtonStyle}
                                         onTouchTap={()=>{this.openRightPanel('address-book')}}
-                                        tooltip="Address Book"
+                                        tooltip={pydio.MessageHash['592']}
                                     />
                                 }
                                 <IconButton
@@ -350,7 +270,7 @@ let FSTemplate = React.createClass({
                                     iconStyle={styles.rightButtonStyle}
                                     onTouchTap={()=>{this.closeRightPanel()}}
                                     disabled={!rightColumnState}
-                                    tooltip="Close Column"
+                                    tooltip={pydio.MessageHash['86']}
                                 />
                             </div>
                         </div>

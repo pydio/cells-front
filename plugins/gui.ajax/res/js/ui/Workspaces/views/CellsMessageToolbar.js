@@ -58,11 +58,12 @@ class CellsMessageToolbar extends React.Component{
      */
     render() {
         const {display} = this.state;
+        const {pydio} = this.props;
         if (!display) {
             return null;
         }
         const s = {padding: 16, color: '#9E9E9E', borderBottom: '1px solid #F5F5F5'};
-        return <div style={s}>Cell contains multiple root folders (you cannot upload data directly here, open one of them).</div>
+        return <div style={s}>{pydio.MessageHash['638']}</div>
     }
 
 }

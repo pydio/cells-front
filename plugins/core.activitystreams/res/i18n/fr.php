@@ -34,4 +34,9 @@ $mess=array(
 "13" => "Votre navigateur ne supporte pas les notifications sur le bureau.",
 "14" => "Pas d'alertes",
 "15" => "Les notifications concernant les fichiers que vous surveillez apparaitront ici",
+"16" => "Dans",
+    "17" => "Chargement des activités...",
+    "18" => "Pas d'activité récente",
+    "19" => "Plus",
+    "20" => "Chargement...",
 );

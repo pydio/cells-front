@@ -97,7 +97,7 @@ class UserAvatar extends React.Component{
             label = this.props.userLabel || this.props.userId;
         }
         if(local && displayLocalLabel) {
-            label = 'You';
+            label = pydio.MessageHash['634'];
         }
 
         let avatarContent, avatarColor, avatarIcon;

@@ -47,7 +47,7 @@ function workspacesLocations(pydio, object){
         workspaces.push(<span key={ws.id+'-sep'}>, </span>);
     }
     workspaces.pop();
-    return <span>Inside <span>{workspaces}</span></span>
+    return <span>{pydio.MessageHash['notification_center.16']} <span>{workspaces}</span></span>
 }
 
 

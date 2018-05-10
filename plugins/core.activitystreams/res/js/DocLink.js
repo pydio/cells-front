@@ -123,14 +123,14 @@ class DocPreview extends React.Component {
             const node = nodes[i];
             const button = (
                 <div style={{display:'flex', alignItems:'center', paddingLeft: 10}}>
-                    <div style={{flex:1, fontSize: 13, fontWeight: 500, color: 'rgba(0,0,0,0.33)', fontStyle:'italic'}}>In '{node.getMetadata().get('repository_label')}'</div>
-                    <IconButton iconClassName={"mdi mdi-open-in-new"} tooltip="Open" tooltipPosition={"top-center"} onClick={()=>{pydio.goTo(node)}}/>
+                    <div style={{flex:1, fontSize: 13, fontWeight: 500, color: 'rgba(0,0,0,0.33)'}}>{pydio.MessageHash['notification_center.16']} {node.getMetadata().get('repository_label')}</div>
+                    <IconButton iconClassName={"mdi mdi-open-in-new"} tooltip={pydio.MessageHash['notification_center.6']} tooltipPosition={"top-center"} onClick={()=>{pydio.goTo(node)}}/>
                 </div>
             );
             if(node.getMetadata().get('repository_id') === currentRepository) {
                 currentRepoButton = (
                     <div style={{display:'flex', alignItems:'center'}}>
-                        <span style={{flex:1}}></span> <FlatButton label={"Open"} iconClassName={"mdi mdi-open-in-new"} tooltip="Open" tooltipPosition={"top-right"} onClick={()=>{pydio.goTo(node)}}/>
+                        <span style={{flex:1}}></span> <FlatButton label={pydio.MessageHash['notification_center.6']} iconClassName={"mdi mdi-open-in-new"} tooltip="Open" tooltipPosition={"top-right"} onClick={()=>{pydio.goTo(node)}}/>
                     </div>
                 );
                 break;

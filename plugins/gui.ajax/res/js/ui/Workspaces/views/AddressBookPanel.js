@@ -36,7 +36,7 @@ class AddressBookPanel extends React.Component{
     }
 
     componentWillReceiveProps(nextProps){
-        if(nextProps.pydio.user.activeRepository != this.state.cellId){
+        if(nextProps.pydio.user.activeRepository !== this.state.cellId){
             if(this.state.cellModel) {
                 this.state.cellModel.stopObserving('update', this._observer);
             }
@@ -108,7 +108,7 @@ class AddressBookPanel extends React.Component{
             cellInfo = (
                 <div style={{borderBottom: '1px solid #e0e0e0'}}>
                     <List>
-                        <Subheader>In this cell</Subheader>
+                        <Subheader>{pydio.MessageHash['639']}</Subheader>
                         {items}
                     </List>
                 </div>
@@ -117,7 +117,6 @@ class AddressBookPanel extends React.Component{
         const columnStyle = {
             position: 'absolute',
             width: 270,
-//            right: 0, // let css makes a transition
             top: 110,
             bottom: 0,
             backgroundColor: '#fafafa',

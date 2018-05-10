@@ -38,11 +38,11 @@ class CellChat extends React.Component{
                     roomObjectId={cellId}
                     style={{flex: 1, display:'flex', flexDirection:'column'}}
                     msgContainerStyle={{maxHeight:null, flex:1, paddingTop: '10px !important', backgroundColor:'#FAFAFA'}}
-                    fieldHint={"Start typing and hit Enter"}
+                    fieldHint={pydio.MessageHash['636']}
                     pushMessagesToBottom={true}
                     emptyStateProps={{
                         iconClassName:'mdi mdi-comment-account-outline',
-                        primaryTextId:'No messages yet, start typing to chat with users of this cell!',
+                        primaryTextId:pydio.MessageHash['637'],
                         style:{padding:'0 10px', backgroundColor: 'transparent'}
                     }}
                     computePresenceFromACLs={cellModel?cellModel.getAcls():{}}

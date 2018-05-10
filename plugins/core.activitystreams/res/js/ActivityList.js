@@ -106,7 +106,7 @@ class ActivityList extends React.Component {
 
         let content = [];
         let {data, loadMore, loading} = this.state;
-        const {listContext, groupByDate, displayContext} = this.props;
+        const {listContext, groupByDate, displayContext, pydio} = this.props;
         let previousFrom;
         if (data !== null && data.items) {
             data.items.forEach(function(ac){
@@ -128,7 +128,7 @@ class ActivityList extends React.Component {
                     this.loadForProps(this.props);
                 })
             };
-            content.push(<div style={{paddingLeft:16}}><FlatButton primary={true} label={loading ? "Loading..." : "More..."} disabled={loading} onTouchTap={loadAction}/></div>)
+            content.push(<div style={{paddingLeft:16}}><FlatButton primary={true} label={loading ? pydio.MessageHash['notification_center.20'] : pydio.MessageHash['notification_center.19']} disabled={loading} onTouchTap={loadAction}/></div>)
         }
         if (content.length) {
             return <List style={this.props.style}>{content}</List>;
@@ -146,7 +146,7 @@ class ActivityList extends React.Component {
                 <EmptyStateView
                     pydio={this.props.pydio}
                     iconClassName="mdi mdi-pulse"
-                    primaryTextId={loading ? "Loading activity..." : "No recent activity"}
+                    primaryTextId={loading ? pydio.MessageHash['notification_center.17'] : pydio.MessageHash['notification_center.18']}
                     style={style}
                     iconStyle={iconStyle}
                     legendStyle={legendStyle}

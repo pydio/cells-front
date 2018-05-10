@@ -10,6 +10,8 @@ class CellActionsRenderer {
 
     createCell(){
         const {addressBookItem, pydio} = this.props;
+        const m = pydio.MessageHash;
+
         let idmObject;
         if(addressBookItem.IdmUser){
             idmObject = addressBookItem.IdmUser;
@@ -27,9 +29,9 @@ class CellActionsRenderer {
                 model.setDescription("Created by " + loggedLabel);
                 model.addUser(idmObject);
                 model.save().then(res => {
-                    pydio.UI.displayMessage('SUCCESS', 'You now share a cell with ' + targetLabel);
+                    pydio.UI.displayMessage('SUCCESS', m['643'].replace('%s', targetLabel));
                 }).catch(reason => {
-                    pydio.UI.displayMessage('ERROR', 'Something went wrong: ' + reason.message);
+                    pydio.UI.displayMessage('ERROR', m['644'].replace('%s', reason.message));
                 });
 
             });
@@ -59,6 +61,7 @@ class CellActionsRenderer {
 
     renderItems(){
         const {pydio, cellModel, acl, addressBookItem} = this.props;
+        const m = pydio.MessageHash;
 
         // Check if current user it the logged one
         let isLogged;
@@ -87,7 +90,7 @@ class CellActionsRenderer {
         }
         // Special case cellModel is "TRUE", not a real cell model
         if(cellModel === true){
-            return [<MenuItem primaryText={"Create a cell with " + label} onTouchTap={this.createCell.bind(this)}/>];
+            return [<MenuItem primaryText={m['640'].replace('%s', label)} onTouchTap={this.createCell.bind(this)}/>];
         }
 
         const canWrite = cellModel.isEditable();
@@ -109,18 +112,19 @@ class CellActionsRenderer {
                     (userType === 'team' && cellAcl.Role && cellAcl.Role.Uuid === userId)
                 )
             }
-            if(crt) isInCurrent = true;
+            if(crt) {
+                isInCurrent = true;
+            }
         });
 
-
         if(isInCurrent){
-            items.push(<MenuItem primaryText={"Remove from current cell"} disabled={!canWrite} onTouchTap={this.removeFromCell.bind(this)}/>);
+            items.push(<MenuItem primaryText={m['641']} disabled={!canWrite} onTouchTap={this.removeFromCell.bind(this)}/>);
         } else {
-            items.push(<MenuItem primaryText={"Add to current cell"} disabled={!canWrite} onTouchTap={this.addToCell.bind(this)}/>);
+            items.push(<MenuItem primaryText={m['642']} disabled={!canWrite} onTouchTap={this.addToCell.bind(this)}/>);
         }
         items.push(
             <Divider/>,
-            <MenuItem primaryText={"Create a cell with " + label} onTouchTap={this.createCell.bind(this)}/>,
+            <MenuItem primaryText={m['640'].replace('%s', label)} onTouchTap={this.createCell.bind(this)}/>,
         );
 
         return items;

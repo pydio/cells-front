@@ -131,9 +131,9 @@ class WorkspacesList extends React.Component{
         if(!sharedEntries.length){
             sharedEntries = <EmptyStateView
                 iconClassName={"icomoon-cells"}
-                primaryTextId={"No cells yet"}
-                secondaryTextId={"Cells are spaces shared with others to collaborate on documents."}
-                actionLabelId={this.createRepositoryEnabled() ? "Create a cell" : null}
+                primaryTextId={messages[632]}
+                secondaryTextId={messages[633]}
+                actionLabelId={this.createRepositoryEnabled() ? messages[418] : null}
                 actionCallback={this.createRepositoryEnabled() ? createClick : null}
                 actionStyle={{marginTop: 20}}
                 style={{backgroundColor:'transparent'}}
