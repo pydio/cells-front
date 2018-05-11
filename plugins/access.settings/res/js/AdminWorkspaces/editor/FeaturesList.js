@@ -48,37 +48,7 @@ export default React.createClass({
     render: function(){
 
         let firstSections = [];
-        /*
-        if(!this.props.model.isTemplate()){
-            firstSections.push(<PydioComponents.PaperEditorNavEntry keyName='shares' key='shares' selectedKey={this.props.currentSelection} label={this.context.getMessage('ws.25')} onClick={this.setEditState}/>);
-        }
-        */
-        let driverTabLabel = this.context.getMessage('ws.9') + ": " + this.props.driverLabel;
-        let additionalFeatures;
-        if(this.props.model.isTemplateChild()){
-            driverTabLabel = this.context.getMessage('ws.13');
-        }else{
-            let plusButton;
-            if(this.props.model.isEditable()){
-                plusButton = <span className="metasource-add" onClick={this.props.metaSourceProvider.showMetaSourceForm.bind(this.props.metaSourceProvider)} >+</span>;
-            }
-            additionalFeatures = (
-                <div key="additional-k">
-                    <PydioComponents.PaperEditorNavHeader label={this.context.getMessage('ws.27')}>
-                        {plusButton}
-                    </PydioComponents.PaperEditorNavHeader>
-                    <MetaList
-                        metaSourceProvider={this.props.metaSourceProvider}
-                        currentMetas={this.props.model.getOption('META_SOURCES')}
-                        edit={this.props.currentSelection}
-                        closeCurrent={this.closeCurrent}
-                        setEditState={this.setEditState}
-                        featuresEditable={this.props.model.isEditable()}
-                    />
-                </div>
-            );
-        }
-
+        let driverTabLabel = this.context.getMessage('ws.9');
         return (
             <div>
                 <PydioComponents.PaperEditorNavHeader key="parameters-k" label={this.context.getMessage('ws.29')}/>

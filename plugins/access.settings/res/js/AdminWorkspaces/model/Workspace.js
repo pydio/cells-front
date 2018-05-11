@@ -313,7 +313,7 @@ class Workspace extends Observable{
                     formValues[paramName] = this.options.get(paramName);
                 }
                 if(!generalScope && !hashedParams['group']){
-                    hashedParams['group'] = 'Driver Options';
+                    hashedParams['group'] = pydio.MessageHash['settings.41'];
                 }else if(generalScope){
                     hashedParams['group'] = '';
                 }
@@ -371,7 +371,7 @@ class Workspace extends Observable{
                 formValues[paramName] = hashedParams['default'];
             }
             if(!generalScope && !hashedParams['group']){
-                hashedParams['group'] = 'Driver Options';
+                hashedParams['group'] = pydio.MessageHash['settings.41'];
             }else if(generalScope){
                 hashedParams['group'] = '';
             }

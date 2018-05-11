@@ -173,7 +173,7 @@ class LdapEditor extends React.Component{
         }
 
         return <PaperEditorLayout
-            title={config.DomainName}
+            title={config.DomainName ? config.DomainName : 'New Directory'}
             titleActionBar={actions}
             contentFill={false}
             leftNav={leftNav}
