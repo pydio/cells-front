@@ -34,10 +34,10 @@ $mess = [
     'cont.btn.tw' => 'Twitter',
 
     // Enterprise Ad,
-    'ent.title' => 'Pydio-Enterprise entdecken',
-    'ent.subtitle' => 'SPAREN SIE ZEIT - ERHALTEN SIE ZUSATZFUNKTIONEN - BRANDING FÜR IHRE FIRMA',
+    'ent.title' => 'Pydio Cells Enterprise entdecken',
+    'ent.subtitle' => 'ERHALTEN SIE ZUSATZFUNKTIONEN - GDPR-READY - BRANDING FÜR IHRE FIRMA',
     'ent.features' => 'Enterprise-Funktionen',
-    'ent.features.legend' => 'Enterprise-Funktionen: EasyTransfer, CAS/SAML integration, Multi-domain LDAP und viele mehr...',
+    'ent.features.legend' => 'Enterprise-Funktionen: EasyTransfer, LDAP/AD Connectors und viele mehr...',
     'ent.advanced' => 'Erweitertes Administrations-Dashboard',
     'ent.advanced.legend' => 'Administrations-Dashboard für Echtzeit-Monitoring.',
     'ent.support' => 'Support und Wartung',

@@ -187,6 +187,7 @@ let Dashboard = React.createClass({
             </Card>
         );
 
+
         const DISCOVER_ENTERPRISE_CARD = (
             <Card style={paperStyle}>
                 <CardMedia
@@ -213,6 +214,8 @@ let Dashboard = React.createClass({
             <div style={{flex:'1', overflow: 'auto', height: '100%', paddingBottom: 10}}>
                 <div style={{display:'flex', alignItems:'top', flexWrap:'wrap'}}>
                     {WELCOME_COMMUNITY_CARD}
+                    {DISCOVER_ENTERPRISE_CARD}
+                    {GET_SOME_HELP_CARD}
                     {PAY_IT_FORWARD_CARD}
                 </div>
             </div>

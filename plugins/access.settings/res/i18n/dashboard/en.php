@@ -34,10 +34,10 @@ $mess = [
     'cont.btn.tw' => 'Twitter',
 
     // Enterprise Ad,
-    'ent.title' => 'Discover Pydio Enterprise Distribution',
-    'ent.subtitle' => 'SAVE TIME - GET MORE FEATURE - EXTENDED BRANDING',
+    'ent.title' => 'Discover Pydio Cells Enterprise',
+    'ent.subtitle' => 'MORE FEATURES - GDPR COMPLIANCE - EXTENDED BRANDING',
     'ent.features' => 'Enterprise-oriented features',
-    'ent.features.legend' => 'Enterprise-ready features : EasyTransfer, CAS/SAML integration, Multi-domain LDAP and many more...',
+    'ent.features.legend' => 'Enterprise-ready features : AD/LDAP Connectors, Auditable Logs for compliance, EasyTransfer...',
     'ent.advanced' => 'Advanced Administrator Dashboard',
     'ent.advanced.legend' => 'Unique admin dashboard for real-time monitoring of platform usage.',
     'ent.support' => 'Support and Maintenance',

@@ -34,10 +34,10 @@ $mess = [
     'cont.btn.tw' => 'Twitter',
 
     // Enterprise Ad,
-    'ent.title' => 'Descubra Pydio Enterprise Distribution',
-    'ent.subtitle' => 'AHORRE TIEMPO - MÁS FUNCIONALIDADES - BRANDING EXTENDIDO',
+    'ent.title' => 'Descubra Pydio Cells Enterprise',
+    'ent.subtitle' => 'MÁS FUNCIONALIDADES - GDPR-READY - BRANDING EXTENDIDO',
     'ent.features' => 'Funcionalidad dirigida a la Empresa',
-    'ent.features.legend' => 'Funcionalidad para Empresas: EasyTransfer, integración CAS/SAML, Multi-domain LDAP y mucho más...',
+    'ent.features.legend' => 'Funcionalidad para Empresas: AD/LDAP Connectors, EasyTransfer y mucho más...',
     'ent.advanced' => 'Panel de Administrador Avanzado',
     'ent.advanced.legend' => 'Panel de administración único para monitorizar la plataforma en tiempo real.',
     'ent.support' => 'Soporte y Mantenimiento',
