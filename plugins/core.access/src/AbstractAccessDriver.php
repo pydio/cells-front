@@ -273,9 +273,6 @@ abstract class AbstractAccessDriver extends Plugin
             $errors = array();
             $succFiles = array();
             if ($move) {
-                if($destNode->exists()){
-                    $this->deldir($destFile, $destRepoData, true);
-                }
                 $res = rename($realSrcFile, $destFile);
                 if($res!==true){
                     $errors[] = "Error while renaming $realSrcFile to $destFile";
@@ -290,9 +287,6 @@ abstract class AbstractAccessDriver extends Plugin
             }
         } else {
             if ($move) {
-                if($destNode->exists()){
-                    unlink($destFile);
-                }
                 if(MetaStreamWrapper::nodesUseSameWrappers($realSrcFile, $destFile)){
                     rename($realSrcFile, $destFile);
                 }else{

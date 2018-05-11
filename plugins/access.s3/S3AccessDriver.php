@@ -111,11 +111,18 @@ class S3AccessDriver extends FsAccessDriver
         $node = new Node($srcdir);
         $ctx = $node->getContext();
         $repoObject = $node->getRepository();
-        $bucket = $repoObject->getContextOption($ctx, "CONTAINER");
         $basePath = $repoObject->getContextOption($ctx, "PATH");
 
         $fromKeyname = trim(str_replace("//", "/", $basePath . UrlUtils::mbParseUrl($srcdir, PHP_URL_PATH)), '/');
         $toKeyname = trim(str_replace("//", "/", $basePath . UrlUtils::mbParseUrl($dstdir, PHP_URL_PATH)), '/');
+
+        if($destRepoData["base_url"] !== $srcRepoData["base_url"]) {
+            $destNode = new Node($dstdir);
+            $destCtx = $destNode->getContext();
+            $destRepoObject = $destNode->getRepository();
+            $destBasePath = $destRepoObject->getContextOption($destCtx, "PATH");
+            $toKeyname = trim(str_replace("//", "/", $destBasePath . UrlUtils::mbParseUrl($dstdir, PHP_URL_PATH)), '/');
+        }
 
         $request = new RestUserJobRequest();
         $request->setJobName("copy");
