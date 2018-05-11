@@ -23,7 +23,7 @@ const PydioApi = require('pydio/http/api');
 const BootUI = require('pydio/http/resources-manager').requireLib('boot');
 const {ActionDialogMixin, SubmitButtonProviderMixin, Loader} = BootUI;
 import AboutCellsCard from './AboutCellsCard'
-import {Card, CardTitle, CardText} from 'material-ui'
+import {Card, CardTitle, CardText, Divider, FlatButton, FontIcon, CardActions} from 'material-ui'
 
 const SplashDialog = React.createClass({
 
@@ -43,6 +43,18 @@ const SplashDialog = React.createClass({
     },
     submit(){
         this.dismiss();
+    },
+
+    openDocs(){
+        open("https://pydio.com/en/docs");
+    },
+
+    openForum(){
+        open("https://forum.pydio.com");
+    },
+
+    openGithub(){
+        open("https://github.com/pydio/cells/issues");
     },
 
     getInitialState: function(){
@@ -75,9 +87,16 @@ const SplashDialog = React.createClass({
         credit = (
             <Card style={{margin:10}}>
                 <CardTitle
-                    title="Version Information"
+                    title={pydio.Parameters.get('backend')['PackageLabel']}
                     subtitle="Details about version, licensing and how to get help"
                 />
+                <Divider/>
+                <CardActions>
+                    <FlatButton primary={true} icon={<FontIcon className="mdi mdi-book-variant" />} label="Docs" onTouchTap={this.openDocs} />
+                    <FlatButton primary={true} icon={<FontIcon className="mdi mdi-slack" />} label="Forums" onTouchTap={this.openForum}/>
+                    <FlatButton primary={true} icon={<FontIcon className="mdi mdi-github-box" />} label="Issues" onTouchTap={this.openGithub}/>
+                </CardActions>
+                <Divider/>
                 <CardText>
                     {credit}
                 </CardText>
@@ -85,7 +104,6 @@ const SplashDialog = React.createClass({
         );
         return (
             <div style={{height:'100%', backgroundColor: '#CFD8DC'}}>
-                <AboutCellsCard style={{margin:10}}/>
                 {credit}
             </div>
         );

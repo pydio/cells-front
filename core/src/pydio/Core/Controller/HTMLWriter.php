@@ -21,6 +21,7 @@
 namespace Pydio\Core\Controller;
 
 use Psr\Http\Message\ResponseInterface;
+use Pydio\Core\Http\Client\MicroApi;
 use Pydio\Core\Services\ConfService;
 use Pydio\Core\Utils\TextEncoder;
 
@@ -39,15 +40,38 @@ class HTMLWriter
      * @static
      * @param string $docFileName
      * @return string
+     * @throws \Swagger\Client\ApiException
      */
     public static function getDocFile($docFileName)
     {
+
         $realName = PYDIO_DOCS_FOLDER."/".$docFileName.".txt";
         if (is_file($realName)) {
+
+            $backendBoot = MicroApi::GetFrontendServiceApi()->frontBootConf();
+            $data = json_decode($backendBoot->getJsonData()["backend"], true);
+            $lic = $data["License"];
+            if($lic === "eula") {
+                $lic = $data["PackageLabel"] . " is licensed under an End-User License Agreement. <br>
+                You should have received it along with this software. If not please contact <a href='https://pydio.com'>pydio services</a>.";
+            } else {
+                $lic = $data["PackageLabel"] . " is free software: you can redistribute it and/or modify it under the terms of 
+                the GNU Affero General Public License as published by the Free Software Foundation, either version 3 
+                of the License, or (at your option) any later version.<br/>
+                Pydio Cells is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+                without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details.
+                <br/><br/>
+                You should have received a copy of the GNU Affero General Public License along with Pydio Cells.<br/>  
+                If not, see <a href='http://www.gnu.org/licenses/'>http://www.gnu.org/licenses/</a>.
+                ";
+            }
+
             $content = implode("<br>", file($realName));
             $content = preg_replace("(http:\/\/[a-z|.|\/|\-|0-9]*)", "<a target=\"_blank\" href=\"$0\">$0</a>", $content);
-            $content = preg_replace("(\[(.*)\])", "<div class=\"title\">$1</div>", $content);
-            $content = preg_replace("(\+\+ (.*) \+\+)", "<div class=\"subtitle\">$1</div>", $content);
+            $content = preg_replace("(\+\+ (.*) \+\+)", "<h4 style='margin-bottom: 0;margin-top:0'>$1</h4>", $content);
+            $content = preg_replace("(\[(.*)\])", "<h5 style='margin-bottom: 0;margin-top:0'>$1</h5>", $content);
+            $content = str_replace("__PACKAGE_LABEL__", $data["PackageLabel"], $content);
+            $content = str_replace("__PYDIO_LICENSE__", $lic, $content);
             $content = str_replace("__PYDIO_VERSION__", PYDIO_VERSION, $content);
             $content = str_replace("__PYDIO_VERSION_DATE__", PYDIO_VERSION_DATE, $content);
             return $content;
