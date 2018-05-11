@@ -1030,7 +1030,7 @@ class RepositoriesManager extends AbstractManager
             }
             // Add Default Rights
             try{
-                $rootRole = RolesService::getRole("ROOT_GROUP");
+                $rootRole = RolesService::getRole(RolesService::RootGroup);
                 if($rootRole !== null) {
                     $r = $rootRole->getAcl($repository->getId());
                     if(!empty($r)){

@@ -181,6 +181,7 @@ class FilteredUsersList{
      * @param $filterArray array
      * @param $recursive bool
      * @return UserInterface[]
+     * @throws \Swagger\Client\ApiException
      */
     protected function listUsers($groupPath, $searchTerm, $offset, $searchLimit, $filterArray, $recursive = false){
 
@@ -230,6 +231,9 @@ class FilteredUsersList{
         $result = [];
         if ($collection->getUsers() != null) {
             foreach ($collection->getUsers() as $user) {
+                if($user->getLogin() === 'pydio.anon.user') {
+                    continue;
+                }
                 $result[] = new PydioUser($user->getLogin(), $user, null, false);
             }
         }
@@ -349,8 +353,11 @@ class FilteredUsersList{
             $items[] = new TempAddressBookItem($searchQuery);
         }
         if ( $FILTER['groups'] && empty($groupPathFilter) && (empty($regexp)  ||  preg_match($pregexp, $mess["447"]))) {
-            $gRole = RolesService::getRole(RolesService::RootGroup);
-            $items[] = new IdmAdressBookItem($gRole);
+            try{
+                $gRole = RolesService::getRole(RolesService::RootGroup);
+                $aB = new IdmAdressBookItem($gRole);
+                $items[] = $aB;
+            } catch(\Exception $e){}
         }
 
         foreach($allGroups as $groupItem) {
