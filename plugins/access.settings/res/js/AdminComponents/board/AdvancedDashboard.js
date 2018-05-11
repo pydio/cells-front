@@ -198,6 +198,7 @@ class AdvancedDashboard extends React.Component{
                 pydio={this.props.pydio}
                 style={{height: '100%'}}
                 rglStyle={{position:'absolute', top: 6, left: 6, right: 6, bottom: 6}}
+                disableEdit={true}
             />
         )
 

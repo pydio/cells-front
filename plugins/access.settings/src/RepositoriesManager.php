@@ -52,6 +52,7 @@ use Pydio\Core\Utils\Vars\StringHelper;
 use Pydio\Core\Utils\XMLHelper;
 use Pydio\Tests\AbstractTest;
 
+use Swagger\Client\ApiException;
 use Swagger\Client\Model\IdmWorkspaceScope;
 use Swagger\Client\Model\RestDataSource;
 use Swagger\Client\Model\RestDataSourceType;
@@ -183,27 +184,6 @@ class RepositoriesManager extends AbstractManager
                             throw new PydioException($class->failedInfo);
                         }
                     }
-                    // Apply default metasource if any
-                    /*
-                    if ($driver != null && $driver->getConfigs()!=null ) {
-                        $confs = $driver->getConfigs();
-                        if (!empty($confs["DEFAULT_METASOURCES"])) {
-                            $metaIds = InputFilter::parseCSL($confs["DEFAULT_METASOURCES"]);
-                            $metaSourceOptions = array();
-                            foreach ($metaIds as $metaID) {
-                                $metaPlug = $pServ->getPluginById($metaID);
-                                if($metaPlug == null) continue;
-                                $pNodes = $metaPlug->getManifestRawContent("//param[@default]", "nodes");
-                                $defaultParams = array();
-                                foreach ($pNodes as $domNode) {
-                                    $defaultParams[$domNode->getAttribute("name")] = $domNode->getAttribute("default");
-                                }
-                                $metaSourceOptions[$metaID] = $defaultParams;
-                            }
-                            $newRep->addOption("META_SOURCES", $metaSourceOptions);
-                        }
-                    }
-                    */
                 }
 
                 if ($this->repositoryExists($newRep->getDisplay())) {
@@ -282,47 +262,6 @@ class RepositoriesManager extends AbstractManager
                 if(isSet($jsonDataCreateWorkspace["features"])){
 
                 }
-                /*
-                if ($driver != null && $driver->getConfigs() != null) {
-                    $arrayDefaultMetasources = array();
-                    $arrayPluginToOverWrite = array();
-                    $metaSourceOptions = array();
-                    $configsDriver = $driver->getConfigs();
-                    if (!empty($configsDriver["DEFAULT_METASOURCES"])) {
-                        $arrayDefaultMetasources = InputFilter::parseCSL($configsDriver["DEFAULT_METASOURCES"]);
-                        foreach ($arrayDefaultMetasources as $metaID) {
-                            $metaPlug = $pluginService->getPluginById($metaID);
-                            if($metaPlug == null) continue;
-                            $pNodes = $metaPlug->getManifestRawContent("//param[@default]", "nodes");
-                            $defaultParams = array();
-                            foreach ($pNodes as $domNode) {
-                                $defaultParams[$domNode->getAttribute("name")] = $domNode->getAttribute("default");
-                            }
-                            $metaSourceOptions[$metaID] = $defaultParams;
-                        }
-                    }
-                    if(isSet($jsonDataCreateWorkspace["features"])) {
-                        foreach($arrayDefaultMetasources as $defaultPluginName) {
-                            foreach($jsonDataCreateWorkspace["features"] as $pluginName => $arrayPluginValue) {
-                                if ($defaultPluginName === $pluginName) {
-                                    $arrayPluginToOverWrite[$pluginName] = $arrayPluginValue;
-                                    unset($jsonDataCreateWorkspace["features"][$pluginName]);
-                                }
-                            }
-                        }
-                        $arrayPluginToAdd = $jsonDataCreateWorkspace["features"];
-                        foreach($arrayPluginToOverWrite as $pluginName => $arrayPlugin) {
-                            if(!empty($arrayPlugin)) {
-                                foreach($arrayPlugin as $name => $value) {
-                                    $metaSourceOptions[$pluginName][$name] = $value;
-                                }
-                            }
-                        }
-                        $metaSourceOptions = array_merge($metaSourceOptions, $arrayPluginToAdd);
-                    }
-                    $repo->addOption("META_SOURCES", $metaSourceOptions);
-                }
-                */
                 if ($this->repositoryExists($repo->getDisplay())) {
                     throw new PydioException($mess["settings.50"]);
                 }
@@ -909,34 +848,6 @@ class RepositoriesManager extends AbstractManager
             $repoNode = new Node($v2Api ? (string)$repoIndex : $nodeKey, $meta);
             $nodesList->addBranch($repoNode);
 
-            if ($repoObject->isTemplate) {
-                // Now Load children for template repositories - NOT IMPLEMENTED YET, AS IT WILL
-                // RETRIEVE ALL WORKSPACES
-                /*
-                $children = RepositoryService::listRepositoriesWithCriteria(array("parent_uuid" => $repoIndex . ""), $count);
-                foreach($children as $childId => $childObject){
-                    if (!empty($ctxUser) && !$ctxUser->canAdministrate($childObject))continue;
-                    if(is_numeric($childId)) $childId = "".$childId;
-                    $meta = array(
-                        "text"          => $childObject->getDisplay(),
-                        "repository_id" => $childId,
-                        "accessType"	=> $childObject->getAccessType(),
-                        "accessLabel"	=> $this->getDriverLabel($childObject->getAccessType(), $driverLabels),
-                        "icon"			=> "repo_child.png",
-                        "slug"          => $childObject->getSlug(),
-                        "owner"			=> ($childObject->hasOwner()?$childObject->getOwner():""),
-                        "openicon"		=> "repo_child.png",
-                        "parentname"	=> "/repositories",
-                        "ajxp_mime" 	=> "repository_editable",
-                        "template_name" => $label
-                    );
-                    $cNodeKey = "/data/repositories/$childId";
-                    $this->appendBookmarkMeta($cNodeKey, $meta);
-                    $repoNode = new Node($v2Api ? $childId : $cNodeKey, $meta);
-                    $nodesList->addBranch($repoNode);
-                }
-                */
-            }
         }
 
         return $nodesList;
@@ -1117,6 +1028,20 @@ class RepositoriesManager extends AbstractManager
             if(!$repository->isTemplate()) {
                 $buffer .= "<param name=\"PYDIO_SLUG\" value=\"".$repository->getSlug()."\"/>";
             }
+            // Add Default Rights
+            try{
+                $rootRole = RolesService::getRole("ROOT_GROUP");
+                if($rootRole !== null) {
+                    $r = $rootRole->getAcl($repository->getId());
+                    if(!empty($r)){
+                        $rights = "";
+                        if(strpos($r, "read") !== false) $rights .= "r";
+                        if(strpos($r, "write") !== false) $rights .= "w";
+                        $buffer .=  "<param name=\"DEFAULT_RIGHTS\" value=\"".$rights."\"/>";
+                    }
+                }
+
+            } catch (ApiException $e){}
             $repoAttr = $repository->getIdmAttributes();
             $metaLayout = "<param name='META_LAYOUT' value='default'/>";
             if(isSet($repoAttr["plugins"])){

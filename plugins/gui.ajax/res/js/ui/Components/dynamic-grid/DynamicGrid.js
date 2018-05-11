@@ -193,7 +193,8 @@ let DynamicGrid = React.createClass({
         builderNamespaces: React.PropTypes.array,
         defaultCards     : React.PropTypes.array,
         pydio            : React.PropTypes.instanceOf(Pydio),
-        disableDrag      : React.PropTypes.bool
+        disableDrag      : React.PropTypes.bool,
+        disableEdit      : React.PropTypes.bool,
     },
 
     removeCard:function(cardId){
@@ -245,15 +246,17 @@ let DynamicGrid = React.createClass({
         const rglStyle  = this.props.rglStyle || {};
         return (
             <div style={{...this.props.style, width:'100%', flex:'1'}} className={this.state.editMode?"builder-open":""}>
-                <div style={{position:'absolute',bottom:30,right:18, zIndex:11}}>
-                    <MaterialUI.FloatingActionButton
-                        tooltip={this.props.getMessage('home.49')}
-                        onClick={this.toggleEditMode}
-                        iconClassName={this.state.editMode?"icon-ok":"mdi mdi-pencil"}
-                        mini={this.state.editMode}
-                        disabled={this.state.editMode && this.state.widgetEditing}
-                    />
-                </div>
+                {!this.props.disableEdit &&
+                    <div style={{position:'absolute',bottom:30,right:18, zIndex:11}}>
+                        <MaterialUI.FloatingActionButton
+                            tooltip={this.props.getMessage('home.49')}
+                            onClick={this.toggleEditMode}
+                            iconClassName={this.state.editMode?"icon-ok":"mdi mdi-pencil"}
+                            mini={this.state.editMode}
+                            disabled={this.state.editMode && this.state.widgetEditing}
+                        />
+                    </div>
+                }
                 {builder}
                 <div className="home-dashboard" style={{height:'100%'}}>
                     <CardsGrid
