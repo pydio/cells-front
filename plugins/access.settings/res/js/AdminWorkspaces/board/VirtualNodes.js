@@ -82,7 +82,7 @@ class VirtualNodes extends React.Component{
 
         let headerActions = [];
         if(!readonly){
-            headerActions.push(<FlatButton primary={true} label={"+ Dynamic Node"} onTouchTap={this.handleTouchTap.bind(this)}/>);
+            headerActions.push(<FlatButton primary={true} label={"+ Template Path"} onTouchTap={this.handleTouchTap.bind(this)}/>);
         }
 
         return (
