@@ -10,7 +10,7 @@ $mess = [
     "tour.infopanel.title" => "Info-Bereich",
     "tour.display-bar.title" => "Anzeigeeinstellungen",
     "tour.uwidget.title" => "Benutzer",
-    "tour.workspaces.title" => "Meine Arbeitsumgebungen",
+    "tour.workspaces.title" => "Arbeitsumgebungen & Cells",
     "tour.globsearch.title" => "Globale Suche",
     "tour.widget-cards.title" => "Widgets",
     "tour.openworkspace.title" => "Eine Arbeitsumgebung öffnen",
@@ -28,11 +28,11 @@ $mess = [
     "tour.display-bar" => "Mit dieser Toolbar können Sie die Ansicht umschalten: Von Vorschau auf Details wechseln oder die Dateien nach Namen oder Datum sortieren, etc...",
 
     "tour.workspaces.1" => "Arbeitsumgebungen sind die obersten Ordner, mit denen Sie Ihre Daten organisieren können. Sie können nur durch Sie zugegriffen oder freigegeben werden.",
-    "tour.workspaces.2" => "Andere Benutzer können Ordner für Sie freigeben. Diese erscheinen hier ebenfalls als Arbeitsumgebung.",
+    "tour.workspaces.2" => "Andere Benutzer können Ordner für Sie freigeben. Diese erscheinen hier ebenfalls als Cells.",
     "tour.globsearch.1" => "Hier können Sie Dateien oder Ordner aller Arbeitsumgebungen finden. Es werden nur die ersten fünf Ergebnisse angezeigt. Öffnen Sie eine Arbeitsumgebung für mehr Ergebnisse und Sucheinstellungen.",
     "tour.globsearch.2" => "Wenn kein Suchbegriff eingegeben ist werden die zuletzt geöffneten Dateien und Ordner angezeigt.",
     "tour.widget-cards" => "Hier können Sie Widgets hinzufügen oder entfernen. Es ist möglich, diese durch ziehen zu sortieren.",
-    "tour.openworkspace" => "Bei der ersten Verbindung ist Ihre Historie leer. Öffnen Sie eine Arbeitsumgebung um Dateien hinzuzufügen.",
+    "tour.openworkspace" => "Bei der ersten Verbindung ist Ihre Historie leer. Öffnen Sie eine Arbeitsumgebung oder ein Cell um Dateien hinzuzufügen.",
 
     "tour.locale.back" => "Zurück",
     "tour.locale.close" => "Schließen",

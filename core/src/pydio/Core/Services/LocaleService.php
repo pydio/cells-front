@@ -249,7 +249,9 @@ class LocaleService
                         $content = FileHelper::getRemoteContent($path . "/conf/" . $lang . ".json");
                         if (!empty($content)) {
                             $mess = json_decode($content, true);
-                            $this->cache["CONF_MESSAGES"] = array_merge($this->cache["CONF_MESSAGES"], $mess);
+                            if(!empty($mess)){
+                                $this->cache["CONF_MESSAGES"] = array_merge($this->cache["CONF_MESSAGES"], $mess);
+                            }
                         }
                     }
                 } else {

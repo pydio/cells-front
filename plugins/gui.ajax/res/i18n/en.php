@@ -10,7 +10,7 @@ $mess = [
     "tour.infopanel.title" => "Info Panel",
     "tour.display-bar.title" => "Display Options",
     "tour.uwidget.title" => "User Cartouche",
-    "tour.workspaces.title" => "My Workspaces",
+    "tour.workspaces.title" => "Workspaces & Cells",
     "tour.globsearch.title" => "Global Search",
     "tour.widget-cards.title" => "Widgets",
     "tour.openworkspace.title" => "Open a workspace",
@@ -28,11 +28,11 @@ $mess = [
     "tour.display-bar" => "This toolbar allows you to change the display: switch to thumbnails or detail mode depending on your usage, and sort files by name, date, etc...",
 
     "tour.workspaces.1" => "Workspaces are top-level folders helping you organize your data. They may be accessed only by you, or shared accross many people.",
-    "tour.workspaces.2" => "Other users can share some of their folders with you: they will also appear as workspaces here.",
-    "tour.globsearch.1" => "Use this search form to find files or folders in any workspace. Only the first 5 results are shown, enter a workspace to get more results, and more search options.",
+    "tour.workspaces.2" => "Cells are collaborative spaces that you can share with other users. Create your own cells based on a folder, a team of users, or any relevant topic.",
+    "tour.globsearch.1" => "Use this search form to find files or folders in any workspace and cells. Only the first 5 results are shown, enter a workspace to get more results, and more search options.",
     "tour.globsearch.2" => "When no search is entered, the history of your recently accessed files and folder is displayed instead.",
     "tour.widget-cards" => "You can add or remove widgets here. You can also reorder them by simply dragging them around.",
-    "tour.openworkspace" => "At the first connection, your history is probably empty. Enter a workspace once you are ready to add files.",
+    "tour.openworkspace" => "At the first connection, your history is probably empty. Enter a workspace or a cell to start adding files.",
 
     "tour.locale.back" => "Back",
     "tour.locale.close" => "Close",

@@ -10,7 +10,7 @@ $mess = [
     "tour.infopanel.title" => "Panneau d'informations",
     "tour.display-bar.title" => "Options d'affichage",
     "tour.uwidget.title" => "Cartouche Utilisateur",
-    "tour.workspaces.title" => "Mes Workspaces",
+    "tour.workspaces.title" => "Workspaces & Cellules",
     "tour.globsearch.title" => "Recherche",
     "tour.widget-cards.title" => "Widgets",
     "tour.openworkspace.title" => "Ouvrir un workspace",
@@ -28,11 +28,11 @@ $mess = [
     "tour.display-bar" => "Cette barre d'outil vous permet de changer les options d'affichage, de tri des données, etc.",
 
     "tour.workspaces.1" => "Les workspaces regroupent les fichiers pour vous permettre d'organiser vos données. Ils peuvent être accessible seulement par vous ou partagés par plusieurs utilisateurs. ",
-    "tour.workspaces.2" => "Les autres utilisateurs peuvent partager un dossier avec vous: il apparait alors comme un workspace partagé ici.",
+    "tour.workspaces.2" => "Les cellules sont des espaces de collaboration partagés entre utilisateurs. Créez vos propres cellules autour d'un répertoire, d'une équipe, ou de n'importe quel autre sujet.",
     "tour.globsearch.1" => "Utilisez ce moteur de recherche pour trouver des fichiers dans tous les workspaces. Seuls les 5 premiers résultats  sont affichés, entrez dans un workspace pour affiner votre recherche et avoir plus de résultats.",
     "tour.globsearch.2" => "Quand il n'y a pas de recherche, ici s'affiche l'historique récent des fichiers et dossiers que vous avez accédé.",
     "tour.widget-cards" => "Vous pouvez ajouter ou retirer des widgets. Vous pouvez aussi les ré-ordonner pas glisser-déposer.",
-    "tour.openworkspace" => "A la première connexion, vos historique est probablement vide. Effectuez une recherche ou entrez maintenant dans un workspace pour y ajouter des fichiers.",
+    "tour.openworkspace" => "A la première connexion, vos historique est probablement vide. Effectuez une recherche ou entrez maintenant dans un workspace ou une cellule pour y ajouter des fichiers.",
 
     "tour.locale.back" => "Retour",
     "tour.locale.close" => "Fermer",
