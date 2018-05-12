@@ -217,6 +217,12 @@ class UsersApi{
         postValues['get_action'] = 'user_create_user';
         PydioApi.getClient().request(postValues, function(transport){
             callback(postValues, transport.responseJSON);
+            const u = transport.responseJSON.user;
+            const cache = MetaCacheService.getInstance();
+            if(u && cache.hasKey('user_public_data', u.id)){
+                cache.deleteKey('user_public_data', u.id);
+            }
+
         }.bind(this));
     }
 

@@ -26,6 +26,7 @@ import WorkspaceEntry from './WorkspaceEntry'
 const Repository = require('pydio/model/repository');
 import ResourcesManager from 'pydio/http/resources-manager'
 import {IconButton, Popover} from 'material-ui'
+const {muiThemeable} = require('material-ui/styles');
 
 class WorkspacesList extends React.Component{
 
@@ -59,7 +60,7 @@ class WorkspacesList extends React.Component{
     render(){
         let entries = [], sharedEntries = [], createAction;
         const {workspaces,showTreeForWorkspace} = this.state;
-        const {pydio, className, style, filterByType} = this.props;
+        const {pydio, className, style, filterByType, muiTheme} = this.props;
 
         workspaces.forEach(function(object, key){
 
@@ -100,12 +101,12 @@ class WorkspacesList extends React.Component{
                     height: 36,
                     padding: 6,
                     position:'absolute',
-                    right: 6,
+                    right: 8,
                     top: 8
                 },
                 icon : {
                     fontSize: 22,
-                    color: 'rgba(0,0,0,.54)'
+                    color: muiTheme.palette.accent1Color //'rgba(0,0,0,.54)'
                 }
             };
             if(sharedEntries.length){
@@ -114,16 +115,16 @@ class WorkspacesList extends React.Component{
                     iconStyle={styles.icon}
                     iconClassName={"icomoon-cells-clear-plus"}
                     tooltip={messages[417]}
-                    tooltipPosition={"bottom-left"}
+                    tooltipPosition={"top-left"}
                     onTouchTap={createClick}
                 />
             }
         }
-        
+
         let sections = [];
         if(entries.length){
             sections.push({
-                k:'entries', 
+                k:'entries',
                 title: <div key="entries-title" className="section-title" style={this.props.sectionTitleStyle}>{messages[468]}</div>,
                 content: <div key="entries-ws" className="workspaces">{entries}</div>
             });
@@ -195,5 +196,6 @@ WorkspacesList.PropTypes =   {
 
 
 WorkspacesList = withVerticalScroll(WorkspacesList);
+WorkspacesList = muiThemeable()(WorkspacesList);
 
 export {WorkspacesList as default}

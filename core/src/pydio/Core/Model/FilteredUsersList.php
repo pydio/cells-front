@@ -349,8 +349,18 @@ class FilteredUsersList{
             $allGroups = $this->listGroupsOrRoles($baseGroup, $regexp, $pregexp, $searchLimit);
         }
 
-        if ( $allowCreation && !empty($searchQuery) && (!count($allUsers) || !array_key_exists(strtolower($searchQuery), $allUsers)) ) {
-            $items[] = new TempAddressBookItem($searchQuery);
+        if ( $allowCreation && !empty($searchQuery) ) {
+            $alreadyExists = false;
+            if(count($allUsers)){
+                $c = array_filter($allUsers, function ($item) use($searchQuery) {
+                    $id = $item->getId();
+                    return strtolower($id) === strtolower($searchQuery);
+                });
+                $alreadyExists = count($c) > 0;
+            }
+            if(!$alreadyExists){
+                $items[] = new TempAddressBookItem($searchQuery);
+            }
         }
         if ( $FILTER['groups'] && empty($groupPathFilter) && (empty($regexp)  ||  preg_match($pregexp, $mess["447"]))) {
             try{

@@ -20,7 +20,7 @@
 
 import React from 'react'
 import Pydio from 'pydio'
-import {Paper, FlatButton, Divider} from 'material-ui'
+import {Paper, FlatButton, Divider, TextField} from 'material-ui'
 import {User, UsersApi} from 'pydio/http/users-api'
 const {Manager, FormPanel} = Pydio.requireLib('form');
 
@@ -34,12 +34,12 @@ class UserCreationForm extends React.Component{
         let prefix = pydio.getPluginConfigs('action.share').get('SHARED_USERS_TMP_PREFIX');
         basicParameters.push({
             description     : MessageHash['533'],
-            editable        : false,
+            readonly        : editMode,
             expose          : "true",
             label           : MessageHash['522'],
             name            : (editMode ? "existing_user_id" : "new_user_id"),
             scope           : "user",
-            type            : (editMode ? "hidden" : "string"),
+            type            : "string",
             mandatory       : true,
             "default"       : prefix ? prefix : ''
         },{
@@ -108,8 +108,21 @@ class UserCreationForm extends React.Component{
             values['existing_user_id'] = this.props.newUserName;
             if(userData){
                 values['lang'] = userData.lang;
-                values[userPrefix + 'displayName'] = userData.displayName;
-                values[userPrefix + 'email'] = userData.email;
+                if(userData.IdmUser){
+                    if(userData.IdmUser.Attributes['displayName']){
+                        values[userPrefix + 'displayName'] = userData.IdmUser.Attributes['displayName'];
+                    }
+                    if(userData.IdmUser.Attributes['email']){
+                        values[userPrefix + 'email'] = userData.IdmUser.Attributes['email'];
+                    }
+                } else {
+                    if(userData.displayName){
+                        values[userPrefix + 'displayName'] = userData.displayName;
+                    }
+                    if(userData.email){
+                        values[userPrefix + 'email'] = userData.email;
+                    }
+                }
             }
         }else{
             values['new_user_id'] = userPrefix + newUserName;
@@ -143,14 +156,14 @@ class UserCreationForm extends React.Component{
     }
 
     render(){
-        const pydio = this.props.pydio;
+        const {pydio, editMode, newUserName} = this.props;
         let status = this.state.valid;
-        if(!status && this.props.editMode && !this.state.values['new_password']){
+        if(!status && editMode && !this.state.values['new_password']){
             status = true;
         }
 
         return (
-            <Paper zDepth={this.props.zDepth !== undefined ? this.props.zDepth : 2} style={{height: 250, display:'flex', flexDirection:'column', ...this.props.style}}>
+            <Paper zDepth={this.props.zDepth !== undefined ? this.props.zDepth : 2} style={{minHeight: 250, display:'flex', flexDirection:'column', ...this.props.style}}>
                 <FormPanel
                     className="reset-pydio-forms"
                     depth={-1}
