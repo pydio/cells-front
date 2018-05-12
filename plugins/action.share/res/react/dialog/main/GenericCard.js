@@ -104,7 +104,7 @@ class GenericCard extends React.Component{
                         {onDeleteAction &&
                             <IconButton style={styles.button.style} iconStyle={styles.button.iconStyle} iconClassName={"mdi mdi-delete"} onTouchTap={onDeleteAction}/>
                         }
-                        {moreMenuItems &&
+                        {moreMenuItems && moreMenuItems.length > 0 &&
                             <IconMenu
                                 anchorOrigin={{vertical:'top', horizontal:headerSmall?'right':'left'}}
                                 targetOrigin={{vertical:'top', horizontal:headerSmall?'right':'left'}}

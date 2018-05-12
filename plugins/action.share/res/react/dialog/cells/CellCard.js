@@ -65,9 +65,12 @@ class CellCard extends React.Component{
             rootStyle = {width: 700, height: 500};
             content = <EditCellDialog {...this.props} model={model} sendInvitations={this.usersInvitations.bind(this)}/>;
         } else {
-            const nodes = model.getRootNodes().map(node => {
+            let nodes = model.getRootNodes().map(node => {
                 return model.getNodeLabelInContext(node);
             }).join(', ');
+            if (!nodes) {
+                nodes = model.getRootNodes().length + ' item(s)';
+            }
             let deleteAction, editAction, moreMenuItems;
             if(mode !== 'infoPanel'){
                 moreMenuItems = [];

@@ -22,6 +22,7 @@ namespace Pydio\Core\Services;
 
 use Pydio\Core\Model\Context;
 use Pydio\Core\PluginFramework\PluginsService;
+use Pydio\Core\Utils\FileHelper;
 use Pydio\Core\Utils\Vars\VarsFilter;
 
 defined('PYDIO_EXEC') or die('Access not allowed');
@@ -231,9 +232,9 @@ class LocaleService
                         $parsed = parse_url($bootConf);
                         $root = $parsed["scheme"] . "://" .$parsed["host"] . ":" . $parsed["port"];
                         $path = $root . "/".$remote;
-                        $content = @file_get_contents($path . "/" . $crtLang . ".json");
+                        $content = FileHelper::getRemoteContent($path . "/" . $crtLang . ".json");
                         if(empty($content)) $lang = "en";
-                        $content = @file_get_contents($path . "/" . $lang . ".json");
+                        $content = FileHelper::getRemoteContent($path . "/" . $lang . ".json");
                         if(!empty($content)){
                             $mess = json_decode($content, true);
                             if(!empty($mess)){
@@ -243,9 +244,9 @@ class LocaleService
                             }
                         }
                         $lang = $crtLang;
-                        $content = @file_get_contents($path . "/conf/" . $crtLang . ".json");
+                        $content = FileHelper::getRemoteContent($path . "/conf/" . $crtLang . ".json");
                         if(empty($content)) $lang = "en";
-                        $content = @file_get_contents($path . "/conf/" . $lang . ".json");
+                        $content = FileHelper::getRemoteContent($path . "/conf/" . $lang . ".json");
                         if (!empty($content)) {
                             $mess = json_decode($content, true);
                             $this->cache["CONF_MESSAGES"] = array_merge($this->cache["CONF_MESSAGES"], $mess);
