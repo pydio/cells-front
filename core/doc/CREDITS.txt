@@ -16,7 +16,7 @@ __PYDIO_LICENSE__
     Material UI is the JS framework we use to implement Material Design, written by Call-Em-All (MIT License)
     Material Design Icons : https://materialdesignicons.com/ (SIL Open Font License, Version 1.1.)
 	Font Awesome by Dave Gandy : http://fortawesome.github.com/Font-Awesome/ (SIL Open Font License)
-	Background Photos from https://unsplash.com/ - Brad Neathery, Dustin Lee, Luis Llerena, Tim Gouw, Though Catalog
+	Background Photos from https://unsplash.com/ - Stephen Di Donato, Ashim D'Silva, Billy William, Pierre Chatel-Innocenti, Jakob Owens, Vitaly Paykov
 
 [PHP Libraries]
     aws/aws-sdk-php                    3.19.18             Apache-2.0
