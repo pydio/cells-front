@@ -77,7 +77,7 @@ class LdapEditor extends React.Component{
 
 
     componentWillReceiveProps(newProps) {
-        const {config} = props;
+        const {config} = newProps;
         if(config && this.props.config !== config) {
             const model = new ServerConfigModel(config.ConfigId, config);
             model.observe('update', () => {
