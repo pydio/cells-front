@@ -32,18 +32,18 @@ import Policy from '../policies/Policy'
 const ResourceGroups = {
     "acl"  : {
         title: "Context-based ACLs",
-        legend: "These policies are used to dynamically provide read/write access to workspaces or nodes based on the request context and/or the node metadata." +
+        legend: "These policies are used to dynamically provide read/write access to workspaces or nodes based on the request context and/or the node metadata. " +
         "They are defined here and used in the Access Control Panel of the users and roles."
     },
     "rest" : {
         title : "REST Resources",
         legend : "These policies are protecting the REST APIs on a per-uri / per-method basis. They grant basic access to some specific APIs " +
-        "for public discovery, and a restriction access to many APIs to make sure they are accessed only by frontend application. You should generally" +
+        "for public discovery, and a restriction access to many APIs to make sure they are accessed only by frontend application. You should generally " +
         "not touch these unless you know exactly what you do.",
     },
     "oidc" : {
         title: "OpenId Connect Resources",
-        legend: "OpenId Connect Service is used for authentication of the user, before any access to the APIs. As such, you can totally disable the login" +
+        legend: "OpenId Connect Service is used for authentication of the user, before any access to the APIs. As such, you can totally disable the login " +
         "operation for a set of users based on the requests context, e.g. disable loging from a given set of IP or at a given time."
     }
 };
