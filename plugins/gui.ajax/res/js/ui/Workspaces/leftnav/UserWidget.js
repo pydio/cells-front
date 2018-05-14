@@ -82,14 +82,15 @@ export default React.createClass({
                 </UserAvatar>
             );
 
-            if(user.getRepositoriesList().has('homepage') && user.activeRepository !== 'homepage'){
+            if(user.getRepositoriesList().has('homepage')){
                 homeButton = (
                     <IconButton
                         onTouchTap={this.applyAction.bind(this, 'home')}
                         iconClassName="userActionIcon mdi mdi-home-variant"
                         className="userActionButton backToHomeButton"
-                        tooltip={messages['305']}
+                        tooltip={user.activeRepository === 'homepage' ? null : messages['305']}
                         tooltipPosition="bottom-right"
+                        disabled={user.activeRepository === 'homepage'}
                     />
                 );
             }
@@ -112,7 +113,7 @@ export default React.createClass({
                 onTouchTap={this.applyAction.bind(this, 'about_pydio')}
                 iconClassName="userActionIcon icomoon-cells"
                 className="userActionButton backToHomeButton"
-                tooltip={"About Pydio"}
+                tooltip={messages['166']}
                 tooltipPosition="bottom-left"
             />
         );
