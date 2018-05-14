@@ -20,6 +20,13 @@
 
 import PydioApi from './PydioApi'
 const {ApiClient} = require('./gen/index');
+import moment from 'moment'
+
+// Override parseDate method to support ISO8601 cross-browser
+ApiClient.parseDate = function (str) {
+    return moment(str).toDate();
+};
+
 
 // Override callApi Method
 class JwtApiClient extends ApiClient{
