@@ -55,7 +55,7 @@ const FORM_CSS = `
   right: 0;
 }
 
-`
+`;
 
 let ProfilePane = React.createClass({
 
@@ -64,7 +64,9 @@ let ProfilePane = React.createClass({
         let pydio = this.props.pydio;
         if(pydio.user){
             pydio.user.preferences.forEach(function(v, k){
-                if(k === 'gui_preferences') return;
+                if(k === 'gui_preferences') {
+                    return;
+                }
                 objValues[k] = v;
             });
         }
@@ -79,8 +81,12 @@ let ProfilePane = React.createClass({
 
     onFormChange: function(newValues, dirty, removeValues){
         this.setState({dirty: dirty, values: newValues}, () => {
-            if(this._updater) this._updater(this.getButtons());
-            if(this.props.saveOnChange) this.saveForm();
+            if(this._updater) {
+                this._updater(this.getButtons());
+            }
+            if(this.props.saveOnChange) {
+                this.saveForm();
+            }
         });
     },
 
@@ -125,7 +131,9 @@ let ProfilePane = React.createClass({
             values: {...this.state.originalValues},
             dirty: false
         },() => {
-            if(this._updater) this._updater(this.getButtons());
+            if(this._updater) {
+                this._updater(this.getButtons());
+            }
         });
     },
 
@@ -147,7 +155,9 @@ let ProfilePane = React.createClass({
             });
             pydio.refreshUserData();
             this.setState({dirty: false}, () => {
-                if(this._updater) this._updater(this.getButtons());
+                if(this._updater) {
+                    this._updater(this.getButtons());
+                }
             });
         }.bind(this));
     },

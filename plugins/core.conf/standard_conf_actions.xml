@@ -195,11 +195,4 @@
             </processing>
         </action>
 	</actions>
-    <client_configs>
-        <component_config component="UserAccountTabs">
-            <additional_tab id="webdav_pane"
-                            tabInfo='{"icon":"mdi mdi-access-point-network","label":"403","title":"403","position":3}'
-                            paneInfo='{"namespace":"UserAccount", "componentName":"WebDAVPane"}'/>
-        </component_config>
-    </client_configs>
 </registry_contributions>
