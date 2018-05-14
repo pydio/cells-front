@@ -179,8 +179,6 @@ let ProfilePane = React.createClass({
                     binary_context={"user_id="+pydio.user.id}
                     onChange={this.onFormChange}
                 />
-                {!miniDisplay && <Divider/>}
-                {!miniDisplay && <EmailPanel pydio={this.props.pydio} definitions={this.state.mailDefinitions} values={values} onChange={this.onFormChange}/>}
                 <style type="text/css" dangerouslySetInnerHTML={{__html: FORM_CSS}}></style>
             </div>
         );
