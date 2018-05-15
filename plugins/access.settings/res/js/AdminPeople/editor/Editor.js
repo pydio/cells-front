@@ -670,7 +670,6 @@ class Editor extends React.Component{
             <PaperEditorNavHeader key="2" label={this.getMessage('34')}/>,
             <PaperEditorNavEntry key="workspaces" keyName="workspaces" onClick={this.setSelectedPane.bind(this)} label={this.getMessage('35')} selectedKey={this.state.currentPane}/>,
             <PaperEditorNavEntry key="pages" keyName="pages" onClick={this.setSelectedPane.bind(this)} label={this.getMessage('36')} selectedKey={this.state.currentPane}/>,
-            sharesMenu,
             <PaperEditorNavHeader key="3" label={this.getMessage('37')}/>,
             <PaperEditorNavEntry key="add-info" keyName="add-info" onClick={this.setSelectedPane.bind(this)} label={this.getMessage('38')} selectedKey={this.state.currentPane}/>,
             <PaperEditorNavEntry key="glob-params" keyName="global-params" onClick={this.setSelectedPane.bind(this)} label={this.getMessage('39')} selectedKey={this.state.currentPane}/>,
