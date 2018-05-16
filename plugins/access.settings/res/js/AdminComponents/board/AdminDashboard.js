@@ -185,7 +185,8 @@ const AdminDashboard = React.createClass({
     },
 
     backToHome: function(){
-        this.props.pydio.triggerRepositoryChange("homepage");
+        //this.props.pydio.triggerRepositoryChange("homepage");
+        window.open('https://pydio.com');
     },
 
     render: function(){
@@ -199,7 +200,7 @@ const AdminDashboard = React.createClass({
                 title="Back to Home"
                 width=""
                 height=""
-                style={{height: 40, width: 'auto'}}
+                style={{height: 40, width: 'auto', marginRight: 10}}
                 onClick={this.backToHome}
             />
         );

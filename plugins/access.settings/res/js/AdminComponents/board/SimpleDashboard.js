@@ -53,7 +53,7 @@ let Dashboard = React.createClass({
 
     getDocButton: function(icon, message, link){
         return (
-            <div style={{width:120}} key={icon}>
+            <div style={{width:180}} key={icon}>
                 <FlatButton
                     primary={true}
                     style={{height:110,lineHeight:'20px'}}
@@ -107,11 +107,10 @@ let Dashboard = React.createClass({
 
         // ADMIN GUIDE BUTTONS
         const guidesButtons = [
-            {icon:'clock-start', id:'start', link:'https://github.com/pydio/cells/wiki'},
-            {icon:'network', id:'ws', link:'https://github.com/pydio/cells/wiki'},
-            {icon:'account-multiple', id:'users', link:'https://github.com/pydio/cells/wiki'},
-            {icon:'settings', id:'parameters', link:'https://github.com/pydio/cells/wiki'},
-            {icon:'professional-hexagon', id:'advanced', link:'https://github.com/pydio/cells/wiki'}
+            {icon:'clock-start', id:'start', link:'https://pydio.com/en/docs/cells/v1/getting-started'},
+            {icon:'network', id:'ws', link:'https://pydio.com/en/docs/cells/v1/storage-data-and-metadata'},
+            {icon:'account-multiple', id:'users', link:'https://pydio.com/en/docs/cells/v1/access-control-and-security'},
+            {icon:'professional-hexagon', id:'advanced', link:'https://pydio.com/en/docs/cells/v1/advanced'}
         ];
 
         // DOCS LIST
@@ -204,8 +203,8 @@ let Dashboard = React.createClass({
                 </List>
                 <Divider/>
                 <CardActions style={{textAlign:'right'}}>
-                    <FlatButton label={message('ent.btn.more')} primary={true}  onTouchTap={()=>{window.open('https://pydio.com/en/pydio-7-overview')}} />
-                    <FlatButton label={message('ent.btn.contact')} primary={true}  onTouchTap={()=>{window.open('https://pydio.com/en/get-pydio/contact')}} />
+                    <FlatButton label={message('ent.btn.more')} primary={true}  onTouchTap={()=>{window.open('https://pydio.com/en/features/pydio-cells-overview')}} />
+                    <FlatButton label={message('ent.btn.contact')} primary={true}  onTouchTap={()=>{window.open('https://pydio.com/en/pricing/contact')}} />
                 </CardActions>
             </Card>
         );
@@ -215,7 +214,6 @@ let Dashboard = React.createClass({
                 <div style={{display:'flex', alignItems:'top', flexWrap:'wrap'}}>
                     {WELCOME_COMMUNITY_CARD}
                     {DISCOVER_ENTERPRISE_CARD}
-                    {GET_SOME_HELP_CARD}
                     {PAY_IT_FORWARD_CARD}
                 </div>
             </div>
