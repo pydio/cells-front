@@ -33,7 +33,7 @@ class ShareView extends React.Component {
             resources: [],
             loading: false,
             selectedModel: null,
-            shareType: 'LINKS'
+            shareType: props.defaultShareType || 'LINKS'
         };
 
     }
@@ -47,7 +47,11 @@ class ShareView extends React.Component {
         const api = new ShareServiceApi(PydioApi.getRestClient());
         const request = new RestListSharedResourcesRequest();
         request.ShareType = ListSharedResourcesRequestListShareType.constructFromObject(this.state.shareType);
-        request.OwnedBySubject = true;
+        if (this.props.subject) {
+            request.Subject = this.props.subject;
+        } else {
+            request.OwnedBySubject = true;
+        }
         this.setState({loading: true});
         api.listSharedResources(request).then(res => {
             this.setState({resources: res.Resources || [], loading: false});
@@ -58,6 +62,9 @@ class ShareView extends React.Component {
     }
 
     getLongestPath(node){
+        if (!node.AppearsIn) {
+            return {path: node.Path, basename:node.Path};
+        }
         let paths = {};
         node.AppearsIn.map(a => {
             paths[a.Path] = a;
@@ -116,7 +123,7 @@ class ShareView extends React.Component {
                         pydio={pydio}
                         iconClassName={"mdi mdi-share-variant"}
                         primaryTextId={m(131)}
-                        style={{flex: 1, height: 300}}
+                        style={{flex: 1, height: 300, backgroundColor: 'transparent'}}
                     />
                 }
                 {!loading && resources.length > 0 &&
@@ -138,7 +145,8 @@ class ShareView extends React.Component {
                             return <ListItem
                                 primaryText={basename}
                                 secondaryText={res.Link ? m(251) + ': ' + res.Link.Description : m(284).replace('%s', res.Cells.length)}
-                                onTouchTap={()=>{this.goTo(appearsIn)}}
+                                onTouchTap={()=>{appearsIn ? this.goTo(appearsIn) : null}}
+                                disabled={!appearsIn}
                                 leftIcon={<FontIcon className={icon}/>}
                             />
                         })}

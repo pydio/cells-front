@@ -70,6 +70,6 @@ $mess=array(
     "49" => "Shares",
     "50" => "Shared Files & Folders",
     "51" => "With this user",
-    "52" => "By this user",
+    "52" => "Cells and public links created by this user",
     "53" => "Shared by %1 from within workspace %2",
 );

@@ -635,11 +635,13 @@ class Editor extends React.Component{
                 );
 
                 if(this.state.currentPane === 'shares'){
+                    const {node, pydio} = this.props;
+                    console.log(node);
                     shares = (
                         <SharesList
+                            pydio={pydio}
                             userId={filterUserId}
-                            sharedWorkspaces={this.state.roleData.ALL.SHARED_REPOSITORIES}
-                            workspacesDetails={this.state.roleData.ALL.REPOSITORIES_DETAILS}
+                            userData={this.state.roleData.USER}
                         />
                     );
                 }else{
@@ -666,7 +668,7 @@ class Editor extends React.Component{
         var leftNav = [
             <PaperEditorNavHeader key="1" label={this.getMessage('ws.28', 'ajxp_admin')}/>,
             <PaperEditorNavEntry key="info" keyName="info" onClick={this.setSelectedPane.bind(this)} label={infoMenuTitle} selectedKey={this.state.currentPane}/>,
-            rolesPaneMenu,
+            rolesPaneMenu, sharesMenu,
             <PaperEditorNavHeader key="2" label={this.getMessage('34')}/>,
             <PaperEditorNavEntry key="workspaces" keyName="workspaces" onClick={this.setSelectedPane.bind(this)} label={this.getMessage('35')} selectedKey={this.state.currentPane}/>,
             <PaperEditorNavEntry key="pages" keyName="pages" onClick={this.setSelectedPane.bind(this)} label={this.getMessage('36')} selectedKey={this.state.currentPane}/>,
