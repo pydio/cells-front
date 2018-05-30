@@ -50,8 +50,8 @@ class ShareView extends React.Component {
         request.OwnedBySubject = true;
         this.setState({loading: true});
         api.listSharedResources(request).then(res => {
-            this.setState({resources: res.Resources || []});
-        }).finally(() => {
+            this.setState({resources: res.Resources || [], loading: false});
+        }).catch(() => {
             this.setState({loading: false});
         });
 
@@ -65,7 +65,11 @@ class ShareView extends React.Component {
         let keys = Object.keys(paths);
         keys.sort();
         const longest = keys[keys.length - 1];
-        return {path: longest, appearsIn: paths[longest], basename:PathUtils.getBasename(longest)};
+        let label = PathUtils.getBasename(longest);
+        if (!label) {
+            label = paths[longest].WsLabel;
+        }
+        return {path: longest, appearsIn: paths[longest], basename:label};
     }
 
     goTo(appearsIn){
