@@ -72,4 +72,6 @@ $mess=array(
     "51" => "Con este usuario",
     "52" => "Por este usuario",
     "53" => "Compartido por %1 desde el workspace %2",
+    "54" => "Basic user informations. Use button on the right to see more actions.",
+    "55" => "Toggle profile and roles to automatically grant permissions to this user.",
 );

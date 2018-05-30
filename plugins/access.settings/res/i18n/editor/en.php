@@ -72,4 +72,6 @@ $mess=array(
     "51" => "With this user",
     "52" => "Cells and public links created by this user",
     "53" => "Shared by %1 from within workspace %2",
+    "54" => "Basic user informations. Use button on the right to see more actions.",
+    "55" => "Toggle profile and roles to automatically grant permissions to this user.",
 );
