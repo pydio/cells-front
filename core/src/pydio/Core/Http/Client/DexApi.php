@@ -240,7 +240,7 @@ class DexApi extends MicroApi {
             }
             return $json;
         }catch (Exception $e){
-            session_destroy();
+            @session_destroy();
             throw new AuthRequiredException();
         }
         return null;
