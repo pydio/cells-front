@@ -44,6 +44,7 @@ use Pydio\Core\Http\Message\UserMessage;
 use Pydio\Core\Http\Response\FileReaderResponse;
 use Pydio\Core\Http\Response\SerializableResponseStream;
 use Pydio\Core\Model\ContextInterface;
+use Pydio\Core\Services\ApplicationState;
 use Pydio\Core\Services\ConfService;
 use Pydio\Core\Services\LocaleService;
 use Pydio\Core\Services\SessionService;
@@ -444,13 +445,6 @@ class FsAccessDriver extends AbstractAccessDriver implements IPydioWrapperProvid
             // Chec if it's forbidden
             $this->filterUserSelectionToHidden($selection->getContext(), [$userfile_name]);
 
-            if($uploadedFile instanceof ExternalUploadedFile && $uploadedFile->getStatus() == ExternalUploadedFile::STATUS_UPLOAD_FINISHED){
-                // GO DIRECTLY TO POST_PROCESSING AND RETURN.
-                $createdNode = new Node($destination."/".$userfile_name);
-                $this->uploadPostProcess($request, $createdNode, false, (isset($httpVars["exists"]) && $httpVars["exists"] === "true"), $repoData["chmod"]);
-                return;
-            }
-
             // MODIFY TARGET IF AUTO RENAME
             if (isSet($httpVars["auto_rename"])) {
                 $userfile_name = self::autoRenameForDest($destination, $userfile_name);
@@ -469,32 +463,26 @@ class FsAccessDriver extends AbstractAccessDriver implements IPydioWrapperProvid
                 throw new \Exception($e->getMessage(), 507);
             }
 
+            $this->logDebug("fs", json_encode($httpVars));
             // PARTIAL UPLOAD CASE - PREPPEND .dlpart extension
             if(isSet($httpVars["partial_upload"]) && $httpVars["partial_upload"] == 'true' && isSet($httpVars["partial_target_bytesize"])) {
+                $realDestination = $destination;
+                $destination = ApplicationState::getTemporaryFolder() . "/" . md5($destination);
+                if(!file_exists($destination)) {
+                    mkdir($destination, 0755);
+                }
                 $partialUpload = true;
                 $partialTargetSize = intval($httpVars["partial_target_bytesize"]);
                 if(!isSet($httpVars["appendto_urlencoded_part"])) {
                     $userfile_name .= ".dlpart";
-                    $targetUrl = $destination."/".$userfile_name;
                 }
-            }
-
-            if($uploadedFile instanceof ExternalUploadedFile && $uploadedFile->getStatus() == ExternalUploadedFile::STATUS_REQUEST_OPTIONS){
-                // Now build options and send that as a reponse
-                // Add Callback data : exists=true
-                $createdNode = new Node($targetUrl);
-                $options = MetaStreamWrapper::getResolvedOptionsForNode($createdNode);
-                $response = new JsonResponse([
-                    "CONTEXT"               => $createdNode->getContext()->getStringIdentifier(),
-                    "OPTIONS"               => $options,
-                    "PATH"                  => $createdNode->getPath(),
-                    "CALLBACK_PARAMETERS"   => ["exists" => $already_existed]
-                ]);
-                return;
+                $targetUrl = $destination."/".$userfile_name;
             }
 
             // NOW DO THE ACTUAL COPY
+            $this->logDebug("fs", "Copying uploaded data to " . $targetUrl);
             $this->copyUploadedData($uploadedFile, $targetUrl, $mess);
+            $this->logDebug("fs", "Copying uploaded data OK");
 
             // PARTIAL UPLOAD - PART II: APPEND DATA TO EXISTING PART
             if (isSet($httpVars["appendto_urlencoded_part"])) {
@@ -503,12 +491,9 @@ class FsAccessDriver extends AbstractAccessDriver implements IPydioWrapperProvid
                     $originalAppendTo = $appendTo;
                     $appendTo .= ".dlpart";
                 }
-                $this->logDebug("AppendTo FILE".$appendTo);
+                $this->logError("fs", "Append ".$userfile_name." to " . $appendTo);
                 $already_existed = $this->appendUploadedData($destination, $userfile_name, $appendTo);
                 $userfile_name = $appendTo;
-                $targetAppended = new Node($destination."/".$userfile_name);
-                clearstatcache(true, $targetAppended->getUrl());
-                $targetAppended->loadNodeInfo(true);
                 if($partialUpload && $partialTargetSize == filesize($destination."/".$userfile_name)){
                     // This was the last part. We can now rename to the original name.
                     if(is_file($destination."/".$originalAppendTo)){
@@ -523,11 +508,18 @@ class FsAccessDriver extends AbstractAccessDriver implements IPydioWrapperProvid
                     // Send a create event!
                     $already_existed = false;
                     $lastPartAppended = true;
+
+                    // Now upload to backend and clean temporary resources
+                    $this->logDebug("fs", "Now Uploading to backend: " . $realDestination . "/" . $userfile_name);
+                    $this->uploadTemporaryUpload($destination . "/" . $userfile_name, $realDestination . "/" . $userfile_name);
+                    @rmdir($destination);
+                    $realDestination = false;
                 }
             }
-
-            $createdNode = new Node($destination."/".$userfile_name);
-            $this->uploadPostProcess($request, $createdNode, $partialUpload, $already_existed, $repoData["chmod"]);
+            if(!$realDestination) {
+                $createdNode = new Node($destination."/".$userfile_name);
+                $this->uploadPostProcess($request, $createdNode, $partialUpload, $already_existed, $repoData["chmod"]);
+            }
 
         }catch(\Exception $e){
             $errorCode = $e->getCode();
@@ -536,6 +528,31 @@ class FsAccessDriver extends AbstractAccessDriver implements IPydioWrapperProvid
         }
 
     }
+
+    /**
+     * @param String $folder Folder destination
+     * @param String $source Maybe updated by the function
+     * @param String $target Existing part to append data
+     * @return bool If the target file already existed or not.
+     * @throws \Exception
+     */
+    protected function uploadTemporaryUpload($source, $target){
+
+        $this->logDebug("Should copy stream from $source to $target");
+        $partO = fopen($source, "r");
+        $appendF = fopen($target, "w");
+        while (!feof($partO)) {
+            $buf = fread($partO, 4096);
+            fwrite($appendF, $buf, strlen($buf));
+        }
+        fclose($partO);
+        fclose($appendF);
+        $this->logDebug("Done, closing streams!");
+
+        @unlink($source);
+
+    }
+
 
     /**
      * @param ServerRequestInterface $request
