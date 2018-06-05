@@ -17,7 +17,7 @@
     "symfony/console":"^3.0",
     "aws/aws-sdk-php": "^3.19.4",
     "dapphp/securimage":"3.6.4",
-    "phpseclib/phpseclib":"2.0.3"
+    "phpseclib/phpseclib":"2.0.11"
   }
 
 }
