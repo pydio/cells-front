@@ -5,6 +5,7 @@
             <param group="MIXIN_MESSAGE[Repository Commons]" name="USER_DESCRIPTION" type="textarea" label="MIXIN_MESSAGE[Description]" description="MIXIN_MESSAGE[A user-defined description of the content of this workspace]" no_templates="false" default=""/>
             <param group="MIXIN_MESSAGE[Repository Commons]" name="DEFAULT_RIGHTS" type="select" choices="r|MIXIN_MESSAGE[Read Only],rw|MIXIN_MESSAGE[Read and Write],w|MIXIN_MESSAGE[Write Only (upload)]" label="MIXIN_MESSAGE[Default Rights]" description="MIXIN_MESSAGE[This right pattern (empty, r, or rw) will be applied at user creation for this repository.]" no_templates="false" default=""/>
             <param group="MIXIN_MESSAGE[Repository Commons]" name="PYDIO_SLUG" type="string" label="MIXIN_MESSAGE[Alias]" description="MIXIN_MESSAGE[Alias for replacing the generated unique id of the repository]" mandatory="false" no_templates="true"/>
+            <param group="MIXIN_MESSAGE[Repository Commons]" name="ALLOW_SYNC" type="boolean" label="CONF_MESSAGE[Allow Synchronization]" description="CONF_MESSAGE[Allow users to use Pydio Sync with this workspace. Recommended usecases are for Personal Files workspaces or for shared workspaces with uni-directional synchronizations.]" no_templates="true"/>
         </server_settings>
     </slug_provider>
     <template_provider>

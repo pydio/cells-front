@@ -44,6 +44,7 @@ use Pydio\Core\Utils\Vars\InputFilter;
 use Pydio\Core\Utils\Vars\PathUtils;
 use Pydio\Core\Utils\Vars\StatHelper;
 use Swagger\Client\ApiException;
+use Swagger\Client\Model\IdmWorkspaceScope;
 use Swagger\Client\Model\RestChangeRequest;
 use Swagger\Client\Model\RestGetBulkMetaRequest;
 use Zend\Diactoros\Response;
@@ -402,6 +403,7 @@ class GatewayAccessDriver extends S3AccessDriver
      * @param ServerRequestInterface $request
      * @param ResponseInterface $responseInterface
      * @throws ApiException
+     * @throws PydioException
      */
     public function changesAction(ServerRequestInterface $request, ResponseInterface &$responseInterface){
 
@@ -410,7 +412,14 @@ class GatewayAccessDriver extends S3AccessDriver
         $httpVars = $request->getParsedBody();
         /** @var ContextInterface $ctx */
         $ctx = $request->getAttribute("ctx");
-        $pathFilter = $ctx->getRepository()->getSlug();
+        $workspace = $ctx->getRepository();
+        $pathFilter = $workspace->getSlug();
+        $scope = $workspace->getScope();
+        $attributes = $workspace->getIdmAttributes();
+        if($scope !== IdmWorkspaceScope::ADMIN || empty($attributes) || !isSet($attributes["allowSync"]) || $attributes["allowSync"] !== true) {
+            throw new PydioException("You are not allowed to sync this workspace");
+        }
+
         $stream = $request->getParsedBody()["stream"] === "true";
         $seqId = 0;
         if(isSet($httpVars["seq_id"])){

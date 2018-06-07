@@ -62,6 +62,8 @@ class KeystoreAuthFrontend extends AbstractAuthFrontend
      * @param \Psr\Http\Message\ResponseInterface $response
      * @param bool $isLast
      * @return bool
+     * @throws PydioException
+     * @throws \Exception
      */
     function tryToLogUser(\Psr\Http\Message\ServerRequestInterface &$request, \Psr\Http\Message\ResponseInterface &$response, $isLast = false)
     {

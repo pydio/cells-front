@@ -484,12 +484,14 @@ class RepositoryService
         $jsonAttributes = $workspace->getAttributes();
         if(!empty($jsonAttributes)){
             $attributes = json_decode($jsonAttributes, true);
-            if(!empty($attributes) && isSet($attributes["plugins"])){
+            if(!empty($attributes)){
                 $repo->setIdmAttributes($attributes);
-                foreach($attributes["plugins"] as $metaName => $metaOptions){
-                    list($metaType, $metaId) = explode(".", $metaName);
-                    if(isSet($plugs[$metaType][$metaId]) && $plugs[$metaType][$metaId]->isEnabled()){
-                        $options["META_SOURCES"][$metaName] = $metaOptions;
+                if(isSet($attributes["plugins"])){
+                    foreach($attributes["plugins"] as $metaName => $metaOptions){
+                        list($metaType, $metaId) = explode(".", $metaName);
+                        if(isSet($plugs[$metaType][$metaId]) && $plugs[$metaType][$metaId]->isEnabled()){
+                            $options["META_SOURCES"][$metaName] = $metaOptions;
+                        }
                     }
                 }
             }

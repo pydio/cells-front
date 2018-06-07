@@ -30,12 +30,10 @@ use Pydio\Access\Core\AbstractAccessDriver;
 use Pydio\Core\Http\Client\MicroApi;
 use Pydio\Core\Http\Response\SerializableResponseStream;
 use Pydio\Core\Model\ContextInterface;
-use Pydio\Core\Controller\Controller;
 use Pydio\Core\PluginFramework\PluginsService;
 use Pydio\Core\Services\LocaleService;
 use Pydio\Core\Services\RepositoryService;
 use Pydio\Core\Services\UsersService;
-use Swagger\Client\ObjectSerializer;
 use Zend\Diactoros\Response\JsonResponse;
 
 defined('PYDIO_EXEC') or die( 'Access not allowed');
@@ -172,6 +170,8 @@ class ConfAccessDriver extends AbstractAccessDriver
     /**
      * @param ServerRequestInterface $requestInterface
      * @param ResponseInterface $responseInterface
+     * @throws \Pydio\Core\Exception\PydioException
+     * @throws \Exception
      */
     public function usersAction(ServerRequestInterface $requestInterface, ResponseInterface &$responseInterface){
         $pluginManager = new UsersManager($requestInterface->getAttribute("ctx"), $this->getName());
@@ -198,7 +198,7 @@ class ConfAccessDriver extends AbstractAccessDriver
      * @param ResponseInterface $responseInterface
      */
     public function repositoriesAction(ServerRequestInterface $requestInterface, ResponseInterface &$responseInterface){
-        $pluginManager = new RepositoriesManager($requestInterface->getAttribute("ctx"), $this->getName());
+        $pluginManager = new WorkspacesManager($requestInterface->getAttribute("ctx"), $this->getName());
         $responseInterface = $pluginManager->repositoriesActions($requestInterface, $responseInterface);
     }
 
@@ -318,7 +318,7 @@ class ConfAccessDriver extends AbstractAccessDriver
 
         if (isSet($httpVars["repository_id"]) || isSet($httpVars["workspaceId"])) {
 
-            $manager = new RepositoriesManager($ctx, $this->getName());
+            $manager = new WorkspacesManager($ctx, $this->getName());
 
         } else if (isSet($httpVars["role_id"]) || isSet($httpVars["roleId"])) {
 
@@ -363,6 +363,7 @@ class ConfAccessDriver extends AbstractAccessDriver
     /**
      * @param ServerRequestInterface $requestInterface
      * @param ResponseInterface $responseInterface
+     * @throws \Exception
      */
     public function displayEnterprise(ServerRequestInterface $requestInterface, ResponseInterface &$responseInterface){
         $touchFile = $this->getPluginWorkDir(true).DIRECTORY_SEPARATOR."enterprise-display";

@@ -110,7 +110,10 @@ class RepositoryXML
         }
 
         if($repoObject->getAccessType() === "gateway" && $repoObject->getScope() === IdmWorkspaceScope::ADMIN) {
-            $streamString .= " meta_syncable_REPO_SYNCABLE=\"true\" ";
+            $attributes = $repoObject->getIdmAttributes();
+            if(isSet($attributes["allowSync"]) && $attributes["allowSync"] === true){
+                $streamString .= " meta_syncable_REPO_SYNCABLE=\"true\" ";
+            }
         }
         
         $slugString = "";
