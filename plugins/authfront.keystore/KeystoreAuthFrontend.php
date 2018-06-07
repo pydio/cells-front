@@ -27,6 +27,7 @@ use Pydio\Core\Http\Client\DexApi;
 use Pydio\Core\Model\Context;
 use Pydio\Core\Model\ContextInterface;
 use Pydio\Core\Services\ApiKeysService;
+use Pydio\Core\Services\ApplicationState;
 use Pydio\Core\Services\AuthService;
 use Pydio\Auth\Frontend\Core\AbstractAuthFrontend;
 use Pydio\Core\Services\ConfService;
@@ -71,7 +72,12 @@ class KeystoreAuthFrontend extends AbstractAuthFrontend
         $httpVars = $request->getParsedBody();
         $token = $this->detectVar($httpVars, "auth_token");
         if (empty($token)) {
-            //$this->logDebug(__FUNCTION__, "Empty token", $_POST);
+            $action = $request->getAttribute("action");
+            $restPath = $request->getAttribute("rest_path");
+            if($action === "keystore_generate_auth_token" && !empty($restPath) && trim($restPath, "/") !== ""){
+                // This will go through the authentication process - set the Nonce
+                DexApi::$restTokenNonce = "device-" . InputFilter::sanitize(trim($restPath, "/"), InputFilter::SANITIZE_ALPHANUM);
+            }
             return false;
         }
 
@@ -85,7 +91,9 @@ class KeystoreAuthFrontend extends AbstractAuthFrontend
             $dex = new DexApi();
             $fTime = time();
             try{
-                $tokens = $dex->refreshToken($tokens["refresh_token"]);
+                $stored = $data["JWT_TOKEN"];
+                DexApi::$restTokenNonce = "device-" . $data["DEVICE_ID"];
+                $tokens = $dex->refreshToken($stored["refresh_token"], false);
                 $data["JWT_TOKEN"] = $tokens;
                 $data["JWT_TOKEN_TIME"] = $fTime;
                 ApiKeysService::refreshPairForAuthfront($token, $data);
@@ -93,7 +101,7 @@ class KeystoreAuthFrontend extends AbstractAuthFrontend
                 return false;
             }
         } else {
-            DexApi::presetRestToken($data["JWT_TOKEN"], $data["JWT_TOKEN_TIME"]);
+            DexApi::presetRestToken($data["JWT_TOKEN"], $data["JWT_TOKEN_TIME"], "device-" . $data["DEVICE_ID"]);
         }
 
         // Verify auth token signature
@@ -138,6 +146,7 @@ class KeystoreAuthFrontend extends AbstractAuthFrontend
      * @param ServerRequestInterface $requestInterface
      * @param ResponseInterface $responseInterface
      * @return String
+     * @throws PydioException
      */
     function authTokenActions(ServerRequestInterface $requestInterface, ResponseInterface &$responseInterface)
     {

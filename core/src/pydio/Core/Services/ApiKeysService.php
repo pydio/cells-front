@@ -57,7 +57,6 @@ class ApiKeysService
      * @param string $deviceIP
      * @return array
      * @throws PydioException
-     * @throws \Exception
      */
     public static function generatePairForAuthfront($userId, $jwtTokens, $jwtTokenTime, $deviceId = "", $deviceUA = "", $deviceIP = ""){
 
@@ -80,6 +79,11 @@ class ApiKeysService
 
     }
 
+    /**
+     * @param $token
+     * @param $data
+     * @throws PydioException
+     */
     public static function refreshPairForAuthfront($token, $data){
         $store = self::getStore();
         $store->storeDocument("keystore", $token, "", $data, $data);
