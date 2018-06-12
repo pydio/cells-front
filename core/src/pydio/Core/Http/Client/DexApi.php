@@ -153,8 +153,13 @@ class DexApi extends MicroApi {
      */
     public static function clientExpirationTime($referenceTime) {
 
-        $issueTime = SessionService::fetch(DexApi::SESSION_TOKEN_TIME_KEY);
-        $tokens = SessionService::fetch(DexApi::SESSION_TOKEN_KEY);
+        if(ApplicationState::sapiUsesSession()){
+            $issueTime = SessionService::fetch(DexApi::SESSION_TOKEN_TIME_KEY);
+            $tokens = SessionService::fetch(DexApi::SESSION_TOKEN_KEY);
+        } else {
+            $issueTime =  DexApi::$restTokenTime;
+            $tokens = DexApi::$restToken;
+        }
         $expireIn = intval($tokens["expires_in"]);
         return $issueTime - time() + $referenceTime + $expireIn;
 
