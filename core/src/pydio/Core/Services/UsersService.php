@@ -212,20 +212,14 @@ class UsersService
      */
     public static function filterUserSensitivity($user)
     {
+        return $user;
+        /*
         if (!ConfService::getGlobalConf("CASE_SENSITIVE", "auth")) {
             return strtolower($user);
         } else {
             return $user;
         }
-    }
-
-    /**
-     * Get config to knwo whether we should ignore user case
-     * @return bool
-     */
-    public static function ignoreUserCase()
-    {
-        return !ConfService::getGlobalConf("CASE_SENSITIVE", "auth");
+        */
     }
 
     /**

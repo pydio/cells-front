@@ -38,6 +38,9 @@ use Pydio\Core\Utils\Vars\UrlUtils;
 use Swagger\Client\Model\RestUserJobRequest;
 use Zend\Diactoros\Response\JsonResponse;
 
+use Aws\S3\MultipartUploader;
+use Aws\Exception\MultipartUploadException;
+
 defined('PYDIO_EXEC') or die( 'Access not allowed');
 
 /**
@@ -145,8 +148,8 @@ class S3AccessDriver extends FsAccessDriver
      */
     public function directoryUsage(Node $node){
         $client = $this->getS3Service($node->getContext());
-        $bucket = $node->getRepository()->getContextOption($node->getContext(), "CONTAINER"); //(isSet($repositoryResolvedOptions["CONTAINER"])?$repositoryResolvedOptions["CONTAINER"]:$this->repository->getOption("CONTAINER"));
-        $path   = rtrim($node->getRepository()->getContextOption($node->getContext(), "PATH"), "/").$node->getPath(); //(isSet($repositoryResolvedOptions["PATH"])?$repositoryResolvedOptions["PATH"]:"");
+        $bucket = $node->getRepository()->getContextOption($node->getContext(), "CONTAINER");
+        $path   = rtrim($node->getRepository()->getContextOption($node->getContext(), "PATH"), "/").$node->getPath();
         $objects = $client->getIterator('ListObjects', array(
             'Bucket' => $bucket,
             'Prefix' => $path
@@ -204,6 +207,34 @@ class S3AccessDriver extends FsAccessDriver
 
     }
 
+    /**
+     * @param ContextInterface $ctx Folder destination
+     * @param String $source Maybe updated by the function
+     * @param String $target Existing part to append data
+     */
+    protected function uploadTemporaryUpload($ctx, $source, $target){
+
+        $time = time();
+        $client = $this->getS3Service($ctx);
+        $node = new Node($target);
+        $bucket = $node->getRepository()->getContextOption($ctx, "CONTAINER");
+        $path   = rtrim($node->getRepository()->getContextOption($ctx, "PATH"), "/").$node->getPath();
+        $this->logError("FS", "Use Multipart Upload to upload $source to $bucket / $key");
+        $uploader = new MultipartUploader($client, $source, [
+            'bucket' => $bucket,
+            'key'    => $path,
+        ]);
+        try {
+            $result = $uploader->upload();
+            $this->logError("FS", "Upload complete: {$result['ObjectURL']}");
+        } catch (MultipartUploadException $e) {
+            $this->logError("FS", $e->getMessage());
+            @unlink($source);
+            throw $e;
+        }
+        @unlink($source);
+
+    }
 
     /**
      * @param Node $dir

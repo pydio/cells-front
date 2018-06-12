@@ -8,7 +8,6 @@
     </client_settings>
 	<server_settings>
 		<global_param name="ENABLE_USERS" group="CONF_MESSAGE[Generic Auth Features]"  type="boolean" label="CONF_MESSAGE[Enable Users]" description="CONF_MESSAGE[Activate the users management system to protect your Pydio installation.]" mandatory="true" default="true" expose="true"/>
-		<global_param name="CASE_SENSITIVE" group="CONF_MESSAGE[Generic Auth Features]"  type="boolean" label="CONF_MESSAGE[Case Sensitive]" description="CONF_MESSAGE[Whether the users identifiers should be case sensitive or not]" mandatory="true" default="true"/>
 		<global_param name="ALLOW_GUEST_BROWSING" group="CONF_MESSAGE[Generic Auth Features]"  type="boolean" label="CONF_MESSAGE[Guest Browsing]" description="CONF_MESSAGE[Enable the 'guest' user, who does not need to log in.]" mandatory="true" default="false" expose="true"/>
 		<global_param name="PASSWORD_MINLENGTH" group="CONF_MESSAGE[Generic Auth Features]" type="integer" label="CONF_MESSAGE[Password length]" description="CONF_MESSAGE[Minimum number of characters required for passwords in the application]" mandatory="true" default="8" expose="true"/>
 		<global_param name="SECURE_LOGIN_FORM" group="CONF_MESSAGE[Login Form]"  type="boolean" label="CONF_MESSAGE[Secure Login Form]" description="CONF_MESSAGE[Raise the security of the login form by disabling autocompletion and remember me feature]" mandatory="true" default="false" expose="true"/>
