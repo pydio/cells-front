@@ -32,9 +32,6 @@ sed -i "s/##REVISION##/$COMMIT/g" conf/*
 sed -i "s/##VERSION_DATE##/$DATE/g" conf/*
 sed -i "s/##VERSION_NUMBER##/$BUILD_NAME/g" conf/*
 
-echo "Clearing Composer cache"
-composer clearcache
-
 # Compile Sources
 echo "Running Composer in core and plugins"
 find . -maxdepth 3 -name composer.json -execdir composer install \;
