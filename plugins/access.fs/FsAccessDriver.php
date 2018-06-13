@@ -767,17 +767,20 @@ class FsAccessDriver extends AbstractAccessDriver implements IPydioWrapperProvid
 
                 clearstatcache();
                 $jsonData = new \stdClass;
-                if($selection->isUnique()){
+                if($selection->isUnique() && $selection->getUniqueNode()->exists()){
                     $stat = @stat($selection->getUniqueNode()->getUrl());
-                    if ($stat !== false && $this->isReadable($selection->getUniqueNode())) {
+                    if ($stat !== false) {
                         $jsonData = $stat;
                     }
                 }else{
                     $nodes = $selection->buildNodes();
                     foreach($nodes as $node){
-                        $stat = @stat($node->getUrl());
-                        if(!$stat || !$this->isReadable($node)) {
-                            $stat = new \stdClass();
+                        $stat = new \stdClass();
+                        if ($node->exists()){
+                            $st = @stat($node->getUrl());
+                            if($st !== false) {
+                                $stat = $st;
+                            }
                         }
                         $path = $node->getPath();
                         $jsonData->$path = $stat;
