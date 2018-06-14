@@ -23,8 +23,7 @@ import Pydio from 'pydio'
 import {Paper, FontIcon, IconButton} from 'material-ui'
 const {MaterialTable} = Pydio.requireLib('components');
 import Log from '../model/Log'
-
-import debounce from 'lodash.debounce';
+const {moment} = Pydio.requireLib('boot');
 
 class LogTable extends React.Component {
 
@@ -163,16 +162,21 @@ class LogTable extends React.Component {
                 }
             },
             {name:'Ts', label: pydio.MessageHash["settings.17"], renderCell:(row)=>{
-                const dateString = new Date(row.Ts * 1000).toLocaleString();
+                const m = moment(row.Ts * 1000);
+                let dateString;
+                if (m.isSame(Date.now(), 'day')){
+                    dateString = m.format('HH:mm:ss');
+                } else {
+                    dateString = m.toLocaleString();
+                }
                 if(row.HasRoot){
                     return <span style={{display:'flex', alignItems:'center'}}><FontIcon className={"mdi mdi-play-circle-outline"} style={{fontSize: 12, marginRight: 5}}/> {dateString}</span>
                 }
                 return dateString;
-            }, style:{width: 200}, headerStyle:{width: 200}},
-            {name:'RemoteAddress', label: pydio.MessageHash["settings.18"]},
-            {name:'UserName', label: pydio.MessageHash["settings.20"]},
-            {name:'Logger', label:'Service'},
-            {name:'Msg', label:'Message', style:{width:'40%'}, headerStyle:{width:'40%'}},
+            }, style:{width: 100, padding: 12}, headerStyle:{width: 100, padding: 12}},
+            {name:'Logger', label:'Service', renderCell:(row) => {return row['Logger'] ? row['Logger'].replace('pydio.', '') : ''}, style:{width: 110, padding: '12px 0'}, headerStyle:{width: 110, padding: '12px 0'}},
+            {name:'UserName', label: pydio.MessageHash["settings.20"], style:{width: 100, padding: 12}, headerStyle:{width: 100, padding: 12}},
+            {name:'Msg', label:'Message'},
         ];
 
         return (
@@ -183,7 +187,16 @@ class LogTable extends React.Component {
                 deselectOnClickAway={true}
                 showCheckboxes={false}
                 emptyStateString={loading ? 'Loading...': (filter || date) ? "No Results" : "No entries"}
-                computeRowStyle={(row) => {if (row.HasRoot){ return {backgroundColor:'#F5F5F5'};} return {}}}
+                computeRowStyle={(row) => {
+                    let style = {};
+                    if (row.HasRoot){
+                        style.backgroundColor = '#F5F5F5';
+                    }
+                    if (row.Level === 'error') {
+                        style.color = '#E53935';
+                    }
+                    return style;
+                }}
             />
         );
     }
