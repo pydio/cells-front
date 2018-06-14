@@ -169,7 +169,9 @@
                 fullPath += PathUtils.getDirname(this._relativePath);
             }
             fullPath = fullPath + '/' + PathUtils.getBasename(this._file.name);
-
+            if (fullPath.normalize) {
+                fullPath = fullPath.normalize('NFC');
+            }
             let params = {
                 get_action:'presigned',
                 file_0:fullPath,
