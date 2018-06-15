@@ -155,7 +155,18 @@ export default class LangUtils{
     static trim(string, charlist){
         return LangUtils.trimLeft(LangUtils.trimRight(string, charlist), charlist);
     }
-    
+
+    static arraySorter(key, isFunc = false){
+        if (isFunc) {
+            return (a, b) => {
+                return a[key]() > b[key]() ? 1 : ( a[key]() < b[key]() ? -1 : 0);
+            };
+        }else {
+            return (a, b) => {
+                return a[key] > b[key] ? 1 : ( a[key] < b[key] ? -1 : 0);
+            };
+        }
+    }
 }
 
 LangUtils.slugTable = [

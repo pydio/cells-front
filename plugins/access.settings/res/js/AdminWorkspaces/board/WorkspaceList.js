@@ -21,9 +21,9 @@ import React from 'react'
 import PydioDataModel from 'pydio/model/data-model'
 import Node from 'pydio/model/node'
 import Pydio from 'pydio'
+import LangUtils from 'pydio/util/lang'
 const PydioComponents = Pydio.requireLib('components');
 const {MaterialTable} = PydioComponents;
-
 
 export default React.createClass({
 
@@ -75,6 +75,9 @@ export default React.createClass({
                 slug : child.getMetadata().get("slug"),
                 summary: summary
             });
+        });
+        data.sort((a,b) => {
+            return a.label > b.label ? 1 : ( a.label < b.label ? -1 : 0);
         });
         return data;
     },

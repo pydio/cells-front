@@ -27,6 +27,7 @@ const Repository = require('pydio/model/repository');
 import ResourcesManager from 'pydio/http/resources-manager'
 import {IconButton, Popover} from 'material-ui'
 const {muiThemeable} = require('material-ui/styles');
+import LangUtils from 'pydio/util/lang'
 
 class WorkspacesList extends React.Component{
 
@@ -61,10 +62,16 @@ class WorkspacesList extends React.Component{
         let entries = [], sharedEntries = [], createAction;
         const {workspaces,showTreeForWorkspace} = this.state;
         const {pydio, className, style, filterByType, muiTheme} = this.props;
+        let wsList = [];
+        workspaces.forEach((o,k)=>{
+            wsList.push(o);
+        });
+        wsList.sort(LangUtils.arraySorter('getLabel', true));
 
-        workspaces.forEach(function(object, key){
+        wsList.forEach(function(object){
 
-            if (Repository.isInternal(object.getId())) return;
+            const key = object.getId();
+            if (Repository.isInternal(key)) return;
             if (object.hasContentFilter()) return;
             if (object.getAccessStatus() === 'declined') return;
 

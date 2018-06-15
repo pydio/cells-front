@@ -24,6 +24,7 @@ import DataSourceEditor from '../editor/DataSourceEditor'
 import VersionPolicyEditor from '../editor/VersionPolicyEditor'
 import PydioDataModel from 'pydio/model/data-model'
 import Node from 'pydio/model/node'
+import LangUtils from 'pydio/util/lang'
 import Pydio from 'pydio'
 const {MaterialTable} = Pydio.requireLib('components');
 import DataSource from '../model/DataSource'
@@ -179,12 +180,9 @@ class DataSourcesBoard extends React.Component {
 
     render(){
         const {dataSources, versioningPolicies} = this.state;
-        dataSources.sort((a,b) => {
-            return a.Name > b.Name ? 1 : ( a.Name < b.Name ? -1 : 0);
-        });
-        versioningPolicies.sort((a,b) => {
-            return a.Name > b.Name ? 1 : ( a.Name < b.Name ? -1 : 0);
-        });
+        dataSources.sort(LangUtils.arraySorter('Name'));
+        versioningPolicies.sort(LangUtils.arraySorter('Name'));
+
         const {currentNode, pydio, versioningReadonly} = this.props;
         const dsColumns = [
             {name:'Name', label:'Name', style:{fontSize: 15}},
