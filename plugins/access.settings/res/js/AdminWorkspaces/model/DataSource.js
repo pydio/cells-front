@@ -18,6 +18,7 @@ class DataSource extends Observable {
                     } else if(val === 'S3'){
                         target['StorageConfiguration'] = {"customEndpoint":""}
                     }
+                    this.internalInvalid = false;
                     target['ApiKey'] = target['ApiSecret'] = ''; // reset values
                 } else if(p === 'Name') {
                     val = LangUtils.computeStringSlug(val).replace("-", "").substr(0, 50);
@@ -25,6 +26,10 @@ class DataSource extends Observable {
                     if (val[0] !== '/') {
                         val = '/' + val;
                     }
+                } else if(p === 'invalid') {
+                    this.internalInvalid = value;
+                    this.notify('update');
+                    return true;
                 }
                 target[p] = val;
                 this.notify('update');
@@ -47,6 +52,7 @@ class DataSource extends Observable {
 
     constructor(model){
         super();
+        this.internalInvalid = false;
         if (model) {
             this.model = model;
             this.snapshot = JSON.parse(JSON.stringify(model));
@@ -89,6 +95,9 @@ class DataSource extends Observable {
     }
 
     isValid(){
+        if(this.internalInvalid){
+            return false;
+        }
         if(this.model.StorageType === 'S3'){
             return this.model.ApiKey && this.model.ApiSecret && this.model.Name && this.model.ObjectsBucket;
         } else {
