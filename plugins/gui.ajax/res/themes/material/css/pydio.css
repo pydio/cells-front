@@ -737,21 +737,20 @@ div.dialogBox div#element_overlay {
 }
 .react-mui-context .material-list.files-list.table-mode .material-list-entry.list-parent-node .material-list-text .material-list-line-2 {
   font-size: 14px;
-  /*color: rgba(0,0,0,0.87);*/
+  text-transform: capitalize;
+  font-style: italic;
 }
 .react-mui-context .material-list.files-list.table-mode .material-list-entry.list-parent-node .material-list-icon {
   padding: 0;
   width: inherit;
 }
 .react-mui-context .material-list.files-list.table-mode .material-list-entry.list-parent-node .material-list-icon .mui-font-icon {
-  background-color: transparent;
+  background-color: transparent !important;
   color: rgba(0, 0, 0, 0.73) !important;
-  margin: 13px 9px 8px 10px;
-  width: 22px;
-  height: 22px;
-  font-size: 20px !important;
-  line-height: 13px !important;
-  padding: 3px !important;
+  margin: 13px 3px 0px 7px !important;
+  font-size: 20px!important;
+  line-height: 13px!important;
+  padding: 3px!important;
 }
 .react-mui-context .material-list.files-list.table-mode .inline-editor {
   margin-left: 40px;
