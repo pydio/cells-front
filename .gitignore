@@ -19,3 +19,5 @@ composer.lock
 /plugins/action.demo_counter/build
 package-lock.json
 /.project
+CHANGELOG.md
+CHANGELOG.html
