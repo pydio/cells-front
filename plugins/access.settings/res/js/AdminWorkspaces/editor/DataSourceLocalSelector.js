@@ -58,17 +58,6 @@ class AutocompleteTree extends React.Component{
         this.loadValues(value);
     }
 
-    baseIsInvalid(path) {
-        const base = PathUtils.getBasename(path);
-        const dir = PathUtils.getDirname(path);
-        let invalid = false;
-        if(LangUtils.computeStringSlug(base) !== base) {
-            invalid = true;
-        }
-        return {invalid, dir, base};
-
-    }
-
     loadValues(value = "") {
         const {peerAddress} = this.props;
         const {searchText} = this.state;
@@ -121,7 +110,6 @@ class AutocompleteTree extends React.Component{
         }
 
         let displayText = this.state.value;
-        const {invalid, dir, base} = this.baseIsInvalid(displayText);
 
         return (
             <div style={{position:'relative', marginTop: -5}}>
@@ -139,8 +127,8 @@ class AutocompleteTree extends React.Component{
                     onUpdateInput={this.handleUpdateInput.bind(this)}
                     onNewRequest={this.handleNewRequest.bind(this)}
                     dataSource={dataSource}
-                    floatingLabelText={invalid?'Last folder is exposed as an S3 bucket and must comply to DNS names!':'Pick a folder'}
-                    floatingLabelStyle={invalid?{color:'#c62828'}:{}}
+                    floatingLabelText={'Pick a folder'}
+                    floatingLabelStyle={{whiteSpace:'nowrap'}}
                     floatingLabelFixed={true}
                     filter={(searchText, key) => (key.toLowerCase().indexOf(searchText.toLowerCase()) === 0)}
                     openOnFocus={true}
@@ -159,6 +147,7 @@ class DataSourceLocalSelector extends React.Component{
         super(props);
         this.state = {
             peerAddresses : [],
+            invalid: false,
         }
     }
 
@@ -169,34 +158,70 @@ class DataSourceLocalSelector extends React.Component{
         })
     }
 
+    baseIsInvalid(path) {
+        let invalid = false;
+        const base = PathUtils.getBasename(path);
+        const segments = LangUtils.trim(path, '/').split('/').length;
+        if (segments < 2) {
+            invalid = 'Make sure to select a two-levels deep folder. Object storage will start on the parent folder.';
+        } else if(LangUtils.computeStringSlug(base) !== base) {
+            invalid = 'Folder is exposed as an S3 bucket and must comply to DNS names.';
+        }
+        console.log(invalid);
+        return invalid;
+    }
+
+    onPathChange(newValue){
+        const {model} = this.props;
+        const invalid = this.baseIsInvalid(newValue);
+        model.invalid = invalid;
+        model.StorageConfiguration.folder = newValue;
+        this.setState({invalid: invalid});
+    }
+
     render(){
 
         const {model} = this.props;
-        const {peerAddresses} = this.state;
+        const {peerAddresses, invalid} = this.state;
 
         return (
-            <div style={{display:'flex', alignItems:'center'}}>
-                <div style={{width: 180, marginRight: 10}}>
-                    <SelectField
-                        value={model.PeerAddress || ''}
-                        floatingLabelFixed={true}
-                        floatingLabelText={"Peer Address"}
-                        onChange={(e,i,v) => {model.PeerAddress = v}}
-                        fullWidth={true}
-                    >
-                        {peerAddresses.map(address => {
-                            return <MenuItem value={address} primaryText={address}/>
-                        })}
-                    </SelectField>
+            <div>
+                <div style={{display:'flex', alignItems:'center'}}>
+                    <div style={{width: 180, marginRight: 10}}>
+                        <SelectField
+                            value={model.PeerAddress || ''}
+                            floatingLabelFixed={true}
+                            floatingLabelText={"Peer Address"}
+                            onChange={(e,i,v) => {model.PeerAddress = v}}
+                            fullWidth={true}
+                        >
+                            {peerAddresses.map(address => {
+                                return <MenuItem value={address} primaryText={address}/>
+                            })}
+                        </SelectField>
+                    </div>
+                    <div style={{flex: 1}}>
+                        {model.PeerAddress &&
+                            <AutocompleteTree
+                                value={model.StorageConfiguration.folder}
+                                peerAddress={model.PeerAddress}
+                                onChange={this.onPathChange.bind(this)}
+                            />
+                        }
+                        {!model.PeerAddress &&
+                            <TextField
+                                style={{marginTop: -3}}
+                                fullWidth={true}
+                                disabled={true}
+                                value={model.StorageConfiguration.folder}
+                                floatingLabelText={"Local folder"}
+                                floatingLabelFixed={true}
+                                hintText={"Select a peer to load folders"}
+                            />
+                        }
+                    </div>
                 </div>
-                <div style={{flex: 1}}>
-                    {model.PeerAddress &&
-                        <AutocompleteTree value={model.StorageConfiguration.folder} peerAddress={model.PeerAddress} onChange={(newValue)=>{model.StorageConfiguration.folder = newValue}}/>
-                    }
-                    {!model.PeerAddress &&
-                        <TextField style={{marginTop: -3}} fullWidth={true} disabled={true} value={model.StorageConfiguration.folder} floatingLabelText={"Local folder"} floatingLabelFixed={true} hintText={"Please first select a peer to load folders list"}/>
-                    }
-                </div>
+                {invalid &&  <div style={{color: '#c62828'}}>{invalid}</div>}
             </div>
         );
 

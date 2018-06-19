@@ -109,9 +109,12 @@ class RepositoryXML
             $streamString .= " user_editable_repository=\"true\" ";
         }
 
-//        if($repoObject->getAccessType() === "gateway") {
-//            $streamString .= " meta_syncable_REPO_SYNCABLE=\"true\" ";
-//        }
+        if($repoObject->getAccessType() === "gateway" && $repoObject->getScope() === IdmWorkspaceScope::ADMIN) {
+            $attributes = $repoObject->getIdmAttributes();
+            if(isSet($attributes["allowSync"]) && $attributes["allowSync"] === true){
+                $streamString .= " meta_syncable_REPO_SYNCABLE=\"true\" ";
+            }
+        }
         
         $slugString = "";
         $slug = $repoObject->getSlug();
@@ -123,29 +126,6 @@ class RepositoryXML
         if ($repoObject->getScope() !== IdmWorkspaceScope::ADMIN) {
             $isSharedString =  'owner="shared"';
         }
-        /*
-        if ($repoObject->hasOwner()) {
-            if(strpos($repoId, 'ocs_remote_share_') === 0){
-                $ownerLabel = $uId = $repoObject->getOwner();
-            }else{
-                $uId = $repoObject->getOwner();
-                if($loggedUser != null && $loggedUser->getId() == $uId){
-                    $currentUserIsOwner = true;
-                }
-                try{
-                    $uObject = UsersService::getUserById($uId);
-                    $ownerLabel = $uObject->getPersonalAttribute("displayName", $uId);
-                    if(empty($ownerLabel)) $ownerLabel = $uId;
-                }catch (UserNotFoundException $e){
-                    $ownerLabel = $uId ." (deleted)";
-                }
-            }
-            $isSharedString =  'owner="'. StringHelper::xmlEntities($ownerLabel) .'"';
-        }
-        if ($repoObject->securityScope() == "USER" || $currentUserIsOwner){
-            $streamString .= " userScope=\"true\"";
-        }
-        */
 
         $descTag = "";
         $description = $repoObject->getDescription(ApplicationState::hasMinisiteHash(), $ownerLabel);

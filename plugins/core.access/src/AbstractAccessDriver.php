@@ -456,7 +456,13 @@ abstract class AbstractAccessDriver extends Plugin
         if ($isDir) {
             $all=opendir($location);
             while (($file=readdir($all)) !== FALSE) {
-                $childDir = is_dir($location."/".$file);
+                $childNode = new Node($location."/".$file);
+                try{
+                    $childNode->loadNodeInfo();
+                } catch (\Exception $e){
+                    continue;
+                }
+                $childDir = !$childNode->isLeaf();
                 if ($childDir && $file !=".." && $file!=".") {
                     $this->deldir("$location/$file", $repoData, true);
                     @rmdir("$location/$file");
@@ -599,7 +605,8 @@ abstract class AbstractAccessDriver extends Plugin
     {
         $showHiddenFiles = $this->getContextualOption($ctx, "SHOW_HIDDEN_FILES");
         if($isLeaf === ""){
-            $isLeaf = (is_file($nodePath."/".$nodeName) || StatHelper::isBrowsableArchive($nodeName));
+            $n = new Node($nodePath."/".$nodeName);
+            $isLeaf = (($n->exists() && $n->isLeaf()) || StatHelper::isBrowsableArchive($nodeName));
         }
         if (StatHelper::isHidden($nodeName) && !$showHiddenFiles) {
             return false;

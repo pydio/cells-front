@@ -853,10 +853,10 @@ class Node implements \JsonSerializable, ContextProviderInterface
      */
     public function getStatObject(){
         $stat = [
-            "size" => $this->_metadata["bytesize"],
-            "mtime" => $this->_metadata["ajxp_modiftime"],
-            "atime" => $this->_metadata["ajxp_modiftime"],
-            "ctime" => $this->_metadata["ajxp_modiftime"],
+            "size" => intval($this->_metadata["bytesize"]),
+            "mtime" => intval($this->_metadata["ajxp_modiftime"]),
+            "atime" => intval($this->_metadata["ajxp_modiftime"]),
+            "ctime" => intval($this->_metadata["ajxp_modiftime"]),
         ];
         if($this->isLeaf()){
             $stat["hash"] = $this->_metadata["etag"];

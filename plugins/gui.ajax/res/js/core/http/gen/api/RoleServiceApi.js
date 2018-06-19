@@ -40,18 +40,9 @@ export default class RoleServiceApi {
     /**
      * Delete a Role by ID
      * @param {String} uuid 
-     * @param {Object} opts Optional parameters
-     * @param {String} opts.label 
-     * @param {Boolean} opts.isTeam 
-     * @param {Boolean} opts.groupRole 
-     * @param {Boolean} opts.userRole 
-     * @param {Number} opts.lastUpdated 
-     * @param {Array.<String>} opts.autoApplies 
-     * @param {Boolean} opts.policiesContextEditable 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/IdmRole} and HTTP response
      */
-    deleteRoleWithHttpInfo(uuid, opts) {
-      opts = opts || {};
+    deleteRoleWithHttpInfo(uuid) {
       let postBody = null;
 
       // verify the required parameter 'uuid' is set
@@ -64,13 +55,6 @@ export default class RoleServiceApi {
         'Uuid': uuid
       };
       let queryParams = {
-        'Label': opts['label'],
-        'IsTeam': opts['isTeam'],
-        'GroupRole': opts['groupRole'],
-        'UserRole': opts['userRole'],
-        'LastUpdated': opts['lastUpdated'],
-        'AutoApplies': this.apiClient.buildCollectionParam(opts['autoApplies'], 'csv'),
-        'PoliciesContextEditable': opts['policiesContextEditable']
       };
       let headerParams = {
       };
@@ -92,18 +76,10 @@ export default class RoleServiceApi {
     /**
      * Delete a Role by ID
      * @param {String} uuid 
-     * @param {Object} opts Optional parameters
-     * @param {String} opts.label 
-     * @param {Boolean} opts.isTeam 
-     * @param {Boolean} opts.groupRole 
-     * @param {Boolean} opts.userRole 
-     * @param {Number} opts.lastUpdated 
-     * @param {Array.<String>} opts.autoApplies 
-     * @param {Boolean} opts.policiesContextEditable 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/IdmRole}
      */
-    deleteRole(uuid, opts) {
-      return this.deleteRoleWithHttpInfo(uuid, opts)
+    deleteRole(uuid) {
+      return this.deleteRoleWithHttpInfo(uuid)
         .then(function(response_and_data) {
           return response_and_data.data;
         });

@@ -45,17 +45,17 @@ export default class UserServiceApi {
      * @param {module:model/IdmUser} body 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/RestBindResponse} and HTTP response
      */
-    bindUsersWithHttpInfo(login, body) {
+    bindUserWithHttpInfo(login, body) {
       let postBody = body;
 
       // verify the required parameter 'login' is set
       if (login === undefined || login === null) {
-        throw new Error("Missing the required parameter 'login' when calling bindUsers");
+        throw new Error("Missing the required parameter 'login' when calling bindUser");
       }
 
       // verify the required parameter 'body' is set
       if (body === undefined || body === null) {
-        throw new Error("Missing the required parameter 'body' when calling bindUsers");
+        throw new Error("Missing the required parameter 'body' when calling bindUser");
       }
 
 
@@ -87,8 +87,8 @@ export default class UserServiceApi {
      * @param {module:model/IdmUser} body 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/RestBindResponse}
      */
-    bindUsers(login, body) {
-      return this.bindUsersWithHttpInfo(login, body)
+    bindUser(login, body) {
+      return this.bindUserWithHttpInfo(login, body)
         .then(function(response_and_data) {
           return response_and_data.data;
         });
@@ -98,17 +98,9 @@ export default class UserServiceApi {
     /**
      * Delete a user
      * @param {String} login 
-     * @param {Object} opts Optional parameters
-     * @param {String} opts.uuid 
-     * @param {String} opts.groupPath 
-     * @param {String} opts.password 
-     * @param {Boolean} opts.isGroup Group specific data.
-     * @param {String} opts.groupLabel 
-     * @param {Boolean} opts.policiesContextEditable 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/RestDeleteResponse} and HTTP response
      */
-    deleteUserWithHttpInfo(login, opts) {
-      opts = opts || {};
+    deleteUserWithHttpInfo(login) {
       let postBody = null;
 
       // verify the required parameter 'login' is set
@@ -121,12 +113,6 @@ export default class UserServiceApi {
         'Login': login
       };
       let queryParams = {
-        'Uuid': opts['uuid'],
-        'GroupPath': opts['groupPath'],
-        'Password': opts['password'],
-        'IsGroup': opts['isGroup'],
-        'GroupLabel': opts['groupLabel'],
-        'PoliciesContextEditable': opts['policiesContextEditable']
       };
       let headerParams = {
       };
@@ -148,17 +134,10 @@ export default class UserServiceApi {
     /**
      * Delete a user
      * @param {String} login 
-     * @param {Object} opts Optional parameters
-     * @param {String} opts.uuid 
-     * @param {String} opts.groupPath 
-     * @param {String} opts.password 
-     * @param {Boolean} opts.isGroup Group specific data.
-     * @param {String} opts.groupLabel 
-     * @param {Boolean} opts.policiesContextEditable 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/RestDeleteResponse}
      */
-    deleteUser(login, opts) {
-      return this.deleteUserWithHttpInfo(login, opts)
+    deleteUser(login) {
+      return this.deleteUserWithHttpInfo(login)
         .then(function(response_and_data) {
           return response_and_data.data;
         });

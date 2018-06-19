@@ -24,6 +24,7 @@ import DataSourceEditor from '../editor/DataSourceEditor'
 import VersionPolicyEditor from '../editor/VersionPolicyEditor'
 import PydioDataModel from 'pydio/model/data-model'
 import Node from 'pydio/model/node'
+import LangUtils from 'pydio/util/lang'
 import Pydio from 'pydio'
 const {MaterialTable} = Pydio.requireLib('components');
 import DataSource from '../model/DataSource'
@@ -117,16 +118,19 @@ class DataSourcesBoard extends React.Component {
         if(index && sync && object){
             return "All services running";
         } else if (!index && !sync && !object) {
-            return "No services running";
+            return <span style={{color:'#e53935'}}>Services Stopped</span>;
         } else {
             let services = [];
-            if(index) services.push('Index: OK');
-            else services.push('Index: N/A');
-            if(sync) services.push('Sync: OK');
-            else services.push('Sync: N/A');
-            if(object) services.push('Objects: OK');
-            else services.push('Objects: N/A');
-            return services.join(' - ');
+            if(!index) {
+                services.push('Index service down');
+            }
+            if(!sync) {
+                services.push('Sync service down');
+            }
+            if(!object) {
+                services.push('Objects service down');
+            }
+            return <span style={{color:'#e53935'}}>{services.join(' - ')}</span>;
         }
     }
 
@@ -176,6 +180,9 @@ class DataSourcesBoard extends React.Component {
 
     render(){
         const {dataSources, versioningPolicies} = this.state;
+        dataSources.sort(LangUtils.arraySorter('Name'));
+        versioningPolicies.sort(LangUtils.arraySorter('Name'));
+
         const {currentNode, pydio, versioningReadonly} = this.props;
         const dsColumns = [
             {name:'Name', label:'Name', style:{fontSize: 15}},

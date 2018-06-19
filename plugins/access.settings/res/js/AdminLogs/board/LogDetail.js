@@ -121,6 +121,11 @@ class LogDetail extends React.Component{
             userLegend = leg.join(' - ');
         }
 
+        let msg = log.Msg;
+        if (log.Level === 'error') {
+            msg = <span style={{color: '#e53935'}}>{log.Msg}</span>
+        }
+
         return (
             <div style={{fontSize: 13, color:'rgba(0,0,0,.87)', paddingBottom: 10}}>
                 <Paper zDepth={1} style={{backgroundColor: '#f5f5f5', marginBottom: 10, position:'relative'}}>
@@ -128,23 +133,28 @@ class LogDetail extends React.Component{
                         <span ref={"copy-button"} style={styles.copyButton} className={copySuccess?'mdi mdi-check':'mdi mdi-content-copy'} title={'Copy log to clipboard'}/>
                         <IconButton iconClassName={"mdi mdi-close"} onTouchTap={onRequestClose}/>
                     </div>
-                    <UserAvatar
-                        pydio={pydio}
-                        userId={log.UserName}
-                        richCard={true}
-                        displayLabel={true}
-                        displayAvatar={true}
-                        noActionsPanel={true}
-                    />
+                    {log.UserName &&
+                        <UserAvatar
+                            pydio={pydio}
+                            userId={log.UserName}
+                            richCard={true}
+                            displayLabel={true}
+                            displayAvatar={true}
+                            noActionsPanel={true}
+                        />
+                    }
                     {userLegend && <div style={styles.userLegend}>{userLegend}</div>}
                 </Paper>
                 <GenericLine iconClassName={"mdi mdi-calendar"} legend={"Event Date"} data={new Date(log.Ts * 1000).toLocaleString()}/>
-                <GenericLine iconClassName={"mdi mdi-comment-text"} legend={"Event Message"} data={log.Msg} />
+                <GenericLine iconClassName={"mdi mdi-comment-text"} legend={"Event Message"} data={msg} />
                 <GenericLine iconClassName={"mdi mdi-server-network"} legend={"Service"} data={log.Logger} />
-                <Divider style={styles.divider}/>
-                <GenericLine iconClassName={"mdi mdi-cast-connected"} legend={"Connection IP"} data={log.RemoteAddress} />
-                <GenericLine iconClassName={"mdi mdi-cellphone-link"} legend={"User Agent"} data={log.UserAgent} />
-                <GenericLine iconClassName={"mdi mdi-open-in-app"} legend={"Protocol"} data={log.HttpProtocol} />
+
+                {(log.RemoteAddress  || log.UserAgent || log.HttpProtocol) &&
+                    <Divider style={styles.divider}/>
+                }
+                {log.RemoteAddress && <GenericLine iconClassName={"mdi mdi-cast-connected"} legend={"Connection IP"} data={log.RemoteAddress} />}
+                {log.UserAgent && <GenericLine iconClassName={"mdi mdi-cellphone-link"} legend={"User Agent"} data={log.UserAgent} />}
+                {log.HttpProtocol && <GenericLine iconClassName={"mdi mdi-open-in-app"} legend={"Protocol"} data={log.HttpProtocol} />}
                 {log.NodePath &&
                 <div>
                     <Divider style={styles.divider}/>

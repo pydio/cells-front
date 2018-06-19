@@ -44,6 +44,7 @@ use Pydio\Core\Http\Message\UserMessage;
 use Pydio\Core\Http\Response\FileReaderResponse;
 use Pydio\Core\Http\Response\SerializableResponseStream;
 use Pydio\Core\Model\ContextInterface;
+use Pydio\Core\Services\ApplicationState;
 use Pydio\Core\Services\ConfService;
 use Pydio\Core\Services\LocaleService;
 use Pydio\Core\Services\SessionService;
@@ -444,13 +445,6 @@ class FsAccessDriver extends AbstractAccessDriver implements IPydioWrapperProvid
             // Chec if it's forbidden
             $this->filterUserSelectionToHidden($selection->getContext(), [$userfile_name]);
 
-            if($uploadedFile instanceof ExternalUploadedFile && $uploadedFile->getStatus() == ExternalUploadedFile::STATUS_UPLOAD_FINISHED){
-                // GO DIRECTLY TO POST_PROCESSING AND RETURN.
-                $createdNode = new Node($destination."/".$userfile_name);
-                $this->uploadPostProcess($request, $createdNode, false, (isset($httpVars["exists"]) && $httpVars["exists"] === "true"), $repoData["chmod"]);
-                return;
-            }
-
             // MODIFY TARGET IF AUTO RENAME
             if (isSet($httpVars["auto_rename"])) {
                 $userfile_name = self::autoRenameForDest($destination, $userfile_name);
@@ -462,39 +456,33 @@ class FsAccessDriver extends AbstractAccessDriver implements IPydioWrapperProvid
                 $newFileSize = $uploadedFile->getSize();
                 $targetUrl = $destination."/".$userfile_name;
                 $targetNode = new Node($targetUrl);
-                if (file_exists($targetUrl)) {
+                if ($targetNode->exists()) {
                     $already_existed = true;
                 }
             } catch (\Exception $e) {
                 throw new \Exception($e->getMessage(), 507);
             }
 
+            $this->logDebug("fs", json_encode($httpVars));
             // PARTIAL UPLOAD CASE - PREPPEND .dlpart extension
             if(isSet($httpVars["partial_upload"]) && $httpVars["partial_upload"] == 'true' && isSet($httpVars["partial_target_bytesize"])) {
+                $realDestination = $destination;
+                $destination = ApplicationState::getTemporaryFolder() . "/" . md5($destination);
+                if(!file_exists($destination)) {
+                    mkdir($destination, 0755);
+                }
                 $partialUpload = true;
                 $partialTargetSize = intval($httpVars["partial_target_bytesize"]);
                 if(!isSet($httpVars["appendto_urlencoded_part"])) {
                     $userfile_name .= ".dlpart";
-                    $targetUrl = $destination."/".$userfile_name;
                 }
-            }
-
-            if($uploadedFile instanceof ExternalUploadedFile && $uploadedFile->getStatus() == ExternalUploadedFile::STATUS_REQUEST_OPTIONS){
-                // Now build options and send that as a reponse
-                // Add Callback data : exists=true
-                $createdNode = new Node($targetUrl);
-                $options = MetaStreamWrapper::getResolvedOptionsForNode($createdNode);
-                $response = new JsonResponse([
-                    "CONTEXT"               => $createdNode->getContext()->getStringIdentifier(),
-                    "OPTIONS"               => $options,
-                    "PATH"                  => $createdNode->getPath(),
-                    "CALLBACK_PARAMETERS"   => ["exists" => $already_existed]
-                ]);
-                return;
+                $targetUrl = $destination."/".$userfile_name;
             }
 
             // NOW DO THE ACTUAL COPY
+            $this->logDebug("fs", "Copying uploaded data to " . $targetUrl);
             $this->copyUploadedData($uploadedFile, $targetUrl, $mess);
+            $this->logDebug("fs", "Copying uploaded data OK");
 
             // PARTIAL UPLOAD - PART II: APPEND DATA TO EXISTING PART
             if (isSet($httpVars["appendto_urlencoded_part"])) {
@@ -503,12 +491,9 @@ class FsAccessDriver extends AbstractAccessDriver implements IPydioWrapperProvid
                     $originalAppendTo = $appendTo;
                     $appendTo .= ".dlpart";
                 }
-                $this->logDebug("AppendTo FILE".$appendTo);
+                $this->logError("fs", "Append ".$userfile_name." to " . $appendTo);
                 $already_existed = $this->appendUploadedData($destination, $userfile_name, $appendTo);
                 $userfile_name = $appendTo;
-                $targetAppended = new Node($destination."/".$userfile_name);
-                clearstatcache(true, $targetAppended->getUrl());
-                $targetAppended->loadNodeInfo(true);
                 if($partialUpload && $partialTargetSize == filesize($destination."/".$userfile_name)){
                     // This was the last part. We can now rename to the original name.
                     if(is_file($destination."/".$originalAppendTo)){
@@ -523,11 +508,19 @@ class FsAccessDriver extends AbstractAccessDriver implements IPydioWrapperProvid
                     // Send a create event!
                     $already_existed = false;
                     $lastPartAppended = true;
+
+                    // Now upload to backend and clean temporary resources
+                    @ini_set("max_execution_time", 240);
+                    $this->logDebug("fs", "Now Uploading to backend: " . $realDestination . "/" . $userfile_name);
+                    $this->uploadTemporaryUpload($ctx, $destination . "/" . $userfile_name, $realDestination . "/" . $userfile_name);
+                    @rmdir($destination);
+                    $realDestination = false;
                 }
             }
-
-            $createdNode = new Node($destination."/".$userfile_name);
-            $this->uploadPostProcess($request, $createdNode, $partialUpload, $already_existed, $repoData["chmod"]);
+            if(!isSet($realDestination)) {
+                $createdNode = new Node($destination."/".$userfile_name);
+                $this->uploadPostProcess($request, $createdNode, $partialUpload, $already_existed, $repoData["chmod"]);
+            }
 
         }catch(\Exception $e){
             $errorCode = $e->getCode();
@@ -536,6 +529,33 @@ class FsAccessDriver extends AbstractAccessDriver implements IPydioWrapperProvid
         }
 
     }
+
+    /**
+     * @param ContextInterface $ctx Context
+     * @param String $source Maybe updated by the function
+     * @param String $target Existing part to append data
+     * @return bool If the target file already existed or not.
+     * @throws \Exception
+     */
+    protected function uploadTemporaryUpload($ctx, $source, $target){
+
+        $time = time();
+        $this->logError("FS", "Should copy stream from $source to $target");
+        $partO = fopen($source, "r");
+        $appendF = fopen($target, "w");
+        while (!feof($partO)) {
+            $buf = fread($partO, 4096*4069);
+            fwrite($appendF, $buf, strlen($buf));
+        }
+        fclose($partO);
+        fclose($appendF);
+        $this->logDebug("Done, closing streams!");
+        $total = time() - $time;
+        $this->logError("FS", "FrontDebug : Took " . $total + " to upload temporary file");
+        @unlink($source);
+
+    }
+
 
     /**
      * @param ServerRequestInterface $request
@@ -630,7 +650,7 @@ class FsAccessDriver extends AbstractAccessDriver implements IPydioWrapperProvid
                     throw new PydioException("Multiple Selection Download-as-Zip Is Not Implemented In Backend - Should use the API");
                 }
 
-                if (!file_exists($selection->getUniqueNode()->getUrl())) {
+                if (!$selection->getUniqueNode()->exists()) {
                     throw new \Exception("Cannot find file!");
                 }
                 $node = $selection->getUniqueNode();
@@ -747,17 +767,20 @@ class FsAccessDriver extends AbstractAccessDriver implements IPydioWrapperProvid
 
                 clearstatcache();
                 $jsonData = new \stdClass;
-                if($selection->isUnique()){
+                if($selection->isUnique() && $selection->getUniqueNode()->exists()){
                     $stat = @stat($selection->getUniqueNode()->getUrl());
-                    if ($stat !== false && $this->isReadable($selection->getUniqueNode())) {
+                    if ($stat !== false) {
                         $jsonData = $stat;
                     }
                 }else{
                     $nodes = $selection->buildNodes();
                     foreach($nodes as $node){
-                        $stat = @stat($node->getUrl());
-                        if(!$stat || !$this->isReadable($node)) {
-                            $stat = new \stdClass();
+                        $stat = new \stdClass();
+                        if ($node->exists()){
+                            $st = @stat($node->getUrl());
+                            if($st !== false) {
+                                $stat = $st;
+                            }
                         }
                         $path = $node->getPath();
                         $jsonData->$path = $stat;
@@ -896,7 +919,7 @@ class FsAccessDriver extends AbstractAccessDriver implements IPydioWrapperProvid
                 if($selection->isUnique() && isSet($httpVars["targetBaseName"])){
                     $targetBaseName = $httpVars["targetBaseName"];
                 }
-                if(isSet($httpVars["recycle_restore"]) && !file_exists($selection->nodeForPath($destPath)->getUrl())){
+                if(isSet($httpVars["recycle_restore"]) && !$selection->nodeForPath($destPath)->exists()){
                     $this->mkDir($selection->nodeForPath(PathUtils::forwardSlashDirname($destPath)), basename($destPath), false, true);
                 }
                 $this->filterUserSelectionToHidden($ctx, [$httpVars["dest"]]);
@@ -1073,8 +1096,7 @@ class FsAccessDriver extends AbstractAccessDriver implements IPydioWrapperProvid
                 if ($patch) {
                     $nonPatchedPath = PathUtils::unPatchPathForBaseDir($path);
                 }
-                $testPath = @stat($path);
-                if($testPath === null || $testPath === false){
+                if(!$dirNode->exists()){
                     throw new \Exception("There was a problem trying to open folder ". $path. ", please check your Administrator");
                 }
                 if(!$this->isReadable($dirNode) && !$this->isWriteable($dirNode)){
@@ -1110,7 +1132,7 @@ class FsAccessDriver extends AbstractAccessDriver implements IPydioWrapperProvid
                     Controller::applyHook("node.read", [&$parentNode]);
                     $nodesList->setParentNode($parentNode);
                     foreach($uniqueNodes as $node){
-                        if(!file_exists($node->getUrl()) || (!$this->isReadable($node) && !$this->isWriteable($node))) continue;
+                        if(!$node->exists()) continue;
                         $nodeName = $node->getLabel();
                         if (!$this->filterNodeName($ctx, $node->getPath(), $nodeName, $isLeaf, $lsOptions)) {
                             continue;
@@ -1326,7 +1348,7 @@ class FsAccessDriver extends AbstractAccessDriver implements IPydioWrapperProvid
                 if ($dir == ""  && $lsOptions["d"] && RecycleBinManager::recycleEnabled() && $this->getContextualOption($ctx, "HIDE_RECYCLE") !== true) {
                     $recycleBinOption = RecycleBinManager::getRelativeRecycle();
                     $recycleNode = $selection->nodeForPath("/".$recycleBinOption);
-                    if (file_exists($recycleNode->getUrl()) && $this->isReadable($recycleNode)) {
+                    if ($recycleNode->exists()) {
                         $recycleNode->loadNodeInfo();
                         $nodesList->addBranch($recycleNode);
                     }
@@ -1863,7 +1885,7 @@ class FsAccessDriver extends AbstractAccessDriver implements IPydioWrapperProvid
     {
         $mess = LocaleService::getMessages();
 
-        if (!$force && file_exists($node->getUrl())) {
+        if (!$force && $node->exists()) {
             throw new PydioException($mess[71], 71);
         }
         if (!$this->isWriteable($node->getParent())) {
@@ -1907,7 +1929,11 @@ class FsAccessDriver extends AbstractAccessDriver implements IPydioWrapperProvid
         $mess = LocaleService::getMessages();
         $selectedNodes = $selection->buildNodes();
         foreach ($selectedNodes as $selectedNode) {
-            $selectedNode->loadNodeInfo();
+            try{
+                $selectedNode->loadNodeInfo();
+            } catch (\Exception $e){
+                continue;
+            }
             $fileUrl = $selectedNode->getUrl();
             $filePath = $selectedNode->getPath();
             if (!$selectedNode->isLeaf()) {

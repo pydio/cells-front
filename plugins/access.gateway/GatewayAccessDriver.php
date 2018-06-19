@@ -44,6 +44,7 @@ use Pydio\Core\Utils\Vars\InputFilter;
 use Pydio\Core\Utils\Vars\PathUtils;
 use Pydio\Core\Utils\Vars\StatHelper;
 use Swagger\Client\ApiException;
+use Swagger\Client\Model\IdmWorkspaceScope;
 use Swagger\Client\Model\RestChangeRequest;
 use Swagger\Client\Model\RestGetBulkMetaRequest;
 use Zend\Diactoros\Response;
@@ -58,6 +59,14 @@ defined('PYDIO_EXEC') or die( 'Access not allowed');
 class GatewayAccessDriver extends S3AccessDriver
 {
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @throws ApiException
+     * @throws FileNotFoundException
+     * @throws \Exception
+     * @throws \Pydio\Core\Exception\ForbiddenCharacterException
+     */
     public function lsAction(ServerRequestInterface &$request, ResponseInterface &$response){
 
         /** @var ContextInterface $ctx */
@@ -207,6 +216,7 @@ class GatewayAccessDriver extends S3AccessDriver
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      * @throws PydioException
+     * @throws \Exception
      */
     public function getPresignedUrl(ServerRequestInterface $request, ResponseInterface &$response) {
 
@@ -269,6 +279,8 @@ class GatewayAccessDriver extends S3AccessDriver
      * Create a Presigned Url
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
+     * @throws PydioException
+     * @throws \Exception
      */
     public function downloadVersion(ServerRequestInterface $request, ResponseInterface &$response)
     {
@@ -309,6 +321,8 @@ class GatewayAccessDriver extends S3AccessDriver
      * Create a Presigned Url
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
+     * @throws PydioException
+     * @throws \Exception
      */
     public function restoreVersion(ServerRequestInterface $request, ResponseInterface &$response)
     {
@@ -332,6 +346,12 @@ class GatewayAccessDriver extends S3AccessDriver
 
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @throws ApiException
+     * @throws \Exception
+     */
     public function statHashAction(ServerRequestInterface $request, ResponseInterface &$response){
 
         /** @var ContextInterface $ctx */
@@ -379,6 +399,12 @@ class GatewayAccessDriver extends S3AccessDriver
     }
 
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $responseInterface
+     * @throws ApiException
+     * @throws PydioException
+     */
     public function changesAction(ServerRequestInterface $request, ResponseInterface &$responseInterface){
 
         $api = MicroApi::GetChangesServiceApi();
@@ -386,7 +412,14 @@ class GatewayAccessDriver extends S3AccessDriver
         $httpVars = $request->getParsedBody();
         /** @var ContextInterface $ctx */
         $ctx = $request->getAttribute("ctx");
-        $pathFilter = $ctx->getRepository()->getSlug();
+        $workspace = $ctx->getRepository();
+        $pathFilter = $workspace->getSlug();
+        $scope = $workspace->getScope();
+        $attributes = $workspace->getIdmAttributes();
+        if($scope !== IdmWorkspaceScope::ADMIN || empty($attributes) || !isSet($attributes["allowSync"]) || $attributes["allowSync"] !== true) {
+            throw new PydioException("You are not allowed to sync this workspace");
+        }
+
         $stream = $request->getParsedBody()["stream"] === "true";
         $seqId = 0;
         if(isSet($httpVars["seq_id"])){
@@ -422,13 +455,21 @@ class GatewayAccessDriver extends S3AccessDriver
         );
 
         if(!$stream) {
+            if(isSet($response->changes)){
+                foreach($response->changes as &$change){
+                    $this->updateTypes($change);
+                }
+            }
+            if(isSet($response->last_seq)){
+                $response->last_seq = intval($response->last_seq);
+            }
             $responseInterface = new JsonResponse($response);
         } else {
             // TODO STREAM RESPONSE - BUILD FAKE STREAM AS OF NOW
             $responseInterface = $responseInterface->withHeader("Content-type", "text/plain");
             if(isSet($response->changes)){
                 foreach($response->changes as $change){
-                    $change->seq = intval($change->seq);
+                    $this->updateTypes($change);
                     $responseInterface->getBody()->write(json_encode($change) . "\n");
                 }
             }
@@ -437,6 +478,17 @@ class GatewayAccessDriver extends S3AccessDriver
             }
         }
 
+    }
+
+    /**
+     * @param \StdClass $change
+     */
+    public function updateTypes(&$change) {
+        $change->seq = intval($change->seq);
+        if($change->node){
+            $change->node->bytesize = intval($change->node->bytesize);
+            $change->node->mtime = intval($change->node->mtime);
+        }
     }
 
 }

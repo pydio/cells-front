@@ -276,8 +276,9 @@ class ResourcesManager{
         let node;
 
         let sysjsMap = {};
-        let sysjsMeta = {};
-        let requires = {};
+        let sysjsMeta = {
+            '*': { authorization: true }
+        };
 
         for(node of jsNodes){
             const namespace = node.getAttribute('className');

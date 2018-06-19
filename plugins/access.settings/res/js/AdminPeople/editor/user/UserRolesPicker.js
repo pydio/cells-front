@@ -36,7 +36,7 @@ export default React.createClass({
     },
 
     onChange: function(e, selectedIndex, value){
-        if(value == -1) {
+        if(value === -1) {
             return;
         }
         let newRoles = this.props.currentRoles.slice();
@@ -62,7 +62,7 @@ export default React.createClass({
         currentRoles.map(function(r){
             const crtDetail = currentRolesDetails[r] || {label:r};
             if(crtDetail.groupRole){
-                if(r == 'ROOT_GROUP') {
+                if(r === 'ROOT_GROUP') {
                     groups.push('/ ' + ctx.getMessage('user.25', 'ajxp_admin'));
                 }else {
                     groups.push(ctx.getMessage('user.26', 'ajxp_admin').replace('%s', crtDetail.label || r));
@@ -97,13 +97,14 @@ export default React.createClass({
         };
 
         return (
-            <div className="user-roles-picker">
-                <h1>Manage roles {loadingMessage ? ' ('+ctx.getMessage('21')+')':''}
-                    <div className="roles-picker-menu">
+            <div className="user-roles-picker" style={{padding:0}}>
+                <div style={{paddingLeft: 22, marginTop: -40, display: 'flex', alignItems: 'center'}}>
+                    <div style={{flex: 1, color: '#bdbdbd', fontWeight: 500}}>Manage roles {loadingMessage ? ' ('+ctx.getMessage('21')+')':''}</div>
+                    <div className="roles-picker-menu" style={{marginTop: -12}}>
                         <DropDownMenu onChange={this.onChange} value={-1}>{addableRoles}</DropDownMenu>
                     </div>
-                </h1>
-                <div className="roles-list">
+                </div>
+                <div className="roles-list" style={{margin: '0 16px'}}>
                     {groups.map(function(g){
                         return <div key={"group-"+g} style={fixedRoleStyle}>{g}</div>;
                     })}

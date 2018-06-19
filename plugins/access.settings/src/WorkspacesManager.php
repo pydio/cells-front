@@ -26,12 +26,9 @@ use Pydio\Access\Core\AbstractAccessDriver;
 use Pydio\Access\Core\Model\Node;
 use Pydio\Access\Core\Model\NodesList;
 use Pydio\Access\Core\Model\Repository;
-use Pydio\Core\Http\Client\SimpleStoreApi;
-use Pydio\Core\Services\CacheService;
-use Pydio\Core\Services\PoliciesFactory;
-use Pydio\Core\Utils\Vars\XMLFilter;
 use Pydio\Core\Exception\PydioException;
 use Pydio\Core\Http\Client\MicroApi;
+use Pydio\Core\Http\Client\SimpleStoreApi;
 use Pydio\Core\Http\Message\ReloadMessage;
 use Pydio\Core\Http\Message\UserMessage;
 use Pydio\Core\Http\Message\XMLDocMessage;
@@ -39,25 +36,23 @@ use Pydio\Core\Http\Response\SerializableResponseStream;
 use Pydio\Core\Model\Context;
 use Pydio\Core\Model\ContextInterface;
 use Pydio\Core\Model\RepositoryInterface;
-use Pydio\Core\PluginFramework\Plugin;
 use Pydio\Core\PluginFramework\PluginsService;
 use Pydio\Core\Services\AuthService;
 use Pydio\Core\Services\ConfService;
 use Pydio\Core\Services\LocaleService;
+use Pydio\Core\Services\PoliciesFactory;
 use Pydio\Core\Services\RepositoryService;
 use Pydio\Core\Services\RolesService;
 use Pydio\Core\Services\UsersService;
 use Pydio\Core\Utils\Vars\InputFilter;
 use Pydio\Core\Utils\Vars\StringHelper;
+use Pydio\Core\Utils\Vars\XMLFilter;
 use Pydio\Core\Utils\XMLHelper;
-use Pydio\Tests\AbstractTest;
-
 use Swagger\Client\ApiException;
 use Swagger\Client\Model\IdmWorkspaceScope;
 use Swagger\Client\Model\RestDataSource;
 use Swagger\Client\Model\RestDataSourceType;
 use Swagger\Client\Model\RestEncryptionMode;
-use Swagger\Client\Model\RestUserJobRequest;
 use Swagger\Client\Model\TreeListNodesRequest;
 use Swagger\Client\Model\TreeNode;
 use Swagger\Client\Model\TreeNodeType;
@@ -66,10 +61,10 @@ use Zend\Diactoros\Response\JsonResponse;
 defined('PYDIO_EXEC') or die('Access not allowed');
 
 /**
- * Class RepositoriesManager
+ * Class WorkspacesManager
  * @package Pydio\Access\Driver\DataProvider\Provisioning
  */
-class RepositoriesManager extends AbstractManager
+class WorkspacesManager extends AbstractManager
 {
 
     /**
@@ -106,6 +101,7 @@ class RepositoriesManager extends AbstractManager
 
             case "get_templates_definition":
 
+                // TODO Unused Action
                 $buffer = "<repository_templates>";
                 $count = 0;
                 $repositories = RepositoryService::listRepositoriesWithCriteria(array(
@@ -146,62 +142,35 @@ class RepositoriesManager extends AbstractManager
                         $repDef["PYDIO_SLUG"] = $options["PYDIO_SLUG"];
                         unset($repDef["DRIVER_OPTIONS"]["PYDIO_SLUG"]);
                     }
-                }
-                if (strstr($repDef["DRIVER"], "datasource") !== false) {
-
-                    $options = $repDef["DRIVER_OPTIONS"];
-                    RepositoryService::putDataSourceFromOptions($options);
-
-                    $reload = new ReloadMessage("", $options["DATASOURCE_NAME"]);
-                    $responseInterface = $responseInterface->withBody(new SerializableResponseStream(["Datasource successfully created", $reload]));
-                    break;
-
-                }
-
-                if (strstr($repDef["DRIVER"], "ajxp_template_") !== false) {
-                    $templateId = substr($repDef["DRIVER"], 14);
-                    $templateRepo = RepositoryService::getRepositoryById($templateId);
-                    $newRep = $templateRepo->createTemplateChild($repDef["DISPLAY"], $repDef["DRIVER_OPTIONS"], $ctx->getUser()->getId());
-                    if(isSet($repDef["PYDIO_SLUG"])){
-                        $newRep->setSlug($repDef["PYDIO_SLUG"]);
-                    }
-                } else {
-                    if ($this->currentUserIsGroupAdmin()) {
-                        throw new \Exception("You are not allowed to create a workspace from a driver. Use a template instead.");
-                    }
-                    $pServ = PluginsService::getInstance($ctx);
-                    $driver = $pServ->getPluginByTypeName("access", $repDef["DRIVER"]);
-
-                    $newRep = RepositoryService::createRepositoryFromArray(0, $repDef);
-                    $testFile = $driver->getBaseDir()."/test.".$newRep->getAccessType()."Access.php";
-                    if (!$isTemplate && is_file($testFile)) {
-                        $className = "\\Pydio\\Tests\\".$newRep->getAccessType()."AccessTest";
-                        if (!class_exists($className))
-                            include($testFile);
-                        $class = new $className();
-                        $result = $class->doRepositoryTest($newRep);
-                        if (!$result) {
-                            throw new PydioException($class->failedInfo);
-                        }
+                    if(isSet($options["ALLOW_SYNC"])){
+                        $repDef["ALLOW_SYNC"] = $options["ALLOW_SYNC"];
+                        unset($repDef["DRIVER_OPTIONS"]["ALLOW_SYNC"]);
                     }
                 }
+
+                if ($this->currentUserIsGroupAdmin()) {
+                    throw new \Exception("You are not allowed to create a workspace from a driver. Use a template instead.");
+                }
+                $pServ = PluginsService::getInstance($ctx);
+                $driver = $pServ->getPluginByTypeName("access", $repDef["DRIVER"]);
+
+                $newRep = RepositoryService::createRepositoryFromArray(0, $repDef);
 
                 if ($this->repositoryExists($newRep->getDisplay())) {
                     throw new PydioException($mess["settings.50"]);
-                }
-                if ($isTemplate) {
-                    $newRep->isTemplate = true;
                 }
                 if ($this->currentUserIsGroupAdmin()) {
                     $newRep->setGroupPath($ctx->getUser()->getGroupPath());
                 }
                 $newRep->setPolicies(PoliciesFactory::defaultAdminResource($ctx->getUser()));
                 $newRep->setScope(IdmWorkspaceScope::ADMIN);
+                if(isSet($repDef["ALLOW_SYNC"]) && $repDef["ALLOW_SYNC"] === true) {
+                    $newRep->setIdmAttributes(["allowSync" => true]);
+                }
                 $res = RepositoryService::addRepository($newRep);
 
                 if ($res == -1) {
                     throw new PydioException($mess["settings.51"]);
-
                 }
 
                 $defaultRights = $newRep->getDefaultRight();
@@ -232,9 +201,6 @@ class RepositoriesManager extends AbstractManager
                 if ($jsonDataCreateWorkspace === null) {
                     throw new PydioException("Invalid JSON !!");
                 }
-                if(!isSet($jsonDataCreateWorkspace["isTemplate"])) {
-                    $jsonDataCreateWorkspace["isTemplate"] = false;
-                }
                 if(!isSet($jsonDataCreateWorkspace["id"])) {
                     $jsonDataCreateWorkspace["id"] = 0;
                 }
@@ -245,28 +211,8 @@ class RepositoriesManager extends AbstractManager
                 foreach($jsonDataCreateWorkspace["parameters"] as $name => $value) {
                     $repo->addOption($name, $value);
                 }
-                $pluginService = PluginsService::getInstance($ctx);
-                $driver = $pluginService->getPluginByTypeName("access", $jsonDataCreateWorkspace["accessType"]);
-                $testFile = $driver->getBaseDir()."/test.".$repo->getAccessType()."Access.php";
-                if (!$jsonDataCreateWorkspace["isTemplate"] && is_file($testFile)) {
-                    $className = "\\Pydio\\Tests\\".$repo->getAccessType()."AccessTest";
-                    if (!class_exists($className))
-                        include($testFile);
-                    /** @var AbstractTest $class */
-                    $class = new $className();
-                    $result = $class->doRepositoryTest($repo);
-                    if (!$result) {
-                        throw new PydioException($class->failedInfo);
-                    }
-                }
-                if(isSet($jsonDataCreateWorkspace["features"])){
-
-                }
                 if ($this->repositoryExists($repo->getDisplay())) {
                     throw new PydioException($mess["settings.50"]);
-                }
-                if ($jsonDataCreateWorkspace["isTemplate"]) {
-                    $repo->isTemplate = true;
                 }
                 $newRep->setPolicies(PoliciesFactory::defaultAdminResource($ctx->getUser()));
                 $repo->setScope(IdmWorkspaceScope::ADMIN);
@@ -382,10 +328,8 @@ class RepositoriesManager extends AbstractManager
                     $options = array();
                     $existing = $repo->getOptionsDefined();
                     $existingValues = array();
-                    if(!$repo->isTemplate()){
-                        foreach($existing as $exK) {
-                            $existingValues[$exK] = $repo->getSafeOption($exK);
-                        }
+                    foreach($existing as $exK) {
+                        $existingValues[$exK] = $repo->getSafeOption($exK);
                     }
                     $this->parseParameters($ctx, $httpVars, $options, true, $existingValues);
                     if (count($options)) {
@@ -393,47 +337,31 @@ class RepositoriesManager extends AbstractManager
                             if ($key == "PYDIO_SLUG") {
                                 $repo->setSlug($value);
                                 continue;
-                            } else if ($key == "WORKSPACE_LABEL" || $key == "TEMPLATE_LABEL"){
+                            } else if ($key == "WORKSPACE_LABEL" || $key == "TEMPLATE_LABEL") {
                                 $newLabel = InputFilter::sanitize($value, InputFilter::SANITIZE_HTML);
-                                if($repo->getDisplay() != $newLabel){
+                                if ($repo->getDisplay() != $newLabel) {
                                     if ($this->repositoryExists($newLabel)) {
                                         throw new \Exception($mess["settings.50"]);
-                                    }else{
+                                    } else {
                                         $repo->setDisplay($newLabel);
                                     }
                                 }
+                            } else if ($key === "ALLOW_SYNC") {
+                                $atts = $repo->getIdmAttributes();
+                                $atts["allowSync"] = $value;
+                                $repo->setIdmAttributes($atts);
                             } else if($key === "META_LAYOUT") {
-                                if($value == "default" ){
-                                    $repo->setIdmAttributes([]);
+                                $atts = $repo->getIdmAttributes();
+                                if($value == "default" && !empty($atts["plugins"])){
+                                    unset($atts["plugins"]);
+                                    $repo->setIdmAttributes($atts);
                                 } else {
-                                    $atts = $repo->getIdmAttributes();
                                     if(!isSet($atts["plugins"])) $atts["plugins"] = [];
                                     $atts["plugins"][$value] = [];
                                     $repo->setIdmAttributes($atts);
                                 }
                             }
                             $repo->addOption($key, $value);
-                        }
-                    }
-                    if($repo->isTemplate()){
-                        foreach($existing as $definedOption){
-                            if($definedOption == "META_SOURCES" || $definedOption == "CREATION_TIME" || $definedOption == "CREATION_USER"){
-                                continue;
-                            }
-                            if(!isSet($options[$definedOption]) && isSet($repo->options[$definedOption])){
-                                unset($repo->options[$definedOption]);
-                            }
-                        }
-                    }
-                    if (is_file(PYDIO_TESTS_FOLDER."/plugins/test.ajxp_".$repo->getAccessType().".php")) {
-                        chdir(PYDIO_TESTS_FOLDER."/plugins");
-                        include(PYDIO_TESTS_FOLDER."/plugins/test.ajxp_".$repo->getAccessType().".php");
-                        $className = "ajxp_".$repo->getAccessType();
-                        /** @var AbstractTest $class */
-                        $class = new $className();
-                        $result = $class->doRepositoryTest($repo);
-                        if (!$result) {
-                            throw new PydioException($class->failedInfo);
                         }
                     }
 
@@ -818,12 +746,6 @@ class RepositoriesManager extends AbstractManager
             $accessLabel    = $this->getDriverLabel($accessType, $driverLabels);
             $label          = $repoObject->getDisplay();
             $editable       = $repoObject->isWriteable();
-            if ($repoObject->isTemplate) {
-                $icon = "hdd_external_mount.png";
-                if ($ctxUser != null && $ctxUser->getGroupPath() != "/") {
-                    $editable = false;
-                }
-            }
             $rootNodesData = [];
             $rootNodes = $repoObject->getRootNodes();
             foreach($rootNodes as $rootNode){
@@ -832,7 +754,7 @@ class RepositoriesManager extends AbstractManager
             $meta = [
                 "text"          => $label,
                 "repository_id" => $repoIndex,
-                "accessType"	=> ($repoObject->isTemplate?"Template for ":"").$repoObject->getAccessType(),
+                "accessType"	=> $repoObject->getAccessType(),
                 "accessLabel"	=> $accessLabel,
                 "owner"			=> $repoObject->getScope() !== IdmWorkspaceScope::ADMIN ? "shared" : "",
                 "slug"          => $repoObject->getSlug(),
@@ -910,16 +832,15 @@ class RepositoriesManager extends AbstractManager
      * @param array $definitions
      * @param string $currentAdminBasePath
      * @return array
+     * @throws ApiException
      */
     protected function serializeRepositoryToJSON(ContextInterface $ctx, $repository, $definitions, $currentAdminBasePath){
         $nested = [];
         $buffer = [
             "id"            => $repository->getId(),
-            "securityScope" => $repository->securityScope()
+            "securityScope" => $repository->securityScope(),
+            "slug"          => $repository->getSlug(),
         ];
-        if(!$repository->isTemplate()){
-            $buffer["slug"] = $repository->getSlug();
-        }
         foreach ($repository as $name => $option) {
             if(strstr($name, " ")>-1) continue;
             if (in_array($name, ["driverInstance", "id", "uuid", "path", "recycle", "create", "enabled"])) continue;
@@ -951,34 +872,15 @@ class RepositoriesManager extends AbstractManager
             $buffer["features"] = $buffer["parameters"]["META_SOURCES"];
             unset($buffer["parameters"]["META_SOURCES"]);
         }
-        if(!$repository->isTemplate()){
-            $buffer["info"]= [];
-            $users = UsersService::countUsersForRepository($ctx, $repository->getId(), false, true);
-            $cursor = ["count"];
-            $shares = [];
-            //$shares = ConfService::getConfStorageImpl()->simpleStoreList("share", $cursor, "", "serial", '', $repository->getId());
-            $buffer["info"] = [
-                "users" => $users,
-                "shares" => count($shares)
-            ];
-            $rootGroup = RolesService::getRole(RolesService::RootGroup);
-        }
-        if ($repository->hasParent()) {
-            $parent = RepositoryService::getRepositoryById($repository->getParentId());
-            if (isSet($parent) && $parent->isTemplate()) {
-                $parentLabel = $parent->getDisplay();
-                $parentType = $parent->getAccessType();
-                $buffer["TEMPLATE"] = [
-                    "id"    => $repository->getParentId(),
-                    "label" => $parentLabel,
-                    "type"  => $parentType,
-                    "DEFINED_PARAMETERS" => []
-                ];
-                foreach ($parent->getOptionsDefined() as $parentOptionName) {
-                    $buffer["TEMPLATE"]["DEFINED_PARAMETERS"][] = $parentOptionName;
-                }
-            }
-        }
+
+        $buffer["info"]= [];
+        $users = UsersService::countUsersForRepository($ctx, $repository->getId(), false, true);
+        $cursor = ["count"];
+        $shares = [];
+        $buffer["info"] = [
+            "users" => $users,
+            "shares" => count($shares)
+        ];
         return $buffer;
     }
 
@@ -988,6 +890,7 @@ class RepositoriesManager extends AbstractManager
      * @param array $definitions
      * @param string $currentAdminBasePath
      * @return string
+     * @throws ApiException
      */
     protected function serializeRepositoryToXML(ContextInterface $ctx, $repository, $definitions, $currentAdminBasePath){
         $nested = [];
@@ -1025,9 +928,8 @@ class RepositoriesManager extends AbstractManager
                 }
             }
             // Add SLUG
-            if(!$repository->isTemplate()) {
-                $buffer .= "<param name=\"PYDIO_SLUG\" value=\"".$repository->getSlug()."\"/>";
-            }
+            $buffer .= "<param name=\"PYDIO_SLUG\" value=\"".$repository->getSlug()."\"/>";
+
             // Add Default Rights
             try{
                 $rootRole = RolesService::getRole(RolesService::RootGroup);
@@ -1043,6 +945,15 @@ class RepositoriesManager extends AbstractManager
 
             } catch (ApiException $e){}
             $repoAttr = $repository->getIdmAttributes();
+
+            // Add Allow Sync
+            $allowSync = "false";
+            if(isSet($repoAttr["allowSync"]) && $repoAttr["allowSync"] === true) {
+                $allowSync = "true";
+            }
+            $buffer .= "<param name='ALLOW_SYNC' value='$allowSync'/>";
+
+            // Add Meta Layout
             $metaLayout = "<param name='META_LAYOUT' value='default'/>";
             if(isSet($repoAttr["plugins"])){
                 foreach($repoAttr["plugins"] as $k => $v){
@@ -1056,29 +967,16 @@ class RepositoriesManager extends AbstractManager
         } else {
             $buffer .= "/>";
         }
-        if ($repository->hasParent()) {
-            $parent = RepositoryService::getRepositoryById($repository->getParentId());
-            if (isSet($parent) && $parent->isTemplate()) {
-                $parentLabel = $parent->getDisplay();
-                $parentType = $parent->getAccessType();
-                $buffer .= "<template repository_id=\"".$repository->getParentId()."\" repository_label=\"$parentLabel\" repository_type=\"$parentType\">";
-                foreach ($parent->getOptionsDefined() as $parentOptionName) {
-                    $buffer .= "<option name=\"$parentOptionName\"/>";
-                }
-                $buffer .= "</template>";
-            }
-        }
-        if(!$repository->isTemplate()){
-            $buffer .= "<additional_info>";
-            $users = UsersService::countUsersForRepository($ctx, $repository->getId(), false, true);
-            $cursor = ["count"];
-            $shares = [];
-            //$shares = ConfService::getConfStorageImpl()->simpleStoreList("share", $cursor, "", "serial", '', $repository->getId());
-            $buffer .= '<users total="'.$users.'"/>';
-            $buffer .= '<shares total="'.count($shares).'"/>';
-            $rootGroup = RolesService::getRole(RolesService::RootGroup);
-            $buffer .= "</additional_info>";
-        }
+
+        $buffer .= "<additional_info>";
+        $users = UsersService::countUsersForRepository($ctx, $repository->getId(), false, true);
+        $cursor = ["count"];
+        $shares = [];
+        $buffer .= '<users total="'.$users.'"/>';
+        $buffer .= '<shares total="'.count($shares).'"/>';
+        $rootGroup = RolesService::getRole(RolesService::RootGroup);
+        $buffer .= "</additional_info>";
+
         return $buffer;
     }
 

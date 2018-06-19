@@ -88,6 +88,8 @@ class TreeManager extends AbstractManager
         }
 
         $callback = $childData["MANAGER"];
+        // Backward compat
+        $callback = str_replace("RepositoriesManager", "WorkspacesManager", $callback);
         /** @var AbstractManager $manager */
         if($callback === "TreeManager") {
             $manager = $this;

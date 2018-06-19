@@ -123,7 +123,7 @@ class AbstractAuthDriver extends Plugin
     public function getJWT(ServerRequestInterface $request, ResponseInterface &$response) {
 
         $token = DexApi::getValidToken();
-        $json = ["jwt" => $token];
+        $json = ["jwt" => $token, "s3Key" => true];
         if(isSet($request->getParsedBody()["client_time"])) {
             $json["expirationTime"] = DexApi::clientExpirationTime(intval($request->getParsedBody()["client_time"]));
         }

@@ -21,9 +21,9 @@ import React from 'react'
 import PydioDataModel from 'pydio/model/data-model'
 import Node from 'pydio/model/node'
 import Pydio from 'pydio'
+import LangUtils from 'pydio/util/lang'
 const PydioComponents = Pydio.requireLib('components');
 const {MaterialTable} = PydioComponents;
-
 
 export default React.createClass({
 
@@ -76,16 +76,19 @@ export default React.createClass({
                 summary: summary
             });
         });
+        data.sort((a,b) => {
+            return a.label > b.label ? 1 : ( a.label < b.label ? -1 : 0);
+        });
         return data;
     },
 
     render:function(){
 
         const columns = [
-            {name:'label', label: 'Label', style:{width:'25%', fontSize:15}, headerStyle:{width:'25%'}},
-            {name:'description', label: 'Description', style:{width:'35%'}, headerStyle:{width:'35%'}},
-            {name:'summary', label: 'Root Nodes', style:{width:'35%'}, headerStyle:{width:'35%'}},
-            {name:'slug', label: 'Slug', style:{width:'10%'}, headerStyle:{width:'10%'}},
+            {name:'label', label: 'Label', style:{width:'20%', fontSize:15}, headerStyle:{width:'20%'}},
+            {name:'description', label: 'Description', style:{width:'30%'}, headerStyle:{width:'30%'}},
+            {name:'summary', label: 'Root Nodes', style:{width:'30%'}, headerStyle:{width:'30%'}},
+            {name:'slug', label: 'Slug', style:{width:'20%'}, headerStyle:{width:'20%'}},
         ];
 
         const data = this.computeTableData(this.props.currentNode);

@@ -26,6 +26,7 @@ use Pydio\Core\Http\Client\SimpleStoreApi;
 use Pydio\Core\Utils\Http\UserAgent;
 use Pydio\Core\Utils\Vars\StringHelper;
 use Pydio\Log\Core\Logger;
+use Swagger\Client\ApiException;
 
 defined('PYDIO_EXEC') or die('Access not allowed');
 
@@ -57,7 +58,6 @@ class ApiKeysService
      * @param string $deviceIP
      * @return array
      * @throws PydioException
-     * @throws \Exception
      */
     public static function generatePairForAuthfront($userId, $jwtTokens, $jwtTokenTime, $deviceId = "", $deviceUA = "", $deviceIP = ""){
 
@@ -80,6 +80,11 @@ class ApiKeysService
 
     }
 
+    /**
+     * @param $token
+     * @param $data
+     * @throws PydioException
+     */
     public static function refreshPairForAuthfront($token, $data){
         $store = self::getStore();
         $store->storeDocument("keystore", $token, "", $data, $data);
@@ -181,7 +186,11 @@ class ApiKeysService
      * @throws PydioException
      */
     public static function loadDataForPair($token, $checkPrivate = ""){
-        $data = self::getStore()->loadDocument("keystore", $token);
+        try{
+            $data = self::getStore()->loadDocument("keystore", $token);
+        } catch (ApiException $e){
+            return false;
+        }
         if (empty($data)) {
             return false;
         }

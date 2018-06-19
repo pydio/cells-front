@@ -41,19 +41,9 @@ export default class WorkspaceServiceApi {
     /**
      * Delete an existing workspace
      * @param {String} slug 
-     * @param {Object} opts Optional parameters
-     * @param {String} opts.UUID 
-     * @param {String} opts.label 
-     * @param {String} opts.description 
-     * @param {module:model/String} opts.scope  (default to ANY)
-     * @param {Number} opts.lastUpdated 
-     * @param {String} opts.attributes 
-     * @param {Array.<String>} opts.rootNodes 
-     * @param {Boolean} opts.policiesContextEditable 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/RestDeleteResponse} and HTTP response
      */
-    deleteWorkspaceWithHttpInfo(slug, opts) {
-      opts = opts || {};
+    deleteWorkspaceWithHttpInfo(slug) {
       let postBody = null;
 
       // verify the required parameter 'slug' is set
@@ -66,14 +56,6 @@ export default class WorkspaceServiceApi {
         'Slug': slug
       };
       let queryParams = {
-        'UUID': opts['UUID'],
-        'Label': opts['label'],
-        'Description': opts['description'],
-        'Scope': opts['scope'],
-        'LastUpdated': opts['lastUpdated'],
-        'Attributes': opts['attributes'],
-        'RootNodes': this.apiClient.buildCollectionParam(opts['rootNodes'], 'csv'),
-        'PoliciesContextEditable': opts['policiesContextEditable']
       };
       let headerParams = {
       };
@@ -95,19 +77,10 @@ export default class WorkspaceServiceApi {
     /**
      * Delete an existing workspace
      * @param {String} slug 
-     * @param {Object} opts Optional parameters
-     * @param {String} opts.UUID 
-     * @param {String} opts.label 
-     * @param {String} opts.description 
-     * @param {module:model/String} opts.scope  (default to ANY)
-     * @param {Number} opts.lastUpdated 
-     * @param {String} opts.attributes 
-     * @param {Array.<String>} opts.rootNodes 
-     * @param {Boolean} opts.policiesContextEditable 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/RestDeleteResponse}
      */
-    deleteWorkspace(slug, opts) {
-      return this.deleteWorkspaceWithHttpInfo(slug, opts)
+    deleteWorkspace(slug) {
+      return this.deleteWorkspaceWithHttpInfo(slug)
         .then(function(response_and_data) {
           return response_and_data.data;
         });

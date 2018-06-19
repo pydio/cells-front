@@ -24,6 +24,6 @@ import InfoPanel from './main/InfoPanel'
 import CompositeDialog from './composite/CompositeDialog'
 import LinkModel from './links/LinkModel'
 import ShareHelper from './main/ShareHelper'
-import {ShareView, ShareViewModal} from "./lists/SharesView";
+import {ShareView, ShareViewModal} from "./lists/ShareView";
 
 export {CreateCellDialog, EditCellDialog, CellCard, InfoPanel, CompositeDialog, LinkModel, ShareHelper, ShareViewModal, ShareView}

@@ -39,16 +39,9 @@ export default class EnterprisePolicyServiceApi {
     /**
      * Delete a security policy
      * @param {String} uuid 
-     * @param {Object} opts Optional parameters
-     * @param {String} opts.name 
-     * @param {String} opts.description 
-     * @param {String} opts.ownerUuid 
-     * @param {module:model/String} opts.resourceGroup  (default to rest)
-     * @param {Number} opts.lastUpdated 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/RestDeleteResponse} and HTTP response
      */
-    deletePolicyWithHttpInfo(uuid, opts) {
-      opts = opts || {};
+    deletePolicyWithHttpInfo(uuid) {
       let postBody = null;
 
       // verify the required parameter 'uuid' is set
@@ -61,11 +54,6 @@ export default class EnterprisePolicyServiceApi {
         'Uuid': uuid
       };
       let queryParams = {
-        'Name': opts['name'],
-        'Description': opts['description'],
-        'OwnerUuid': opts['ownerUuid'],
-        'ResourceGroup': opts['resourceGroup'],
-        'LastUpdated': opts['lastUpdated']
       };
       let headerParams = {
       };
@@ -87,16 +75,10 @@ export default class EnterprisePolicyServiceApi {
     /**
      * Delete a security policy
      * @param {String} uuid 
-     * @param {Object} opts Optional parameters
-     * @param {String} opts.name 
-     * @param {String} opts.description 
-     * @param {String} opts.ownerUuid 
-     * @param {module:model/String} opts.resourceGroup  (default to rest)
-     * @param {Number} opts.lastUpdated 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/RestDeleteResponse}
      */
-    deletePolicy(uuid, opts) {
-      return this.deletePolicyWithHttpInfo(uuid, opts)
+    deletePolicy(uuid) {
+      return this.deletePolicyWithHttpInfo(uuid)
         .then(function(response_and_data) {
           return response_and_data.data;
         });

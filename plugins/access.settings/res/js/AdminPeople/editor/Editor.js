@@ -24,7 +24,7 @@ const PathUtils = require('pydio/util/path');
 const Repository = require('pydio/model/repository');
 const {FormPanel} = require('pydio').requireLib('form');
 const {PaperEditorLayout, PaperEditorNavEntry, PaperEditorNavHeader} = require('pydio').requireLib('components');
-const {FlatButton, RaisedButton, Snackbar} = require('material-ui');
+const {FlatButton, RaisedButton, Snackbar, IconMenu, IconButton, MenuItem} = require('material-ui');
 
 import EditorCache from './util/EditorCache'
 import UserPasswordDialog from './user/UserPasswordDialog'
@@ -478,34 +478,39 @@ class Editor extends React.Component{
 
             try {
                 testTitle = this.state.roleRead['PARAMETERS']['PYDIO_REPO_SCOPE_ALL']['core.conf']['displayName'];
-                if(testTitle) title = testTitle;
+                if(testTitle) {
+                    title = testTitle;
+                }
             } catch (e) {}
-            var userId = PathUtils.getBasename(this.props.node.getPath());
-
-            var locked = this.state.roleData.USER.LOCK || "";
-            defs = [
-                {"name":"password",group:this.getMessage('24'),label:this.getPydioRoleMessage('25'), description:"","type":"button", choices:"update_user_pwd"},
-                {"name":"lockout",group:this.getMessage('24'),label:this.getPydioRoleMessage((locked.indexOf('logout') > -1?'27':'26')), description:"","type":"button", choices:"user_set_lock-lock"},
-                {"name":"passchange",group:this.getMessage('24'),label:this.getPydioRoleMessage((locked.indexOf('pass_change') > -1?'28b':'28')), description:"","type":"button", choices:"user_set_lock-pass_change"}
-            ];
-            values = {};
-            var buttonCallback = function(parameters, cb){
-                var action = parameters['get_action'];
+            const userId = PathUtils.getBasename(this.props.node.getPath());
+            const locked = this.state.roleData.USER.LOCK || "";
+            const buttonCallback = (action) => {
                 if(action === "update_user_pwd"){
                     this.props.pydio.UI.openComponentInModal('AdminPeople', 'UserPasswordDialog', {userId: userId});
                 }else{
                     this._toggleUserLock(userId, locked, action);
                 }
-            }.bind(this);
+            };
 
             otherForm = (
-                <FormPanel
-                    key="form"
-                    parameters={defs}
-                    values={values}
-                    applyButtonAction={buttonCallback}
-                    depth={-2}
-                />
+                <div>
+                    <h3 className={"paper-right-title"} style={{display:'flex', alignItems: 'center'}}>
+                        <div style={{flex:1}}>
+                            {this.getMessage('24')}
+                            <div className={"section-legend"}>{this.getMessage('54')}</div>
+                        </div>
+                        <IconMenu
+                            iconButtonElement={<IconButton iconClassName={"mdi mdi-dots-vertical"}/>}
+                            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                            targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                            tooltip={"Actions"}
+                        >
+                            <MenuItem primaryText={this.getPydioRoleMessage('25')} onTouchTap={() => buttonCallback('update_user_pwd')}/>
+                            <MenuItem primaryText={this.getPydioRoleMessage((locked.indexOf('logout') > -1?'27':'26'))} onTouchTap={() => buttonCallback('user_set_lock-lock')}/>
+                            <MenuItem primaryText={this.getPydioRoleMessage((locked.indexOf('pass_change') > -1?'28b':'28'))} onTouchTap={() => buttonCallback('user_set_lock-pass_change')}/>
+                        </IconMenu>
+                    </h3>
+                </div>
             );
 
         }else if(this.state.roleType === 'group'){
@@ -597,17 +602,16 @@ class Editor extends React.Component{
             sharesMenu = <PydioComponents.PaperEditorNavEntry key="shares" keyName="shares" onClick={this.setSelectedPane.bind(this)} label={this.getMessage('49')} selectedKey={this.state.currentPane}/>;
             if(this.state.roleData && this.state.roleData.ALL){
 
-                var profilesChoices = this.state.roleData.ALL.PROFILES.join(",");
                 defs = [
-                    {"name":"login",group:"User Profile", label:this.getPydioRoleMessage('21'),description:this.getMessage('31'),"type":"string", readonly:true},
-                    {"name":"profile",group:"User Profile",label:this.getPydioRoleMessage('22'), description:this.getMessage('32'),"type":"select", choices:profilesChoices}
+                    {name:"login", label:this.getPydioRoleMessage('21'),description:this.getMessage('31'),"type":"string", readonly:true},
+                    {name:"profile", label:this.getPydioRoleMessage('22'), description:this.getMessage('32'),"type":"select", choices:this.state.roleData.ALL.PROFILES.join(",")}
                 ];
                 values = {
                     login:filterUserId,
                     profile:this.state.roleData.USER.PROFILE
                 };
                 changeListener = function(paramName, newValue, oldValue){
-                    var controller = this.state.Controller;
+                    const controller = this.state.Controller;
                     if(paramName === "profile") {
                         controller.updateUserProfile(newValue);
                     }
@@ -615,12 +619,12 @@ class Editor extends React.Component{
 
                 rolesPane = (
                     <div>
+                        <h3 className="paper-right-title">{this.getMessage('30')}<div className={"section-legend"}>{this.getMessage('55')}</div></h3>
                         <FormPanel
                             key="form"
                             parameters={defs}
                             onParameterChange={changeListener}
                             values={values}
-                            applyButtonAction={buttonCallback}
                             depth={-2}
                         />
                         <UserRolesPicker
@@ -635,11 +639,12 @@ class Editor extends React.Component{
                 );
 
                 if(this.state.currentPane === 'shares'){
+                    const {node, pydio} = this.props;
                     shares = (
                         <SharesList
+                            pydio={pydio}
                             userId={filterUserId}
-                            sharedWorkspaces={this.state.roleData.ALL.SHARED_REPOSITORIES}
-                            workspacesDetails={this.state.roleData.ALL.REPOSITORIES_DETAILS}
+                            userData={this.state.roleData.USER}
                         />
                     );
                 }else{
@@ -666,7 +671,7 @@ class Editor extends React.Component{
         var leftNav = [
             <PaperEditorNavHeader key="1" label={this.getMessage('ws.28', 'ajxp_admin')}/>,
             <PaperEditorNavEntry key="info" keyName="info" onClick={this.setSelectedPane.bind(this)} label={infoMenuTitle} selectedKey={this.state.currentPane}/>,
-            rolesPaneMenu,
+            rolesPaneMenu, sharesMenu,
             <PaperEditorNavHeader key="2" label={this.getMessage('34')}/>,
             <PaperEditorNavEntry key="workspaces" keyName="workspaces" onClick={this.setSelectedPane.bind(this)} label={this.getMessage('35')} selectedKey={this.state.currentPane}/>,
             <PaperEditorNavEntry key="pages" keyName="pages" onClick={this.setSelectedPane.bind(this)} label={this.getMessage('36')} selectedKey={this.state.currentPane}/>,

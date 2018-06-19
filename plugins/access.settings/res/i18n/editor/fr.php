@@ -69,9 +69,11 @@ $mess=array(
     "46" => "Paramètres de tous les workspaces",
     "47" => "Vous pouvez ici personnaliser la valeur d'un paramètre ou désactiver une action pour tous les dépôts, ou tous les dépôts partagés d'un coup. Vous pouvez utiliser l'autre onglet si vous souhaitez modifier les paramètres différemment pour chaque dépôt.",
     "48" => "Vous pouvez ici personnaliser la valeur d'un paramètre ou désactiver une action pour chaque dépôt.",
-    "49" => "Partages",
+    "49" => "Cellules et Liens Publics",
     "50" => "Fichiers et Dossiers partagés",
     "51" => "Avec cet utilisateur",
-    "52" => "Par cet utilisateur",
+    "52" => "Partagés par cet utilisateur",
     "53" => "Partagé par %1 depuis le dépôt %2",
+    "54" => "Informations du compte. Utilisez le bouton sur la droite pour plus d'actions.",
+    "55" => "Le profil et les rôles permettent d'assigner des permissions automatiquement à cet utilisateur.",
 );

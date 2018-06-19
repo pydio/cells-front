@@ -37,6 +37,7 @@ use Swagger\Client\Model\RestRevokeRequest;
  */
 class DexApi extends MicroApi {
 
+    const SESSION_TOKEN_NONCE = "DEX-SESSION-NONCE";
     const SESSION_TOKEN_KEY = "DEX-AUTH-TOKEN";
     const SESSION_TOKEN_TIME_KEY = "DEX-AUTH-TOKEN-TIME";
 
@@ -46,6 +47,7 @@ class DexApi extends MicroApi {
 
     private static $restToken;
     private static $restTokenTime;
+    public static $restTokenNonce;
 
     public function __construct()
     {
@@ -79,9 +81,10 @@ class DexApi extends MicroApi {
         return ["tokens" => self::$restToken, "time" => self::$restTokenTime];
     }
 
-    public static function presetRestToken($jwtToken, $jwtTokenTime){
+    public static function presetRestToken($jwtToken, $jwtTokenTime, $jwtNonce){
         self::$restToken = $jwtToken;
         self::$restTokenTime = $jwtTokenTime;
+        self::$restTokenNonce = $jwtNonce;
     }
 
     /**
@@ -150,8 +153,13 @@ class DexApi extends MicroApi {
      */
     public static function clientExpirationTime($referenceTime) {
 
-        $issueTime = SessionService::fetch(DexApi::SESSION_TOKEN_TIME_KEY);
-        $tokens = SessionService::fetch(DexApi::SESSION_TOKEN_KEY);
+        if(ApplicationState::sapiUsesSession()){
+            $issueTime = SessionService::fetch(DexApi::SESSION_TOKEN_TIME_KEY);
+            $tokens = SessionService::fetch(DexApi::SESSION_TOKEN_KEY);
+        } else {
+            $issueTime =  DexApi::$restTokenTime;
+            $tokens = DexApi::$restToken;
+        }
         $expireIn = intval($tokens["expires_in"]);
         return $issueTime - time() + $referenceTime + $expireIn;
 
@@ -167,13 +175,21 @@ class DexApi extends MicroApi {
 
         $frontendRequestTime = time();
         $client = new Client();
+        if(ApplicationState::sapiUsesSession()){
+            $nonce = uniqid("session-");
+        } else {
+            if(empty(DexApi::$restTokenNonce)){
+                DexApi::$restTokenNonce = uniqid("rest-");
+            }
+            $nonce = DexApi::$restTokenNonce;
+        }
         $options = [
             "body" => [
                 "grant_type" => "password",
-                "scope"      => "email profile pydio",
+                "scope"      => "email profile pydio offline_access",
                 "username"   => $userId,
                 "password"   => $userPass,
-                "nonce"      => uniqid(),
+                "nonce"      => $nonce,
             ],
             "headers" => [
                 "Authorization" => "Basic ". base64_encode("$this->clientID:$this->clientSecret"), // ClientID + Client Secret as defined is config-dev.yaml
@@ -194,9 +210,11 @@ class DexApi extends MicroApi {
         if (ApplicationState::sapiUsesSession()) {
             SessionService::save(DexApi::SESSION_TOKEN_KEY, $json);
             SessionService::save(DexApi::SESSION_TOKEN_TIME_KEY, $frontendRequestTime);
+            SessionService::save(DexApi::SESSION_TOKEN_NONCE, $nonce);
         } else {
             DexApi::$restToken = $json;
             DexApi::$restTokenTime = $frontendRequestTime;
+            DexApi::$restTokenNonce = $nonce;
         }
 
         return $json;
@@ -211,11 +229,16 @@ class DexApi extends MicroApi {
         try{
             $frontendTime = time();
             $client = new Client();
+            if($session){
+                $nonce = SessionService::fetch(DexApi::SESSION_TOKEN_NONCE);
+            } else {
+                $nonce = DexApi::$restTokenNonce;
+            }
             $options = [
                 "body" => [
                     "grant_type" => "refresh_token",
                     "scope"      => "email profile pydio",
-                    "nonce"      => uniqid(),
+                    "nonce"      => $nonce,
                     "refresh_token" => $refreshToken
                 ],
                 "headers" => [
@@ -240,7 +263,7 @@ class DexApi extends MicroApi {
             }
             return $json;
         }catch (Exception $e){
-            session_destroy();
+            @session_destroy();
             throw new AuthRequiredException();
         }
         return null;

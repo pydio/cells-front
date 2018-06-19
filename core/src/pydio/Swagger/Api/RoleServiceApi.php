@@ -93,19 +93,12 @@ class RoleServiceApi
      * Delete a Role by ID
      *
      * @param string $uuid  (required)
-     * @param string $label  (optional)
-     * @param bool $is_team  (optional)
-     * @param bool $group_role  (optional)
-     * @param bool $user_role  (optional)
-     * @param int $last_updated  (optional)
-     * @param string[] $auto_applies  (optional)
-     * @param bool $policies_context_editable  (optional)
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @return \Swagger\Client\Model\IdmRole
      */
-    public function deleteRole($uuid, $label = null, $is_team = null, $group_role = null, $user_role = null, $last_updated = null, $auto_applies = null, $policies_context_editable = null)
+    public function deleteRole($uuid)
     {
-        list($response) = $this->deleteRoleWithHttpInfo($uuid, $label, $is_team, $group_role, $user_role, $last_updated, $auto_applies, $policies_context_editable);
+        list($response) = $this->deleteRoleWithHttpInfo($uuid);
         return $response;
     }
 
@@ -115,17 +108,10 @@ class RoleServiceApi
      * Delete a Role by ID
      *
      * @param string $uuid  (required)
-     * @param string $label  (optional)
-     * @param bool $is_team  (optional)
-     * @param bool $group_role  (optional)
-     * @param bool $user_role  (optional)
-     * @param int $last_updated  (optional)
-     * @param string[] $auto_applies  (optional)
-     * @param bool $policies_context_editable  (optional)
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @return array of \Swagger\Client\Model\IdmRole, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteRoleWithHttpInfo($uuid, $label = null, $is_team = null, $group_role = null, $user_role = null, $last_updated = null, $auto_applies = null, $policies_context_editable = null)
+    public function deleteRoleWithHttpInfo($uuid)
     {
         // verify the required parameter 'uuid' is set
         if ($uuid === null) {
@@ -143,37 +129,6 @@ class RoleServiceApi
         }
         $headerParams['Content-Type'] = $this->apiClient->selectHeaderContentType(['application/json']);
 
-        // query params
-        if ($label !== null) {
-            $queryParams['Label'] = $this->apiClient->getSerializer()->toQueryValue($label);
-        }
-        // query params
-        if ($is_team !== null) {
-            $queryParams['IsTeam'] = $this->apiClient->getSerializer()->toQueryValue($is_team);
-        }
-        // query params
-        if ($group_role !== null) {
-            $queryParams['GroupRole'] = $this->apiClient->getSerializer()->toQueryValue($group_role);
-        }
-        // query params
-        if ($user_role !== null) {
-            $queryParams['UserRole'] = $this->apiClient->getSerializer()->toQueryValue($user_role);
-        }
-        // query params
-        if ($last_updated !== null) {
-            $queryParams['LastUpdated'] = $this->apiClient->getSerializer()->toQueryValue($last_updated);
-        }
-        // query params
-        if (is_array($auto_applies)) {
-            $auto_applies = $this->apiClient->getSerializer()->serializeCollection($auto_applies, 'csv', true);
-        }
-        if ($auto_applies !== null) {
-            $queryParams['AutoApplies'] = $this->apiClient->getSerializer()->toQueryValue($auto_applies);
-        }
-        // query params
-        if ($policies_context_editable !== null) {
-            $queryParams['PoliciesContextEditable'] = $this->apiClient->getSerializer()->toQueryValue($policies_context_editable);
-        }
         // path params
         if ($uuid !== null) {
             $resourcePath = str_replace(

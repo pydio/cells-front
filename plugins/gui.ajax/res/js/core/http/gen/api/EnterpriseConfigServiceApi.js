@@ -42,44 +42,9 @@ export default class EnterpriseConfigServiceApi {
     /**
      * [Enterprise Only] Delete external directory
      * @param {String} configId 
-     * @param {Object} opts Optional parameters
-     * @param {String} opts.configConfigId 
-     * @param {String} opts.configDomainName 
-     * @param {String} opts.configHost 
-     * @param {String} opts.configConnection 
-     * @param {String} opts.configBindDN 
-     * @param {String} opts.configBindPW 
-     * @param {Boolean} opts.configSkipVerifyCertificate 
-     * @param {String} opts.configRootCA 
-     * @param {String} opts.configRootCAData To be converted to []byte.
-     * @param {Number} opts.configPageSize 
-     * @param {Array.<String>} opts.configUserDNs 
-     * @param {String} opts.configUserFilter 
-     * @param {String} opts.configUserIDAttribute 
-     * @param {String} opts.configUserDisplayAttribute 
-     * @param {String} opts.configUserScope 
-     * @param {String} opts.configMemberOfMappingMappingLeftAttribute 
-     * @param {String} opts.configMemberOfMappingMappingRightAttribute 
-     * @param {String} opts.configMemberOfMappingMappingRuleString 
-     * @param {String} opts.configMemberOfMappingMappingRolePrefix 
-     * @param {Array.<String>} opts.configMemberOfMappingGroupFilterDNs 
-     * @param {String} opts.configMemberOfMappingGroupFilterFilter 
-     * @param {String} opts.configMemberOfMappingGroupFilterIDAttribute 
-     * @param {String} opts.configMemberOfMappingGroupFilterDisplayAttribute 
-     * @param {String} opts.configMemberOfMappingGroupFilterScope 
-     * @param {Boolean} opts.configMemberOfMappingSupportNestedGroup 
-     * @param {Boolean} opts.configMemberOfMappingRealMemberOf 
-     * @param {String} opts.configMemberOfMappingRealMemberOfAttribute 
-     * @param {String} opts.configMemberOfMappingRealMemberOfValueFormat 
-     * @param {String} opts.configMemberOfMappingPydioMemberOfAttribute 
-     * @param {String} opts.configMemberOfMappingPydioMemberOfValueFormat 
-     * @param {String} opts.configRolePrefix 
-     * @param {String} opts.configSchedule 
-     * @param {String} opts.configSchedulerDetails 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/RestExternalDirectoryResponse} and HTTP response
      */
-    deleteExternalDirectoryWithHttpInfo(configId, opts) {
-      opts = opts || {};
+    deleteExternalDirectoryWithHttpInfo(configId) {
       let postBody = null;
 
       // verify the required parameter 'configId' is set
@@ -92,39 +57,6 @@ export default class EnterpriseConfigServiceApi {
         'ConfigId': configId
       };
       let queryParams = {
-        'Config.ConfigId': opts['configConfigId'],
-        'Config.DomainName': opts['configDomainName'],
-        'Config.Host': opts['configHost'],
-        'Config.Connection': opts['configConnection'],
-        'Config.BindDN': opts['configBindDN'],
-        'Config.BindPW': opts['configBindPW'],
-        'Config.SkipVerifyCertificate': opts['configSkipVerifyCertificate'],
-        'Config.RootCA': opts['configRootCA'],
-        'Config.RootCAData': opts['configRootCAData'],
-        'Config.PageSize': opts['configPageSize'],
-        'Config.User.DNs': this.apiClient.buildCollectionParam(opts['configUserDNs'], 'csv'),
-        'Config.User.Filter': opts['configUserFilter'],
-        'Config.User.IDAttribute': opts['configUserIDAttribute'],
-        'Config.User.DisplayAttribute': opts['configUserDisplayAttribute'],
-        'Config.User.Scope': opts['configUserScope'],
-        'Config.MemberOfMapping.Mapping.LeftAttribute': opts['configMemberOfMappingMappingLeftAttribute'],
-        'Config.MemberOfMapping.Mapping.RightAttribute': opts['configMemberOfMappingMappingRightAttribute'],
-        'Config.MemberOfMapping.Mapping.RuleString': opts['configMemberOfMappingMappingRuleString'],
-        'Config.MemberOfMapping.Mapping.RolePrefix': opts['configMemberOfMappingMappingRolePrefix'],
-        'Config.MemberOfMapping.GroupFilter.DNs': this.apiClient.buildCollectionParam(opts['configMemberOfMappingGroupFilterDNs'], 'csv'),
-        'Config.MemberOfMapping.GroupFilter.Filter': opts['configMemberOfMappingGroupFilterFilter'],
-        'Config.MemberOfMapping.GroupFilter.IDAttribute': opts['configMemberOfMappingGroupFilterIDAttribute'],
-        'Config.MemberOfMapping.GroupFilter.DisplayAttribute': opts['configMemberOfMappingGroupFilterDisplayAttribute'],
-        'Config.MemberOfMapping.GroupFilter.Scope': opts['configMemberOfMappingGroupFilterScope'],
-        'Config.MemberOfMapping.SupportNestedGroup': opts['configMemberOfMappingSupportNestedGroup'],
-        'Config.MemberOfMapping.RealMemberOf': opts['configMemberOfMappingRealMemberOf'],
-        'Config.MemberOfMapping.RealMemberOfAttribute': opts['configMemberOfMappingRealMemberOfAttribute'],
-        'Config.MemberOfMapping.RealMemberOfValueFormat': opts['configMemberOfMappingRealMemberOfValueFormat'],
-        'Config.MemberOfMapping.PydioMemberOfAttribute': opts['configMemberOfMappingPydioMemberOfAttribute'],
-        'Config.MemberOfMapping.PydioMemberOfValueFormat': opts['configMemberOfMappingPydioMemberOfValueFormat'],
-        'Config.RolePrefix': opts['configRolePrefix'],
-        'Config.Schedule': opts['configSchedule'],
-        'Config.SchedulerDetails': opts['configSchedulerDetails']
       };
       let headerParams = {
       };
@@ -146,44 +78,10 @@ export default class EnterpriseConfigServiceApi {
     /**
      * [Enterprise Only] Delete external directory
      * @param {String} configId 
-     * @param {Object} opts Optional parameters
-     * @param {String} opts.configConfigId 
-     * @param {String} opts.configDomainName 
-     * @param {String} opts.configHost 
-     * @param {String} opts.configConnection 
-     * @param {String} opts.configBindDN 
-     * @param {String} opts.configBindPW 
-     * @param {Boolean} opts.configSkipVerifyCertificate 
-     * @param {String} opts.configRootCA 
-     * @param {String} opts.configRootCAData To be converted to []byte.
-     * @param {Number} opts.configPageSize 
-     * @param {Array.<String>} opts.configUserDNs 
-     * @param {String} opts.configUserFilter 
-     * @param {String} opts.configUserIDAttribute 
-     * @param {String} opts.configUserDisplayAttribute 
-     * @param {String} opts.configUserScope 
-     * @param {String} opts.configMemberOfMappingMappingLeftAttribute 
-     * @param {String} opts.configMemberOfMappingMappingRightAttribute 
-     * @param {String} opts.configMemberOfMappingMappingRuleString 
-     * @param {String} opts.configMemberOfMappingMappingRolePrefix 
-     * @param {Array.<String>} opts.configMemberOfMappingGroupFilterDNs 
-     * @param {String} opts.configMemberOfMappingGroupFilterFilter 
-     * @param {String} opts.configMemberOfMappingGroupFilterIDAttribute 
-     * @param {String} opts.configMemberOfMappingGroupFilterDisplayAttribute 
-     * @param {String} opts.configMemberOfMappingGroupFilterScope 
-     * @param {Boolean} opts.configMemberOfMappingSupportNestedGroup 
-     * @param {Boolean} opts.configMemberOfMappingRealMemberOf 
-     * @param {String} opts.configMemberOfMappingRealMemberOfAttribute 
-     * @param {String} opts.configMemberOfMappingRealMemberOfValueFormat 
-     * @param {String} opts.configMemberOfMappingPydioMemberOfAttribute 
-     * @param {String} opts.configMemberOfMappingPydioMemberOfValueFormat 
-     * @param {String} opts.configRolePrefix 
-     * @param {String} opts.configSchedule 
-     * @param {String} opts.configSchedulerDetails 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/RestExternalDirectoryResponse}
      */
-    deleteExternalDirectory(configId, opts) {
-      return this.deleteExternalDirectoryWithHttpInfo(configId, opts)
+    deleteExternalDirectory(configId) {
+      return this.deleteExternalDirectoryWithHttpInfo(configId)
         .then(function(response_and_data) {
           return response_and_data.data;
         });
@@ -193,18 +91,9 @@ export default class EnterpriseConfigServiceApi {
     /**
      * [Enterprise Only] Delete a versioning policy
      * @param {String} uuid 
-     * @param {Object} opts Optional parameters
-     * @param {String} opts.name 
-     * @param {String} opts.description 
-     * @param {String} opts.versionsDataSourceName 
-     * @param {String} opts.versionsDataSourceBucket 
-     * @param {String} opts.maxTotalSize 
-     * @param {String} opts.maxSizePerFile 
-     * @param {String} opts.ignoreFilesGreaterThan 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/RestDeleteVersioningPolicyResponse} and HTTP response
      */
-    deleteVersioningPolicyWithHttpInfo(uuid, opts) {
-      opts = opts || {};
+    deleteVersioningPolicyWithHttpInfo(uuid) {
       let postBody = null;
 
       // verify the required parameter 'uuid' is set
@@ -217,13 +106,6 @@ export default class EnterpriseConfigServiceApi {
         'Uuid': uuid
       };
       let queryParams = {
-        'Name': opts['name'],
-        'Description': opts['description'],
-        'VersionsDataSourceName': opts['versionsDataSourceName'],
-        'VersionsDataSourceBucket': opts['versionsDataSourceBucket'],
-        'MaxTotalSize': opts['maxTotalSize'],
-        'MaxSizePerFile': opts['maxSizePerFile'],
-        'IgnoreFilesGreaterThan': opts['ignoreFilesGreaterThan']
       };
       let headerParams = {
       };
@@ -245,18 +127,10 @@ export default class EnterpriseConfigServiceApi {
     /**
      * [Enterprise Only] Delete a versioning policy
      * @param {String} uuid 
-     * @param {Object} opts Optional parameters
-     * @param {String} opts.name 
-     * @param {String} opts.description 
-     * @param {String} opts.versionsDataSourceName 
-     * @param {String} opts.versionsDataSourceBucket 
-     * @param {String} opts.maxTotalSize 
-     * @param {String} opts.maxSizePerFile 
-     * @param {String} opts.ignoreFilesGreaterThan 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/RestDeleteVersioningPolicyResponse}
      */
-    deleteVersioningPolicy(uuid, opts) {
-      return this.deleteVersioningPolicyWithHttpInfo(uuid, opts)
+    deleteVersioningPolicy(uuid) {
+      return this.deleteVersioningPolicyWithHttpInfo(uuid)
         .then(function(response_and_data) {
           return response_and_data.data;
         });

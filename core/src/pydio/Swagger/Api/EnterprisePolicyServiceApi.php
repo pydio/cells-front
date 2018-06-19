@@ -93,17 +93,12 @@ class EnterprisePolicyServiceApi
      * Delete a security policy
      *
      * @param string $uuid  (required)
-     * @param string $name  (optional)
-     * @param string $description  (optional)
-     * @param string $owner_uuid  (optional)
-     * @param string $resource_group  (optional, default to rest)
-     * @param int $last_updated  (optional)
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @return \Swagger\Client\Model\RestDeleteResponse
      */
-    public function deletePolicy($uuid, $name = null, $description = null, $owner_uuid = null, $resource_group = 'rest', $last_updated = null)
+    public function deletePolicy($uuid)
     {
-        list($response) = $this->deletePolicyWithHttpInfo($uuid, $name, $description, $owner_uuid, $resource_group, $last_updated);
+        list($response) = $this->deletePolicyWithHttpInfo($uuid);
         return $response;
     }
 
@@ -113,15 +108,10 @@ class EnterprisePolicyServiceApi
      * Delete a security policy
      *
      * @param string $uuid  (required)
-     * @param string $name  (optional)
-     * @param string $description  (optional)
-     * @param string $owner_uuid  (optional)
-     * @param string $resource_group  (optional, default to rest)
-     * @param int $last_updated  (optional)
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @return array of \Swagger\Client\Model\RestDeleteResponse, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deletePolicyWithHttpInfo($uuid, $name = null, $description = null, $owner_uuid = null, $resource_group = 'rest', $last_updated = null)
+    public function deletePolicyWithHttpInfo($uuid)
     {
         // verify the required parameter 'uuid' is set
         if ($uuid === null) {
@@ -139,26 +129,6 @@ class EnterprisePolicyServiceApi
         }
         $headerParams['Content-Type'] = $this->apiClient->selectHeaderContentType(['application/json']);
 
-        // query params
-        if ($name !== null) {
-            $queryParams['Name'] = $this->apiClient->getSerializer()->toQueryValue($name);
-        }
-        // query params
-        if ($description !== null) {
-            $queryParams['Description'] = $this->apiClient->getSerializer()->toQueryValue($description);
-        }
-        // query params
-        if ($owner_uuid !== null) {
-            $queryParams['OwnerUuid'] = $this->apiClient->getSerializer()->toQueryValue($owner_uuid);
-        }
-        // query params
-        if ($resource_group !== null) {
-            $queryParams['ResourceGroup'] = $this->apiClient->getSerializer()->toQueryValue($resource_group);
-        }
-        // query params
-        if ($last_updated !== null) {
-            $queryParams['LastUpdated'] = $this->apiClient->getSerializer()->toQueryValue($last_updated);
-        }
         // path params
         if ($uuid !== null) {
             $resourcePath = str_replace(

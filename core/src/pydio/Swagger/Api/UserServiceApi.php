@@ -88,7 +88,7 @@ class UserServiceApi
     }
 
     /**
-     * Operation bindUsers
+     * Operation bindUser
      *
      * Bind a user with her login and password
      *
@@ -97,14 +97,14 @@ class UserServiceApi
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @return \Swagger\Client\Model\RestBindResponse
      */
-    public function bindUsers($login, $body)
+    public function bindUser($login, $body)
     {
-        list($response) = $this->bindUsersWithHttpInfo($login, $body);
+        list($response) = $this->bindUserWithHttpInfo($login, $body);
         return $response;
     }
 
     /**
-     * Operation bindUsersWithHttpInfo
+     * Operation bindUserWithHttpInfo
      *
      * Bind a user with her login and password
      *
@@ -113,15 +113,15 @@ class UserServiceApi
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @return array of \Swagger\Client\Model\RestBindResponse, HTTP status code, HTTP response headers (array of strings)
      */
-    public function bindUsersWithHttpInfo($login, $body)
+    public function bindUserWithHttpInfo($login, $body)
     {
         // verify the required parameter 'login' is set
         if ($login === null) {
-            throw new \InvalidArgumentException('Missing the required parameter $login when calling bindUsers');
+            throw new \InvalidArgumentException('Missing the required parameter $login when calling bindUser');
         }
         // verify the required parameter 'body' is set
         if ($body === null) {
-            throw new \InvalidArgumentException('Missing the required parameter $body when calling bindUsers');
+            throw new \InvalidArgumentException('Missing the required parameter $body when calling bindUser');
         }
         // parse inputs
         $resourcePath = "/user/{Login}/bind";
@@ -186,18 +186,12 @@ class UserServiceApi
      * Delete a user
      *
      * @param string $login  (required)
-     * @param string $uuid  (optional)
-     * @param string $group_path  (optional)
-     * @param string $password  (optional)
-     * @param bool $is_group Group specific data. (optional)
-     * @param string $group_label  (optional)
-     * @param bool $policies_context_editable  (optional)
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @return \Swagger\Client\Model\RestDeleteResponse
      */
-    public function deleteUser($login, $uuid = null, $group_path = null, $password = null, $is_group = null, $group_label = null, $policies_context_editable = null)
+    public function deleteUser($login)
     {
-        list($response) = $this->deleteUserWithHttpInfo($login, $uuid, $group_path, $password, $is_group, $group_label, $policies_context_editable);
+        list($response) = $this->deleteUserWithHttpInfo($login);
         return $response;
     }
 
@@ -207,16 +201,10 @@ class UserServiceApi
      * Delete a user
      *
      * @param string $login  (required)
-     * @param string $uuid  (optional)
-     * @param string $group_path  (optional)
-     * @param string $password  (optional)
-     * @param bool $is_group Group specific data. (optional)
-     * @param string $group_label  (optional)
-     * @param bool $policies_context_editable  (optional)
      * @throws \Swagger\Client\ApiException on non-2xx response
      * @return array of \Swagger\Client\Model\RestDeleteResponse, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteUserWithHttpInfo($login, $uuid = null, $group_path = null, $password = null, $is_group = null, $group_label = null, $policies_context_editable = null)
+    public function deleteUserWithHttpInfo($login)
     {
         // verify the required parameter 'login' is set
         if ($login === null) {
@@ -234,30 +222,6 @@ class UserServiceApi
         }
         $headerParams['Content-Type'] = $this->apiClient->selectHeaderContentType(['application/json']);
 
-        // query params
-        if ($uuid !== null) {
-            $queryParams['Uuid'] = $this->apiClient->getSerializer()->toQueryValue($uuid);
-        }
-        // query params
-        if ($group_path !== null) {
-            $queryParams['GroupPath'] = $this->apiClient->getSerializer()->toQueryValue($group_path);
-        }
-        // query params
-        if ($password !== null) {
-            $queryParams['Password'] = $this->apiClient->getSerializer()->toQueryValue($password);
-        }
-        // query params
-        if ($is_group !== null) {
-            $queryParams['IsGroup'] = $this->apiClient->getSerializer()->toQueryValue($is_group);
-        }
-        // query params
-        if ($group_label !== null) {
-            $queryParams['GroupLabel'] = $this->apiClient->getSerializer()->toQueryValue($group_label);
-        }
-        // query params
-        if ($policies_context_editable !== null) {
-            $queryParams['PoliciesContextEditable'] = $this->apiClient->getSerializer()->toQueryValue($policies_context_editable);
-        }
         // path params
         if ($login !== null) {
             $resourcePath = str_replace(

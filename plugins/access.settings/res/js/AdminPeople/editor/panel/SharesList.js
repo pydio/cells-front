@@ -18,6 +18,10 @@
  * The latest code can be found at <https://pydio.com>.
  */
 
+import React from 'react'
+import Pydio from 'pydio'
+import {Paper} from 'material-ui'
+const {AsyncComponent} = Pydio.requireLib('boot');
 import {RoleMessagesConsumerMixin} from '../util/MessagesMixin'
 
 export default React.createClass({
@@ -25,34 +29,27 @@ export default React.createClass({
     mixins:[RoleMessagesConsumerMixin],
 
     propTypes:{
+        pydio: React.PropTypes.instanceOf(Pydio),
         userId:React.PropTypes.string.isRequired,
-        sharedWorkspaces:React.PropTypes.object,
-        workspacesDetails:React.PropTypes.object
+        userData:React.PropTypes.object.isRequired
     },
 
     render: function(){
+        const {pydio, userId} = this.props;
         return (
-            <div className="vertical-layout" style={{padding:16,height:'100%'}}>
-                <h2>{this.context.getMessage('52')}</h2>
-                <ReactMUI.Paper zDepth={1} className="workspace-activity-block layout-fill vertical-layout">
-                    <PydioComponents.NodeListCustomProvider
-                        title={this.context.getMessage('ws.25', 'ajxp_admin')}
-                        nodeProviderProperties={{
-                            get_action:"sharelist-load",
-                            user_id:this.props.userId,
-                            user_context:"user"
-                        }}
-                        tableKeys={{
-                            shared_element_parent_repository_label:{label:this.context.getMessage('ws.39', 'ajxp_admin'), width:'20%'},
-                            original_path:{label:this.context.getMessage('ws.41', 'ajxp_admin'), width:'80%'},
-                            share_type_readable:{label:this.context.getMessage('ws.40', 'ajxp_admin'), width:'15%'}
-                        }}
-                        actionBarGroups={['share_list_toolbar-selection', 'share_list_toolbar']}
-                        groupByFields={['share_type_readable','shared_element_parent_repository_label']}
-                        defaultGroupBy="shared_element_parent_repository_label"
-                        elementHeight={PydioComponents.SimpleList.HEIGHT_ONE_LINE}
+            <div className="vertical-layout" style={{height:'100%'}}>
+                <h3 className="paper-right-title">{this.context.getMessage('49')}
+                    <div className="section-legend">{this.context.getMessage('52')}</div>
+                </h3>
+                <Paper style={{margin:16}} zDepth={1} className="workspace-activity-block layout-fill vertical-layout">
+                    <AsyncComponent
+                        pydio={pydio}
+                        subject={"user:" + userId}
+                        defaultShareType={'CELLS'}
+                        namespace={"ShareDialog"}
+                        componentName={"ShareView"}
                     />
-                </ReactMUI.Paper>
+                </Paper>
             </div>
         );
     }

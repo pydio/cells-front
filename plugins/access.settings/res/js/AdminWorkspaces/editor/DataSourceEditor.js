@@ -111,6 +111,29 @@ class DataSourceEditor extends React.Component{
                     {this.context.getMessage('ws.75')}
                     {this.context.getMessage('ws.76')}
                 </div>
+                {create && model.StorageType === 'LOCAL' &&
+                <div>
+                    <Divider/>
+                    <div style={{padding: 16}}>
+                        File System datasources serve files via an object storage server, that is starting on the <b>parent folder</b> and serving the target as an <b>s3 bucket</b>.
+                        For this reason, the selected folder must meet the following requirements:
+                        <ul>
+                            <li style={{listStyle:'disc', marginLeft: 20}}>At least two-levels deep.</li>
+                            <li style={{listStyle:'disc', marginLeft: 20}}>The parent must be writeable by the application service user</li>
+                            <li style={{listStyle:'disc', marginLeft: 20}}>The target must comply with DNS names (lowercase, no spaces or special chars).</li>
+                        </ul>
+                    </div>
+                </div>
+                }
+                {create && model.StorageType === 'S3' &&
+                <div>
+                    <Divider/>
+                    <div style={{padding: 16}}>
+                        Remote Storage datasources will serve files from a remote, s3-compatible storage by proxying all requests. <br/>
+                        Use the standard API Key / Api Secret to authenticate, leave endpoint URL empty for AmazonS3 or use your storage URL for other on-premise solutions.
+                    </div>
+                </div>
+                }
                 {!create &&
                     <div>
                         <Divider/>
