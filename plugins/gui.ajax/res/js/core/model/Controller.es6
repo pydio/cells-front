@@ -87,6 +87,10 @@ export default class Controller extends Observable{
 
 	}
 
+	getPydio(){
+	    return this._pydioObject;
+    }
+
     publishActionEvent(eventName, data){
         this._pydioObject.fire(eventName, data);
     }

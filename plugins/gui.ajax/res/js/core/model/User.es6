@@ -341,6 +341,14 @@ export default class User{
 	    return this.repositories.get(this.activeRepository).asCell();
     }
 
+    /**
+     * Return active repository object
+     * @return {Repository}
+     */
+    getActiveRepositoryObject(){
+        return this.repositories.get(this.activeRepository);
+    }
+
 	/**
 	 * Parse the registry fragment to load this user
 	 * @param userNodes DOMNode
