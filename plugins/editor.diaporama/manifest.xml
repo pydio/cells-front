@@ -3,8 +3,7 @@
         iconClass="mdi mdi-image" previewProvider="true" text="186"
         title="136" actions="PydioDiaporama.Actions" className="PydioDiaporama" mimes="png,jpg,jpeg,gif"
         label="CONF_MESSAGE[Image viewer]"
-        description="CONF_MESSAGE[Image viewer, used for previewing images and browsing them in a diaporam. Generates a thumbnail version of the images.]"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:../core.pydio/pydio_registry.xsd">
+        description="CONF_MESSAGE[Image viewer, used for previewing images and browsing them in a diaporam. Generates a thumbnail version of the images.]">
 	<server_settings>
 		<global_param name="META_EXTRACTION_REMOTEWRAPPERS" type="array" label="CONF_MESSAGE[Remote Wrappers]" description="CONF_MESSAGE[When connected to a remote server, metadata extraction can make the listing action very long, as it must first copy each file locally. For plugins using the defined wrappers and files whose size is greater than this threshold, the image type and dimension will be skipped.]" default="FtpAccessWrapper"/>
 		<global_param name="META_EXTRACTION_THRESHOLD" type="string" label="CONF_MESSAGE[Size Threshold]" description="CONF_MESSAGE[Threshold]" default="50000"/>
@@ -13,7 +12,6 @@
 		<global_param name="THUMBNAIL_QUALITY" type="integer" label="CONF_MESSAGE[Quality]" description="CONF_MESSAGE[Thumbs quality]" default="2"/>
     <global_param name="EXIF_ROTATION" type="boolean" label="CONF_MESSAGE[Exif Rotation]" description="CONF_MESSAGE[Rotate image using exif rotation]" default="true"/>
 	</server_settings>
-	<class_definition filename="plugins/editor.diaporama/ImagePreviewer.php" classname="Pydio\Editor\Image\ImagePreviewer"/>
     <client_settings>
         <resources>
             <js file="plugins/editor.diaporama/res/build/PydioDiaporama.js" className="PydioDiaporama"/>
@@ -52,15 +50,6 @@
 						}
 						]]></clientCallback>
 					</processing>
-			</action>
-			<action name="preview_data_proxy" skipSecureToken="true" contentTypedProvider="true">
-				<processing>
-					<serverCallback methodName="switchAction" restParams="/file+" sdkMethodName="imagePreview" developerComment="Server an image with correct mimetype, eventually rendered as thumb.">
-                        <input_param name="file" type="PYDIO_NODE" description="Path to the node" mandatory="true"/>
-                        <input_param name="get_thumb" type="boolean" description="Whether to get a thumb version of the image" mandatory="true"/>
-                        <input_param name="dimension" type="integer" description="If get_thumb is true, max dimension of the thumb" default="200" mandatory="false" />
-					</serverCallback>
-				</processing>
 			</action>
 		</actions>
 		<client_configs>

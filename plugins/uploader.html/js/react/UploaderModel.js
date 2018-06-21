@@ -169,9 +169,15 @@
                 fullPath += PathUtils.getDirname(this._relativePath);
             }
             fullPath = fullPath + '/' + PathUtils.getBasename(this._file.name);
+            fullPath = fullPath.replace('//', '/');
             if (fullPath.normalize) {
                 fullPath = fullPath.normalize('NFC');
             }
+            PydioApi.getClient().uploadPresigned(this._file, fullPath, completeCallback, errorCallback, progressCallback).then(xhr => {
+                this.xhr = xhr;
+            });
+            return;
+            /*
             let params = {
                 get_action:'presigned',
                 file_0:fullPath,
@@ -191,7 +197,7 @@
                     }
                 }
             });
-
+            */
         }
     }
 

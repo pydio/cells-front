@@ -18,7 +18,9 @@
  * The latest code can be found at <https://pydio.com>.
  */
 import XMLUtils from '../util/XMLUtils'
+import LangUtils from '../util/LangUtils'
 import RestClient from './RestClient'
+import AWS from 'aws-sdk'
 
 /**
  * API Client
@@ -160,28 +162,133 @@ class PydioApi{
     }
 
     /**
+     * Generate presigned and use it for uploads
+     * @param file
+     * @param path
+     * @param onComplete
+     * @param onError
+     * @param onProgress
+     * @return {Promise<any>}
+     */
+    uploadPresigned(file, path, onComplete=()=>{}, onError=()=>{}, onProgress=()=>{}){
+        let targetPath = path;
+        if (path.normalize){
+            targetPath = path.normalize('NFC');
+        }
+        if(targetPath[0] === "/"){
+            targetPath = targetPath.substring(1);
+        }
+        const url = this.getPydioObject().getPluginConfigs('core.conf').get('ENDPOINT_S3_GATEWAY');
+        const slug = this.getPydioObject().user.getActiveRepositoryObject().getSlug();
+        const params = {
+            Bucket: 'io',
+            Key: slug + '/' + targetPath,
+            ContentType: 'application/octet-stream'
+        };
+
+        return new Promise(resolve => {
+            PydioApi.getRestClient().getOrUpdateJwt().then(jwt => {
+                AWS.config.update({
+                    accessKeyId: 'gateway',
+                    secretAccessKey: 'gatewaysecret'
+                });
+                const s3 = new AWS.S3({endpoint:url.replace('/io', '')});
+                const signed = s3.getSignedUrl('putObject', params);
+                const xhr = this.uploadFile(file, '', '', onComplete, onError, onProgress, signed, {method: 'PUT', customHeaders: {'X-Pydio-Bearer': jwt, 'Content-Type': 'application/octet-stream'}});
+                resolve(xhr);
+            });
+        });
+    }
+
+    /**
      * Send a request to the server to get a usable presigned url.
      *
      * @param node AjxpNode
      * @param callback Function
      * @param presetType String
+     * @param bucketParams
+     * @return {Promise}|null Return a Promise if callback is null, or call the callback
      */
-    buildPresignedGetUrl(node, callback, presetType = '') {
+    buildPresignedGetUrl(node, callback = null, presetType = '', bucketParams = null) {
+        const url = this.getPydioObject().getPluginConfigs('core.conf').get('ENDPOINT_S3_GATEWAY');
+        const slug = this.getPydioObject().user.getActiveRepositoryObject().getSlug();
+        let cType = '', cDisposition;
 
-        let preSignedParams = {
-            get_action:'presigned',
-            file_0: node.getPath(),
-            cmd:'GET'
-        };
-        if (presetType) {
-            preSignedParams['accept'] = presetType;
+        switch (presetType){
+            case 'image/png':
+            case 'image/jpeg':
+            case 'image/bmp':
+            case 'text/plain':
+                cType = presetType;
+                cDisposition = 'inline';
+                break;
+            case 'image/jpg':
+                cType = 'image/jpeg';
+                cDisposition = 'inline';
+                break;
+            case 'audio/mp3':
+                cType = presetType;
+                break;
+            case 'video/mp4':
+                cType = presetType;
+                break;
+            case 'detect':
+                cType = node.getAjxpMimeType();
+                cDisposition = 'inline';
+            default:
+                break;
         }
-        this.request(preSignedParams, (t) => {
-            let response = t.responseJSON;
-            const url = response['signedUrl'];
-            const jwt = response['jwt'];
-            callback(url + '&pydio_jwt=' + jwt);
-        });
+
+        let params = {
+            Bucket: 'io',
+            Key: slug + node.getPath()
+        };
+        if (bucketParams !== null) {
+            params = bucketParams;
+        }
+        if(cType) {
+            params['ResponseContentType'] = cType;
+        }
+        if(cDisposition) {
+            params['ResponseContentDisposition'] = cDisposition;
+        }
+
+        const resolver = (jwt, cb) => {
+            let meta = node.getMetadata().get('presignedUrls');
+            const cacheKey = jwt + params.Key;
+            const cached = meta ? meta.get(cacheKey) : null;
+            if(cached){
+                cb(cached);
+                return;
+            }
+            if(!meta) {
+                meta = new Map();
+            }
+
+            AWS.config.update({
+                accessKeyId: 'gateway',
+                secretAccessKey: 'gatewaysecret'
+            });
+            const s3 = new AWS.S3({endpoint:url.replace('/io', '')});
+            const signed = s3.getSignedUrl('getObject', params);
+            const output = signed + '&pydio_jwt=' + jwt;
+            cb(output);
+            meta.set(cacheKey, output);
+            node.getMetadata().set('presignedUrls', meta);
+        };
+
+        if (callback === null) {
+            return new Promise((resolve) => {
+                PydioApi.getRestClient().getOrUpdateJwt().then(jwt => {
+                    resolver(jwt, resolve);
+                });
+            });
+        } else {
+            PydioApi.getRestClient().getOrUpdateJwt().then(jwt => {
+                resolver(jwt, callback);
+            });
+            return null;
+        }
 
     }
 

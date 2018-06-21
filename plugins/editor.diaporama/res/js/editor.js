@@ -24,13 +24,14 @@ import React, {PureComponent} from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { ImageContainer } from './components'
+import PydioApi from 'pydio/http/api'
 
 const conf = pydio.getPluginConfigs('editor.diaporama')
-const sizes = conf && conf.get("PREVIEWER_LOWRES_SIZES").split(",") || [300, 700, 1000, 1300]
+const sizes = conf && conf.get("PREVIEWER_LOWRES_SIZES").split(",") || [300, 700, 1000, 1300];
 
-const { SizeProviders, URLProvider, withResolution, withSelection, withResize } = PydioHOCs;
-const { ImageSizeProvider, ContainerSizeProvider } = SizeProviders
-const ExtendedImageContainer = withResize(ImageContainer)
+const { SizeProviders, withResolution, withSelection, withResize } = PydioHOCs;
+const { ImageSizeProvider, ContainerSizeProvider } = SizeProviders;
+const ExtendedImageContainer = withResize(ImageContainer);
 
 class Editor extends PureComponent {
 
@@ -39,35 +40,6 @@ class Editor extends PureComponent {
             node: React.PropTypes.instanceOf(AjxpNode).isRequired
         }
     }
-
-    /*static getCoveringBackgroundSource(ajxpNode) {
-        return this.getThumbnailSource(ajxpNode);
-    }
-
-    static getThumbnailSource(ajxpNode) {
-        var repoString = "";
-        if(pydio.repositoryId && ajxpNode.getMetadata().get("repository_id") && ajxpNode.getMetadata().get("repository_id") != pydio.repositoryId){
-            repoString = "&tmp_repository_id=" + ajxpNode.getMetadata().get("repository_id");
-        }
-        var mtimeString = ajxpNode.buildRandomSeed();
-        return pydio.Parameters.get('ajxpServerAccess') + repoString + mtimeString + "&get_action=preview_data_proxy&get_thumb=true&file="+encodeURIComponent(ajxpNode.getPath());
-    }
-
-    static getOriginalSource(ajxpNode) {
-        return pydio.Parameters.get('ajxpServerAccess')+'&action=preview_data_proxy'+ajxpNode.buildRandomSeed()+'&file='+encodeURIComponent(ajxpNode.getPath());
-    }
-
-    static getSharedPreviewTemplate(node, link) {
-        // Return string
-        return '<img src="' + link + '"/>';
-    }
-
-    static getRESTPreviewLinks(node) {
-        return {
-            "Original image": "",
-            "Thumbnail (200px)": "&get_thumb=true&dimension=200"
-        };
-    }*/
 
     componentWillReceiveProps(nextProps) {
         if (this.props.selectionPlaying !== nextProps.selectionPlaying)  {
@@ -133,27 +105,42 @@ const getSelection = (node) => new Promise((resolve, reject) => {
         selection,
         currentIndex: selection.reduce((currentIndex, current, index) => current === node && index || currentIndex, 0)
     })
-})
+});
 
 const mapStateToProps = (state, props) => {
-    const {tabs} = state
+    const {tabs} = state;
     const tab = tabs.filter(({editorData, node}) => (!editorData || editorData.id === props.editorData.id) && node.getPath() === props.node.getPath())[0] || {}
 
-    if (!tab) return props
+    if (!tab) return props;
 
-    const {node, resolution} = tab
+    const {node, resolution} = tab;
 
     return {
         orientation: resolution === 'hi' ? node.getMetadata().get("image_exif_orientation") : null,
         ...props
     }
-}
+};
 
 export default compose(
     withSelection(getSelection, getSelectionFilter),
     withResolution(sizes,
-        (node) => node ? `${pydio.Parameters.get('ajxpServerAccess')}&action=preview_data_proxy&file=${encodeURIComponent(node.getPath())}` : "",
-        (node, dimension) => node ? `${pydio.Parameters.get('ajxpServerAccess')}&action=preview_data_proxy&get_thumb=true&dimension=${dimension}&file=${encodeURIComponent(node.getPath())}` : ""
+        (node) => {
+            if (node) {
+                return PydioApi.getClient().buildPresignedGetUrl(node, null, 'image/' + node.getAjxpMime());
+            } else {
+                return Promise.resolve("");
+            }
+        },
+        (node, dimension) => {
+            if (node) {
+                return PydioApi.getClient().buildPresignedGetUrl(node, null, 'image/jpeg', {
+                    Bucket: 'io',
+                    Key: 'pydio-thumbstore/' + node.getMetadata().get('uuid') + '-512.jpg'
+                });
+            } else {
+                return Promise.resolve("");
+            }
+        }
     ),
     connect(mapStateToProps)
 )(Editor)

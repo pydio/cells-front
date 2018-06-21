@@ -22,28 +22,39 @@
 
 import React, {Component} from 'react'
 import { ImageContainer } from './components'
+import PydioApi from 'pydio/http/api'
 
-const Preview = ({node, ...remainingProps}) => {
-    const repositoryId = node.getMetadata().get("repository_id")
+class Preview extends Component {
 
-    let repoString = "";
-    if (typeof pydio !== "undefined" && repositoryId && repositoryId !== pydio.repositoryId){
-        repoString = "&tmp_repository_id=" + repositoryId;
+    constructor(props){
+        super(props);
+        this.state = {src: ''};
     }
 
-    const mtimeString = node.buildRandomSeed();
+    componentDidMount(){
+        const {node} = this.props;
+        const p = PydioApi.getClient().buildPresignedGetUrl(node, null, 'image/jpeg', {Bucket: 'io', Key:'pydio-thumbstore/' + node.getMetadata().get('uuid') + '-512.jpg'});
+        p.then((url) => {
+            this.setState({src: url});
+        })
+    }
 
-    return (
-        <ImageContainer
+    render(){
+        const {node, ...remainingProps} = this.props;
+        const {src} = this.state;
+        if (!src) {
+            return null;
+        }
+        return (<ImageContainer
             {...remainingProps}
-            src={`${pydio.Parameters.get('ajxpServerAccess')}${repoString}${mtimeString}&action=preview_data_proxy&get_thumb=true&file=${encodeURIComponent(node.getPath())}`}
+            src={src}
             imgStyle={{
                 width: "100%",
                 height: "100%",
                 flex: 1
             }}
-        />
-    )
+        />);
+    }
 }
 
 export default Preview

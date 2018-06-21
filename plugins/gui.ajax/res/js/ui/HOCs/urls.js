@@ -38,22 +38,31 @@ export const URLProvider = (urls = []) => {
         }
 
         constructor(props) {
-            super(props)
-
-            this.state = {
-                url: this.getUrl(props)
+            super(props);
+            const u = this.getUrl(props);
+            if (u.then) {
+                this.state = {url: ''};
+                u.then(res => {
+                    this.setState({url: res});
+                })
+            } else {
+                this.setState({url: u});
             }
         }
 
         componentWillReceiveProps(nextProps) {
-            this.setState({
-                url: this.getUrl(nextProps)
-            })
+            const u = this.getUrl(nextProps);
+            if (u.then) {
+                u.then(res => {
+                    this.setState({url: res});
+                })
+            } else {
+                this.setState({url: u});
+            }
         }
 
         getUrl(props) {
-            const fn =  props[`on${toTitleCase(props.urlType)}`]
-
+            const fn = props[`on${toTitleCase(props.urlType)}`];
             return fn()
         }
 
@@ -61,4 +70,4 @@ export const URLProvider = (urls = []) => {
             return this.props.children(this.state.url)
         }
     }
-}
+};

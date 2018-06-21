@@ -27,7 +27,7 @@
 
         <global_param name="ENDPOINT_REST_API" type="string" label="CONF_MESSAGE[REST Endpoints]" description="CONF_MESSAGE[Pydio RESTful API url, including http and port]" mandatory="true" default="" expose="true"/>
         <global_param name="ENDPOINT_FRONT_PLUGINS" type="string" label="CONF_MESSAGE[Http Endpoints]" description="CONF_MESSAGE[Url possibly serving additional plugins]" mandatory="false" default="" expose="false"/>
-        <global_param name="ENDPOINT_S3_GATEWAY" type="string" label="CONF_MESSAGE[S3 Endpoint]" description="CONF_MESSAGE[Main Gateway for accessing S3]" mandatory="true" default=""/>
+        <global_param name="ENDPOINT_S3_GATEWAY" type="string" label="CONF_MESSAGE[S3 Endpoint]" description="CONF_MESSAGE[Main Gateway for accessing S3]" mandatory="true" default="" expose="true"/>
         <global_param name="ENDPOINT_WEBSOCKET" type="string" label="CONF_MESSAGE[WebSocket Endpoint]" description="CONF_MESSAGE[WebSocket access for realtime UI]" mandatory="true" default="" expose="true"/>
         <global_param name="ENDPOINT_DEX" type="string" label="CONF_MESSAGE[DEX Endpoint]" description="CONF_MESSAGE[Authentication Endpoint for OpenIDConnect protocol]" mandatory="true" default=""/>
         <global_param name="ENDPOINT_DEX_CLIENTID" type="string" label="CONF_MESSAGE[DEX Client ID]" description="CONF_MESSAGE[Application identifier for OpenIDConnect]" mandatory="true" default="pydio-frontend"/>
