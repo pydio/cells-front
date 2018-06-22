@@ -20,7 +20,6 @@
  *
  */
 namespace Pydio\Access\Driver\DataProvider;
-use DOMXPath;
 use Pydio\Access\Core\AbstractAccessDriver;
 use Pydio\Core\Model\ContextInterface;
 
@@ -33,36 +32,6 @@ defined('PYDIO_EXEC') or die( 'Access not allowed');
  */
 class HomePagePlugin extends AbstractAccessDriver
 {
-
-    /**
-     * @param ContextInterface $ctx
-     * @param \DOMNode $contribNode
-     */
-    public function parseSpecificContributions(ContextInterface $ctx, \DOMNode &$contribNode){
-        parent::parseSpecificContributions($ctx, $contribNode);
-        if($contribNode->nodeName == "client_configs"){
-            $actionXpath=new DOMXPath($contribNode->ownerDocument);
-            $gettingStartedList = $actionXpath->query('template[@name="tutorial_pane"]', $contribNode);
-            if(!$gettingStartedList->length) return ;
-            if($this->getContextualOption($ctx, "ENABLE_GETTING_STARTED") === false){
-                $contribNode->removeChild($gettingStartedList->item(0));
-            }else{
-                $cdata = $gettingStartedList->item(0)->firstChild;
-                $keys = array("URL_APP_IOSAPPSTORE", "URL_APP_ANDROID", "URL_APP_SYNC_WIN", "URL_APP_SYNC_MAC");
-                $values = array();
-                foreach($keys as $k) $values[] = $this->getContextualOption($ctx, $k);
-                $newData = str_replace($keys, $values, $cdata->nodeValue);
-                $newCData = $contribNode->ownerDocument->createCDATASection($newData);
-                $gettingStartedList->item(0)->appendChild($newCData);
-                $gettingStartedList->item(0)->replaceChild($newCData, $cdata);
-            }
-        }else if($contribNode->nodeName == "actions" && $this->getContextualOption($ctx, "DISPLAY_SERVER_QRCODE_ACTION") === false){
-            $actionXpath = new DOMXPath($contribNode->ownerDocument);
-            $actionList = $actionXpath->query('action[@name="display-server-qrcode"]', $contribNode);
-            $contribNode->removeChild($actionList->item(0));
-        }
-    }
-
     /**
      * @param ContextInterface $ctx
      */
