@@ -22,6 +22,7 @@ import Observable from '../lang/Observable'
 import MetaCacheService from './MetaCacheService'
 import {RoleServiceApi, IdmRoleSingleQuery, RestSearchRoleRequest, IdmUser, IdmRole} from './gen/index';
 import debounce from 'lodash.debounce'
+import md5 from 'md5'
 
 class User extends Observable{
     _id;
@@ -372,18 +373,40 @@ class UsersApi{
             return;
         }
 
-        if(!PydioApi.getClient().getPydioObject().getPluginConfigs('action.avatar').get("AVATAR_PROVIDER")) {
+        if(PydioApi.getClient().getPydioObject().getPluginConfigs('action.avatar').has("AVATAR_PROVIDER")) {
             callback(userObject);
             return;
         }
-        PydioApi.getClient().request({
-            get_action: 'get_avatar_url',
-            userid: userObject.getId()
-        }, function (transport) {
-            UsersApi.avatarsCache[userObject.getId()] = transport.responseText;
-            userObject.setAvatar(transport.responseText);
+        const email = PydioApi.getClient().getPydioObject().user.getPreference('email');
+        if(!email){
             callback(userObject);
-        }.bind(this));
+            return;
+        }
+        const provider = PydioApi.getClient().getPydioObject().getPluginConfigs('action.avatar').get("AVATAR_PROVIDER");
+        const providerType = PydioApi.getClient().getPydioObject().getPluginConfigs('action.avatar').get("GRAVATAR_TYPE");
+        let url;
+        let suffix;
+        const https = document.location.protocol === 'https:';
+        switch (provider){
+            case "gravatar":
+                url = (https?'https://secure':'http://www') + '.gravatar.com/avatar/';
+                suffix = "?s=80&r=g&d=" + providerType;
+                break;
+            case "libravatar":
+                url = (https?'https://seccdn':'http://cdn') + '.libravatar.org/avatar/';
+                suffix = "?s=80&d=" + providerType;
+                break;
+            default:
+                break;
+        }
+        if (url) {
+            url = url + md5(email.toLowerCase()) + suffix;
+            UsersApi.avatarsCache[userObject.getId()] = url;
+            userObject.setAvatar(url);
+            callback(userObject);
+        } else {
+            callback(userObject);
+        }
 
     }
 

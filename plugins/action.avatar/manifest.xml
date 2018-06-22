@@ -11,7 +11,7 @@
     </client_settings>
     <server_settings>
         <global_param name="AVATAR_PROVIDER" type="select" choices="gravatar|Gravatar,libravatar|Libravatar" label="CONF_MESSAGE[Provider]" description="CONF_MESSAGE[Choose an avatar web service]" mandatory="true" default="gravatar" expose="true"/>
-        <global_param name="GRAVATAR_TYPE" type="select" choices="blank|Blank,identicon|IdentIcon,mm|Mystery-Man,monsterid|MonsterID,retro|Retro,wavatar|Wavatar" label="CONF_MESSAGE[Gravatar type]" description="CONF_MESSAGE[Gravatar type]" mandatory="true" default="identicon"/>
+        <global_param name="GRAVATAR_TYPE" type="select" choices="blank|Blank,identicon|IdentIcon,mm|Mystery-Man,monsterid|MonsterID,retro|Retro,wavatar|Wavatar" label="CONF_MESSAGE[Gravatar type]" description="CONF_MESSAGE[Gravatar type]" mandatory="true" default="identicon" expose="true"/>
     </server_settings>
     <registry_contributions>
         <actions>
