@@ -18,10 +18,25 @@
  * The latest code can be found at <https://pydio.com>.
  */
 
-export {default as InfoPanel} from "./InfoPanel";
-export {default as UserPanel} from "./UserPanel";
-export {default as ASClient} from "./Client";
-export {default as Activity} from "./Activity";
-export {default as ActivityList} from "./ActivityList";
-export {default as Listener} from './Listener'
-export {default as Callbacks} from './Callbacks'
+import PydioApi from 'pydio/http/api'
+import {ACLServiceApi, IdmACL, IdmACLAction} from 'pydio/http/rest-api'
+
+export default function (pydio) {
+    return function(){
+        const api = new ACLServiceApi(PydioApi.getRestClient());
+        let acl = new IdmACL();
+        const node = pydio.getContextHolder().getUniqueNode();
+        acl.NodeID = node.getMetadata().get('uuid');
+        acl.Action = IdmACLAction.constructFromObject({Name:"content_lock", Value:pydio.user.id});
+        let p;
+        const wasLocked = node.getMetadata().get("sl_locked");
+        if(wasLocked){
+            p = api.deleteAcl(acl);
+        }else {
+            p = api.putAcl(acl);
+        }
+        p.then(res => {
+            pydio.getContextHolder().requireNodeReload(node);
+        });
+    }
+}

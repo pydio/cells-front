@@ -19,7 +19,6 @@
  */
 
 let pydio = global.pydio;
-let MessageHash = global.MessageHash;
 
 const Callbacks = {
     ls                      : require('./ls')(pydio),
@@ -41,6 +40,7 @@ const Callbacks = {
     ajxpLink                : require('./ajxpLink')(pydio),
     chmod                   : require('./chmod')(pydio),
     openOtherEditorPicker   : require('./openOtherEditorPicker')(pydio),
-}
+    lock                    : require('./lock')(pydio)
+};
 
 export {Callbacks as default}

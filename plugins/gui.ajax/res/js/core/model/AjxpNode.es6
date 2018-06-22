@@ -316,6 +316,12 @@ export default class AjxpNode extends Observable{
         return this._label;
     }
     /**
+     * @param l string
+     */
+    setLabel(l){
+        this._label = l;
+    }
+    /**
      * @returns String
      */
     getIcon(){

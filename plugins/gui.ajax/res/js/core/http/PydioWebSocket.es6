@@ -21,6 +21,7 @@
 import AjxpNode from '../model/AjxpNode'
 import PathUtils from '../util/PathUtils'
 import PydioApi from './PydioApi'
+import MetaNodeProvider from '../model/MetaNodeProvider'
 const ReconnectingWebSocket = require('reconnecting-websocket');
 import debounce from 'lodash.debounce'
 
@@ -137,7 +138,7 @@ class PydioWebSocket {
         let currentRepoSlug = this.pydio.user.repositories.get(currentRepoId).getSlug();
         switch (event.Type) {
             case "CREATE":
-                target = PydioWebSocket.parseJSONNode(event.Target, currentRepoId, currentRepoSlug);
+                target = PydioWebSocket.parseEventNode(event.Target, currentRepoId, currentRepoSlug);
                 if (target === null) {
                     return;
                 }
@@ -146,12 +147,12 @@ class PydioWebSocket {
             case "UPDATE_PATH":
             case "UPDATE_META":
             case "UPDATE_CONTENT":
-                target = PydioWebSocket.parseJSONNode(event.Target, currentRepoId, currentRepoSlug);
+                target = PydioWebSocket.parseEventNode(event.Target, currentRepoId, currentRepoSlug);
                 if (target === null) {
                     return;
                 }
                 if (event.Source){
-                    let source = PydioWebSocket.parseJSONNode(event.Source, currentRepoId, currentRepoSlug);
+                    let source = PydioWebSocket.parseEventNode(event.Source, currentRepoId, currentRepoSlug);
                     target.getMetadata().set("original_path", source.getPath());
                 } else {
                     target.getMetadata().set("original_path", target.getPath());
@@ -159,7 +160,7 @@ class PydioWebSocket {
                 dm.updateNode(target, false);
                 break;
             case "DELETE":
-                let source = PydioWebSocket.parseJSONNode(event.Source, currentRepoId, currentRepoSlug);
+                let source = PydioWebSocket.parseEventNode(event.Source, currentRepoId, currentRepoSlug);
                 if (source === null) {
                     return;
                 }
@@ -168,6 +169,17 @@ class PydioWebSocket {
             default:
                 break;
         }
+    }
+
+    static parseEventNode(obj, currentRepoId, currentRepoSlug) {
+        if (!obj){
+            return null;
+        }
+        let wsId = JSON.parse(obj.MetaStore.EventWorkspaceId);
+        if (wsId !== currentRepoId) {
+            return null;
+        }
+        return MetaNodeProvider.parseTreeNode(obj, currentRepoSlug);
     }
 
     /**

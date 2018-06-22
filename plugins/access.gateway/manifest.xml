@@ -8,6 +8,7 @@
             <js className="FSActions" file="plugins/access.fs/res/build/FSActions.js" depends="PydioComponents"/>
             <js className="S3Actions" file="plugins/access.s3/res/build/S3Actions.js" depends="PydioComponents"/>
         </resources>
+        <node_provider ajxpClass="MetaNodeProvider" ajxpOptions="{}"/>
     </client_settings>
 
     <server_settings>
@@ -21,7 +22,6 @@
         <external_file filename="plugins/access.fs/fsActions.xml" include="actions/*" exclude="actions/action[@name='ls']|actions/action[@name='download_all']"/>
         <external_file filename="plugins/access.fs/manifest.xml" include="registry_contributions/client_configs/*" exclude=""/>
         <external_file filename="plugins/access.fs/fsActions.xml" include="client_configs/*" exclude=""/>
-        <external_file filename="plugins/access.fs/manifest.xml" include="registry_contributions/hooks/*" exclude=""/>
         <actions>
             <action name="ls" dirDefault="true">
                 <gui text="32" title="32" iconClass="mdi mdi-folder-open"

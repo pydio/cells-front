@@ -222,9 +222,6 @@
 				<property name="thumbSize" value="128"/>
 			</component_config>
 		</client_configs>
-        <hooks>
-            <serverCallback hookName="node.info.nocache" methodName="nodeBookmarkMetadata"/>
-        </hooks>
     </registry_contributions>
     <dependencies>
         <activePlugin pluginName="core.conf"/>

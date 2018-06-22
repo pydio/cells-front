@@ -417,43 +417,6 @@ class RichClient extends Plugin
     }
 
     /************************
-     * HOOKS FOR BOOKMARKS
-     ************************/
-    /**
-     * @param \Pydio\Access\Core\Model\Node $node
-     * @return void
-     */
-    public function nodeBookmarkMetadata(&$node)
-    {
-        if($node->bookmark == "true") {
-            $node->mergeMetadata(array(
-                "ajxp_bookmarked" => "true",
-                "overlay_icon"  => "bookmark.png",
-                "overlay_class" => "mdi mdi-bookmark-outline"
-            ), true);
-        }
-    }
-    /**
-     * @param \Pydio\Access\Core\Model\Node $fromNode
-     * @param \Pydio\Access\Core\Model\Node $toNode
-     * @param bool $copy
-     */
-    public function nodeChangeBookmarkMetadata($fromNode=null, $toNode=null, $copy=false){
-        if($copy || $fromNode == null) return;
-        $user = $fromNode->getContext()->getUser();
-        if($user == null) return;
-        if (!isSet(self::$loadedBookmarks)) {
-            self::$loadedBookmarks = $user->getBookmarks($fromNode->getRepositoryId());
-        }
-        if($toNode == null) {
-            $fromNode->removeMetadata("ajxp_bookmarked", true, PYDIO_METADATA_SCOPE_REPOSITORY, true);
-        } else {
-            $toNode->copyOrMoveMetadataFromNode($fromNode, "ajxp_bookmarked", "move", true, PYDIO_METADATA_SCOPE_REPOSITORY, true);
-        }
-    }
-
-
-    /************************
      * XML.FILTER INCLUDE HOOK
      ************************/
     public static function filterXml(&$value)

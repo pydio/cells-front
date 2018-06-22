@@ -354,8 +354,8 @@ class ShareRightsManager
                 $TYPE = $userObject->hasSharedProfile()?"tmp_user":"user";
                 $HIDDEN = $userObject->isHidden();
                 if ($watcherNodeId != null) {
-                    $events = ActivityCenter::UserIsSubscribedToNode($userId, $watcherNodeId);
-                    $WATCH = count($events) > 0;
+                    //$events = ActivityCenter::UserIsSubscribedToNode($userId, $watcherNodeId);
+                    $WATCH = false;
                 }
                 $ID = $userObject->getId();
             }else if($rId == RolesService::RootGroup){

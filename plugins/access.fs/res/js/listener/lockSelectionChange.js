@@ -18,15 +18,24 @@
  * The latest code can be found at <https://pydio.com>.
  */
 
-const pydio = global.pydio;
+export default function(pydio){
+    return function(){
 
-const Listeners  = {
-    downloadSelectionChange     : require('./downloadSelectionChange')(pydio),
-    downloadAllInit             : require('./downloadAllInit')(pydio),
-    compressUiSelectionChange   : require('./compressUiSelectionChange')(pydio),
-    copyContextChange           : require('./copyContextChange')(pydio),
-    openWithDynamicBuilder      : require('./openWithDynamicBuilder')(pydio),
-    lockSelectionChange         : require('./lockSelectionChange')(pydio),
+        const action = pydio.getController().getActionByName("sl_lock");
+        const n = pydio.getUserSelection().getUniqueNode();
+        if(action && n){
+            action.selectionContext.allowedMimes = [];
+            if(n.getMetadata().get("sl_locked")){
+                action.setIconClassName('icon-unlock');
+                action.setLabel('meta.simple_lock.3');
+                if(!n.getMetadata().get("sl_mylock")){
+                    action.selectionContext.allowedMimes = ["fake_extension_that_never_exists"];
+                }
+            }else{
+                action.setIconClassName('icon-lock');
+                action.setLabel('meta.simple_lock.1');
+            }
+        }
+
+    }
 }
-
-export {Listeners as default}

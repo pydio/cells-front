@@ -815,34 +815,6 @@ class ShareCenter extends Plugin
     }
 
     /**************************/
-    /* CALLBACKS FOR HOOKS
-    /**************************/
-    /**
-     * Hook node.info
-     * @param Node $node
-     * @return void
-     */
-    public function nodeSharedMetadata(&$node)
-    {
-        $metaWsShares = $node->workspaces_shares;
-        $decodeShares = $node->pydio_shares;
-        $wsRoot       = $node->ws_root;
-        if(!empty($metaWsShares) && empty($decodeShares)){
-            $merge = array(
-                "pydio_is_shared"  => "true",
-                "pydio_shares"     => json_encode($metaWsShares)
-            );
-            if(empty($wsRoot)){
-                $merge["overlay_class"] = "mdi mdi-share-variant";
-            } else if(!$node->isLeaf()) {
-                $node->fonticon = "folder-star";
-            }
-            $node->mergeMetadata($merge, true);
-        }
-        return;
-    }
-
-    /**************************/
     /* CREATE / EDIT SHARES
     /**************************/
 

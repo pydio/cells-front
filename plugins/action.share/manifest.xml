@@ -186,9 +186,6 @@
                 <infoPanel mime="meta:pydio_is_shared" reactComponent="ShareDialog.InfoPanel" weight="-600"/>
             </component_config>
         </client_configs>
-        <hooks>
-            <serverCallback hookName="node.info.nocache" methodName="nodeSharedMetadata"/>
-        </hooks>
     </registry_contributions>
     <class_definition filename="plugins/action.share/src/ShareCenter.php" classname="Pydio\Share\ShareCenter"/>
     <dependencies>

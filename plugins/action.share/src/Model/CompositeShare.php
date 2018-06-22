@@ -136,8 +136,8 @@ class CompositeShare
 
         $elementWatch = false;
         $currentUser = $ctx->getUser();
-        $events = ActivityCenter::UserIsSubscribedToNode($ctx->getUser()->getId(), $this->nodeId);
-        $elementWatch = count($events) > 0;
+        //$events = ActivityCenter::UserIsSubscribedToNode($ctx->getUser()->getId(), $this->nodeId);
+        $elementWatch = false;// count($events) > 0;
         $policies = $this->getRepository()->getPolicies();
 
 
