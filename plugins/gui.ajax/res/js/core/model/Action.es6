@@ -90,7 +90,8 @@ export default class Action extends Observable{
 			guestLogged:false,
 			read:false,
 			write:false,
-			adminOnly:false
+			adminOnly:false,
+            paramDisable:''
 			}, arguments[3] || { });
 
 		this.subMenuItems = LangUtils.objectMerge({
@@ -174,20 +175,31 @@ export default class Action extends Observable{
 		
 	/**
 	 * Updates the action status on context change
-     * @param PydioDataModel dataModel
+     * @param dataModel PydioDataModel
      * @param usersEnabled boolean
      * @param crtUser string
 	 * @returns void
 	 */
 	fireContextChange(dataModel, usersEnabled, crtUser){
 
-        var crtIsRecycle = false;
-        var crtInZip = false;
-        var crtIsRoot = false;
-        var crtAjxpMime = '';
-        var crtIsReadOnly = false;
+	    if(this.rightsContext.paramDisable){
+	        // Full disable
+	        const [plugin, param] = this.rightsContext.paramDisable.split('/');
+	        if(this.manager.getPydio().getPluginConfigs(plugin).has(param)){
+	            const pValue = this.manager.getPydio().getPluginConfigs(plugin).get(param);
+	            if(pValue === true || pValue === 'true'){
+                    return this.hideForContext();
+                }
+            }
+        }
 
-        var crtNode = dataModel.getContextNode();
+        let crtIsRecycle = false;
+        let crtInZip = false;
+        let crtIsRoot = false;
+        let crtAjxpMime = '';
+        let crtIsReadOnly = false;
+
+        const crtNode = dataModel.getContextNode();
         if(crtNode){
             crtIsRecycle = (crtNode.getAjxpMime() === "ajxp_recycle");
             crtInZip = crtNode.hasAjxpMimeInBranch("ajxp_browsable_archive");
@@ -209,15 +221,15 @@ export default class Action extends Observable{
                 }
             }
 		}
-		var rightsContext = this.rightsContext;
+		const rightsContext = this.rightsContext;
 		if(!rightsContext.noUser && !usersEnabled){
 			return this.hideForContext();				
 		}
-		if((rightsContext.userLogged == 'only' && crtUser == null) ||
-			(rightsContext.guestLogged && rightsContext.guestLogged=='hidden' && crtUser!=null && crtUser.id=='guest')){
+		if((rightsContext.userLogged === 'only' && crtUser === null) ||
+			(rightsContext.guestLogged && rightsContext.guestLogged==='hidden' && crtUser!==null && crtUser.id==='guest')){
 			return this.hideForContext();
 		}
-		if(rightsContext.userLogged == 'hidden' && crtUser != null && !(crtUser.id=='guest' && rightsContext.guestLogged && rightsContext.guestLogged=='show') ){
+		if(rightsContext.userLogged === 'hidden' && crtUser !== null && !(crtUser.id==='guest' && rightsContext.guestLogged && rightsContext.guestLogged==='show') ){
 			return this.hideForContext();
 		}
 		if(rightsContext.adminOnly && (crtUser == null || !crtUser.isAdmin)){
@@ -233,18 +245,18 @@ export default class Action extends Observable{
             return this.hideForContext();
         }
 		if(this.context.allowedMimes.length){
-			if( this.context.allowedMimes.indexOf("*") == -1 && this.context.allowedMimes.indexOf(crtAjxpMime) == -1){
+			if( this.context.allowedMimes.indexOf("*") === -1 && this.context.allowedMimes.indexOf(crtAjxpMime) === -1){
 				return this.hideForContext();
 			}
-            if( this.context.allowedMimes.indexOf("^"+crtAjxpMime) != -1){
+            if( this.context.allowedMimes.indexOf("^"+crtAjxpMime) !== -1){
                 return this.hideForContext();
             }
 		}
 		if(this.context.recycle){
-			if(this.context.recycle == 'only' && !crtIsRecycle){
+			if(this.context.recycle === 'only' && !crtIsRecycle){
 				return this.hideForContext();				
 			}
-			if(this.context.recycle == 'hidden' && crtIsRecycle){
+			if(this.context.recycle === 'hidden' && crtIsRecycle){
 				return this.hideForContext();
 			}
 		}
