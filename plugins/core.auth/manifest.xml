@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ajxpcore id="core.auth" label="CONF_MESSAGE[Authentication]" description="CONF_MESSAGE[Options applied to all auth drivers]" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:../core.pydio/pydio_registry.xsd">
+<plugin id="core.auth" label="CONF_MESSAGE[Authentication]" description="CONF_MESSAGE[Options applied to all auth drivers]" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:../core.pydio/pydio_registry.xsd">
 	<class_definition filename="plugins/core.auth/CoreAuthLoader.php" classname="Pydio\Auth\Core\CoreAuthLoader"/>
     <client_settings>
         <resources>
@@ -26,4 +26,4 @@
 
         <global_param type="plugin_instance:auth" name="MASTER_INSTANCE_CONFIG" group="CONF_MESSAGE[Main Instance]" label="CONF_MESSAGE[Instance Type]" description="CONF_MESSAGE[Choose the configuration plugin]" mandatory="true" default="auth.pydio"/>
     </server_settings>
-</ajxpcore>
+</plugin>

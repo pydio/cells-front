@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<indexer id="index.pydio" label="CONF_MESSAGE[Pydio Search Engine]" description="CONF_MESSAGE[Search a whole repository quickly.]"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:../core.pydio/pydio_registry.xsd">
+<plugin id="index.pydio" label="CONF_MESSAGE[Pydio Search Engine]" description="CONF_MESSAGE[Search a whole repository quickly.]"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:../core.pydio/pydio_registry.xsd">
 	<class_definition filename="plugins/index.pydio/PydioIndexer.php" classname="Pydio\Access\Indexer\Implementation\PydioIndexer"/>
     <client_settings>
         <resources>
@@ -38,4 +38,4 @@
         <!-- Stream Wrapper Access -->
         <activePlugin pluginName="access.STREAM_PROVIDER|access.homepage"/>
     </dependencies>
-</indexer>
+</plugin>

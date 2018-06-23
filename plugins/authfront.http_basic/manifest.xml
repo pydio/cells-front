@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ajxpcore id="authfront.http_basic" enabled="true" label="CONF_MESSAGE[Basic Http FrontEnd]" description="CONF_MESSAGE[Send a basic http request to the user]" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:../core.pydio/pydio_registry.xsd">
+<plugin id="authfront.http_basic" enabled="true" label="CONF_MESSAGE[Basic Http FrontEnd]" description="CONF_MESSAGE[Send a basic http request to the user]" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:../core.pydio/pydio_registry.xsd">
 	<class_definition filename="plugins/authfront.http_basic/BasicHttpAuthFrontend.php" classname="Pydio\Auth\Frontend\BasicHttpAuthFrontend"/>
     <client_settings>
         <resources>
@@ -12,4 +12,4 @@
                       choices="session_only|CONF_MESSAGE[Sessions Only],no_session|CONF_MESSAGE[REST Only],both|CONF_MESSAGE[Session-based or Rest]"
                       label="CONF_MESSAGE[Protocol Type]" description="CONF_MESSAGE[Enable/disable automatically based on the protocol used]" default="no_session"/>
     </server_settings>
-</ajxpcore>
+</plugin>
