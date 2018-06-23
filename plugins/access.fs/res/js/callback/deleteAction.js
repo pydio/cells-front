@@ -18,14 +18,19 @@
  * The latest code can be found at <https://pydio.com>.
  */
 
+import PydioApi from 'pydio/http/api'
+
 export default function (pydio) {
 
     const {MessageHash} = pydio;
 
     return function(){
+        let move = false;
         let message = MessageHash[177];
-        const repoHasRecycle = pydio.getContextHolder().getRootNode().getMetadata().get("repo_has_recycle");
-        if(repoHasRecycle && pydio.getContextNode().getAjxpMime() != "ajxp_recycle"){
+
+        const repoHasRecycle = pydio.getContextHolder().getRootNode().getMetadata().get("repo_has_recycle") || pydio.getContextHolder().getRootNode().getChildren().has('/recycle_bin');
+        if(repoHasRecycle && pydio.getContextNode().getAjxpMime() !== "ajxp_recycle"){
+            move = true;
             message = MessageHash[176];
         }
         // Detect shared node
@@ -50,9 +55,25 @@ export default function (pydio) {
             message:message,
             dialogTitleId: 7,
             validCallback:function(){
-                PydioApi.getClient().postSelectionWithAction('delete', (transp) => {
+                const nodes = pydio.getContextHolder().getSelectedNodes();
+                const slug = pydio.user.getActiveRepositoryObject().getSlug();
+                const paths = nodes.map(n => slug + n.getPath());
+                let jobName, jobParams, success;
+
+                if (move) {
+                    const target = slug + '/recycle_bin';
+                    jobName = "move";
+                    jobParams = {nodes:paths, target: target, targetParent: true};
+                    success = "Moving to recycle bin in background";
+                } else {
+                    jobName = "delete";
+                    jobParams = {nodes:paths};
+                    success = "Deletion job sent to background";
+                }
+
+                PydioApi.getRestClient().userJob(jobName, jobParams).then(r => {
+                    pydio.UI.displayMessage('SUCCESS', success);
                     pydio.getContextHolder().setSelectedNodes([]);
-                    PydioApi.getClient().parseXmlMessage(transp.responseXML);
                 });
             }
         });

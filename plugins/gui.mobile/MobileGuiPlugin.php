@@ -46,26 +46,6 @@ class MobileGuiPlugin extends Plugin
     }
 
     /**
-     * Dynamically modify some registry contributions nodes. Can be easily derivated to enable/disable
-     * some features dynamically during plugin initialization.
-     * @param ContextInterface $ctx
-     * @param \DOMNode $contribNode
-     * @return void
-     */
-    public function parseSpecificContributions(ContextInterface $ctx, \DOMNode &$contribNode)
-    {
-
-        if ($contribNode->nodeName == "client_configs" && !$this->orbitExtensionActive($ctx)) {
-            // remove template_part for orbit_content
-            $xPath = new DOMXPath($contribNode->ownerDocument);
-            $tplNodeList = $xPath->query('template_part[@ajxpId="orbit_content"]', $contribNode);
-            if (!$tplNodeList->length) return;
-            $contribNode->removeChild($tplNodeList->item(0));
-        }
-
-    }
-
-    /**
      * @param ContextInterface $ctx
      * @param $htmlContent
      */
@@ -89,30 +69,6 @@ class MobileGuiPlugin extends Plugin
         ";
         $htmlContent = str_replace("</head>", "$meta\n</head>", $htmlContent);
 
-    }
-
-    /**
-     * @param ContextInterface $ctx
-     * @return bool
-     */
-    private function orbitExtensionActive(ContextInterface $ctx)
-    {
-        $confs = ConfService::getConfStorageImpl()->loadPluginConfig("gui", "ajax");
-        if (!isset($confs) || !isSet($confs["GUI_THEME"])) $confs["GUI_THEME"] = "orbit";
-        if ($confs["GUI_THEME"] == "orbit") {
-            $pServ = PluginsService::getInstance($ctx);
-            $activePlugs = $pServ->getActivePlugins();
-            $streamWrappers = $pServ->getStreamWrapperPlugins();
-            $streamActive = false;
-            foreach ($streamWrappers as $sW) {
-                if ((array_key_exists($sW, $activePlugs) && $activePlugs[$sW] === true)) {
-                    $streamActive = true;
-                    break;
-                }
-            }
-            return $streamActive;
-        }
-        return false;
     }
 
 }

@@ -155,7 +155,6 @@
                 </gui>
                 <rightsContext noUser="true" userLogged="" read="true" write="true" adminOnly=""/>
                 <processing>
-                    <serverCallback methodName="switchAction" restParams="/"/>
                     <clientCallback module="FSActions.Callbacks.emptyRecycle"/>
                 </processing>
             </action>
@@ -288,10 +287,6 @@
                 <processing>
                     <clientCallback module="FSActions.Callbacks.copy"/>
                     <clientListener name="contextChange" module="FSActions.Listeners.copyContextChange"/>
-                    <serverCallback methodName="switchAction" restParams="/" developerComment="Copy one or more items to a given target">
-                        <input_param description="Selection" name="nodes" type="PYDIO_NODE[]" mandatory="true"/>
-                        <input_param description="Target folder where to copy" name="dest" type="path" mandatory="true"/>
-                    </serverCallback>
                 </processing>
             </action>
             <action name="move" dragndropDefault="true">
@@ -304,11 +299,6 @@
                 <rightsContext noUser="true" userLogged="only" read="true" write="true" adminOnly=""/>
                 <processing>
                     <clientCallback module="FSActions.Callbacks.move"/>
-                    <serverCallback methodName="switchAction" restParams="/" developerComment="Move a resource at a given target">
-                        <input_param description="Selection" name="nodes" type="PYDIO_NODE[]" mandatory="true"/>
-                        <input_param description="Target folder where to copy" name="dest" type="path" mandatory="true"/>
-                        <input_param description="Instead of using the underlying PHP move operation, do a copy/delete operation for more safety." name="force_copy_delete" type="boolean" default="false"/>
-                    </serverCallback>
                 </processing>
             </action>
             <action name="delete">
@@ -322,9 +312,6 @@
                 <rightsContext noUser="true" userLogged="only" read="true" write="true" adminOnly=""/>
                 <processing>
                     <clientCallback module="FSActions.Callbacks.deleteAction"/>
-                    <serverCallback methodName="switchAction" restParams="/nodes+" developerComment="Delete one or more resources. If the workspace supports Recycle Bin features, resource is actually moved to the recycle bin.">
-                        <input_param description="Selection" name="nodes" type="PYDIO_NODE[]" mandatory="true"/>
-                    </serverCallback>
                 </processing>
             </action>
             <action name="prepare_chunk_dl">

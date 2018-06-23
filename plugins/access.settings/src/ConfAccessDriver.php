@@ -386,23 +386,6 @@ class ConfAccessDriver extends AbstractAccessDriver
     /* PLUGIN LIFECYCLE
     /********************/
     /**
-     * @inheritdoc
-     */
-    public function parseSpecificContributions(ContextInterface $ctx, \DOMNode &$contribNode)
-    {
-        parent::parseSpecificContributions($ctx, $contribNode);
-        if($contribNode->nodeName != "actions") return;
-        $currentUserIsGroupAdmin = ($ctx->hasUser() && $ctx->getUser()->getGroupPath() != "/");
-        if(!$currentUserIsGroupAdmin) return;
-        $actionXpath=new DOMXPath($contribNode->ownerDocument);
-        $publicUrlNodeList = $actionXpath->query('action[@name="create_repository"]/subMenu', $contribNode);
-        if ($publicUrlNodeList->length) {
-            $publicUrlNode = $publicUrlNodeList->item(0);
-            $publicUrlNode->parentNode->removeChild($publicUrlNode);
-        }
-    }
-
-    /**
      * @param ContextInterface $ctx
      */
     protected function initRepository(ContextInterface $ctx){

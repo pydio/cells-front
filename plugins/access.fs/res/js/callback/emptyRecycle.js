@@ -18,7 +18,7 @@
  * The latest code can be found at <https://pydio.com>.
  */
 
-const PydioApi = require('pydio/http/api')
+const PydioApi = require('pydio/http/api');
 
 export default function (pydio) {
 
@@ -29,7 +29,10 @@ export default function (pydio) {
             message:MessageHash[177],
             dialogTitleId: 220,
             validCallback:function(){
-                PydioApi.getClient().request({get_action:'empty_recycle'});
+                const slug = pydio.user.getActiveRepositoryObject().getSlug();
+                PydioApi.getRestClient().userJob("delete", {nodes: [slug + '/recycle_bin'], childrenOnly:true}).then(r => {
+                    pydio.UI.displayMessage('SUCCESS', 'Emptying recycle bin in background');
+                });
             }
         });
 

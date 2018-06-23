@@ -21,6 +21,8 @@
 import PydioApi from './PydioApi'
 const {ApiClient} = require('./gen/index');
 import moment from 'moment'
+import JobsServiceApi from "./gen/api/JobsServiceApi";
+import RestUserJobRequest from "./gen/model/RestUserJobRequest";
 
 // Override parseDate method to support ISO8601 cross-browser
 ApiClient.parseDate = function (str) {
@@ -119,6 +121,20 @@ class JwtApiClient extends ApiClient{
         if (console) {
             console.error(reason);
         }
+    }
+
+    /**
+     *
+     * @param name
+     * @param parameters
+     * @return {Promise}
+     */
+    userJob(name, parameters) {
+        const api = new JobsServiceApi(this);
+        let request = new RestUserJobRequest();
+        request.JobName = name;
+        request.JsonParameters = JSON.stringify(parameters);
+        return api.userCreateJob(name, request);
     }
 
 }

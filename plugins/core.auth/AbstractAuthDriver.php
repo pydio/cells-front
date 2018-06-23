@@ -152,23 +152,6 @@ class AbstractAuthDriver extends Plugin
     }
 
     /**
-     * @inheritdoc
-     */
-    protected function parseSpecificContributions(ContextInterface $ctx, \DOMNode &$contribNode)
-    {
-        parent::parseSpecificContributions($ctx, $contribNode);
-        if($contribNode->nodeName != "actions") return ;
-
-        if(UsersService::usersEnabled() && $this->passwordsEditable()) return ;
-        // Disable password change action
-        if(!isSet($actionXpath)) $actionXpath=new \DOMXPath($contribNode->ownerDocument);
-        $passChangeNodeList = $actionXpath->query('action[@name="pass_change"]', $contribNode);
-        if(!$passChangeNodeList->length) return ;
-        $passChangeNode = $passChangeNodeList->item(0);
-        $contribNode->removeChild($passChangeNode);
-    }
-    
-    /**
      * Wether users can be listed using offset and limit
      * @return bool
      */

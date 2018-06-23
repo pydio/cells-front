@@ -164,16 +164,6 @@ class S3AccessDriver extends FsAccessDriver
     }
 
     /**
-     * @inheritdoc
-     */
-    protected function parseSpecificContributions(ContextInterface $ctx, \DOMNode &$contribNode)
-    {
-        parent::parseSpecificContributions($ctx, $contribNode);
-        if($contribNode->nodeName != "actions") return ;
-        //$this->disableArchiveBrowsingContributions($contribNode);
-    }
-
-    /**
      * We have to overwrite original FS function as S3 wrapper does not support "a+" open mode.
      *
      * @param String $folder Folder destination

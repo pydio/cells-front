@@ -39,6 +39,7 @@ use Pydio\Access\Core\Model\UserSelection;
 use Pydio\Access\Core\RecycleBinManager;
 use Pydio\Core\Controller\Controller;
 use Pydio\Core\Exception\PydioException;
+use Pydio\Core\Http\Client\MicroApi;
 use Pydio\Core\Http\Message\ExternalUploadedFile;
 use Pydio\Core\Http\Message\UserMessage;
 use Pydio\Core\Http\Response\FileReaderResponse;
@@ -56,6 +57,7 @@ use Pydio\Core\Utils\Vars\StatHelper;
 use Pydio\Tasks\Schedule;
 use Pydio\Tasks\Task;
 use Pydio\Tasks\TaskService;
+use Swagger\Client\Model\RestUserJobRequest;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\JsonResponse;
 
@@ -204,23 +206,6 @@ class FsAccessDriver extends AbstractAccessDriver implements IPydioWrapperProvid
     }
 
     /**
-     * @param $contribNode
-     * @param $arrayActions
-     * @param $targetMethod
-     */
-    public function redirectActionsToMethod(&$contribNode, $arrayActions, $targetMethod)
-    {
-        $actionXpath=new DOMXPath($contribNode->ownerDocument);
-        foreach ($arrayActions as $index => $value) {
-            $arrayActions[$index] = 'action[@name="'.$value.'"]/processing/serverCallback';
-        }
-        $procList = $actionXpath->query(implode(" | ", $arrayActions), $contribNode);
-        foreach ($procList as $node) {
-            $node->setAttribute("methodName", $targetMethod);
-        }
-    }
-
-    /**
      * @param ServerRequestInterface $request
      */
     protected function filterByApi(&$request){
@@ -246,42 +231,6 @@ class FsAccessDriver extends AbstractAccessDriver implements IPydioWrapperProvid
 
             default:
                 break;
-        }
-    }
-
-    /**
-     * @param DOMNode $contribNode
-     */
-    public function disableArchiveBrowsingContributions(&$contribNode)
-    {
-        // Cannot use zip features on FTP !
-        // Remove "compress" action
-        $actionXpath=new DOMXPath($contribNode->ownerDocument);
-        $compressNodeList = $actionXpath->query('action[@name="compress"]|action[@name="compress_ui"]|action[@name="download_all"]', $contribNode);
-        if(!$compressNodeList->length) return ;
-        foreach($compressNodeList as $compressNodeAction){
-            $contribNode->removeChild($compressNodeAction);
-        }
-        // Disable "download" if selection is multiple
-        $nodeList = $actionXpath->query('action[@name="download"]/gui/selectionContext', $contribNode);
-        $selectionNode = $nodeList->item(0);
-        $values = ["dir" => "false", "unique" => "true"];
-        foreach ($selectionNode->attributes as $attribute) {
-            if (isSet($values[$attribute->name])) {
-                $attribute->value = $values[$attribute->name];
-            }
-        }
-        $nodeList = $actionXpath->query('action[@name="download"]/processing/clientListener[@name="selectionChange"]', $contribNode);
-        $listener = $nodeList->item(0);
-        $listener->parentNode->removeChild($listener);
-        // Disable "Explore" action on files
-        $nodeList = $actionXpath->query('action[@name="ls"]/gui/selectionContext', $contribNode);
-        $selectionNode = $nodeList->item(0);
-        $values = ["file" => "false", "allowedMimes" => ""];
-        foreach ($selectionNode->attributes as $attribute) {
-            if (isSet($values[$attribute->name])) {
-                $attribute->value = $values[$attribute->name];
-            }
         }
     }
 
@@ -820,133 +769,6 @@ class FsAccessDriver extends AbstractAccessDriver implements IPydioWrapperProvid
                 $nodesDiffs->update([$currentNode]);
 
             break;
-
-            //------------------------------------
-            //	DELETE
-            //  Warning, must be kept BEFORE copy/move
-            //  as recyclebin filtering can transform
-            //  it move action.
-            //------------------------------------
-            case "delete":
-
-                if ($selection->isEmpty()) {
-                    throw new PydioException("", 113);
-                }
-                $size = 0;
-                $nodes = $selection->buildNodes();
-                $bgSizeThreshold = 10*1024*1024;
-                $bgWorkerThreshold = 80*1024*1024;
-                if(!MetaStreamWrapper::wrapperIsRemote($selection->currentBaseUrl())){
-                    foreach($nodes as $node){
-                        $size += $node->getSizeRecursive();
-                    }
-                }else if(!$selection->isUnique() || !$selection->getUniqueNode()->isLeaf()){
-                    $size = -1;
-                }
-
-                $logMessages = [];
-                $errorMessage = $this->delete($selection, $logMessages);
-                if (count($logMessages)) {
-                    $logMessage = new UserMessage(join("\n", $logMessages));
-                }
-                if($errorMessage) {
-                    throw new PydioException($errorMessage);
-                }
-                $this->logInfo("Delete", ["files"=>$this->addSlugToPath($selection)]);
-                $nodesDiffs->remove($selection->getFiles());
-
-            break;
-
-            case "empty_recycle":
-
-                // List recycle content
-                $fakeResp = new Response();
-                $recycleBin = RecycleBinManager::getRelativeRecycle();
-                $newRequest = $request->withAttribute("action", "ls");
-                $newRequest = $newRequest->withParsedBody(["dir" => $recycleBin]);
-                $this->switchAction($newRequest, $fakeResp);
-                $b = $fakeResp->getBody();
-                if($b instanceof SerializableResponseStream){
-                    foreach($b->getChunks() as $chunk){
-                        if($chunk instanceof NodesList){
-                            $list = $chunk;
-                        }
-                    }
-                }
-                if(!isSet($list)){
-                    throw new PydioException("Could not retrieve recycle bin content");
-                }
-                $selection = UserSelection::fromContext($ctx, []);
-                $selection->initFromNodes($list->getChildren());
-                $logMessages = [];
-                $errorMessage = $this->delete($selection, $logMessages);
-                if (count($logMessages)) {
-                    $logMessage = new UserMessage(join("\n", $logMessages));
-                }
-                if($errorMessage) {
-                    throw new PydioException($errorMessage);
-                }
-                $this->logInfo("Delete", ["files"=>$this->addSlugToPath($selection)]);
-                $nodesDiffs->remove($selection->getFiles());
-
-                break;
-
-            //------------------------------------
-            //	COPY / MOVE
-            //------------------------------------
-            case "copy":
-            case "move":
-
-                if ($selection->isEmpty()) {
-                    throw new PydioException("", 113);
-                }
-                // Compute copy size
-                $size = 0;
-                $nodes = $selection->buildNodes();
-                $bgSizeThreshold = 10*1024*1024;
-                $bgWorkerThreshold = 80*1024*1024;
-                if(!MetaStreamWrapper::wrapperIsRemote($selection->currentBaseUrl())){
-                    foreach($nodes as $node){
-                        $size += $node->getSizeRecursive();
-                    }
-                }else if(!$selection->isUnique() || !$selection->getUniqueNode()->isLeaf()){
-                    $size = -1;
-                }
-                $loggedUser = $ctx->getUser();
-                $success = $error = [];
-                $destPath = InputFilter::decodeSecureMagic($httpVars["dest"]);
-                $targetBaseName = null;
-                if($selection->isUnique() && isSet($httpVars["targetBaseName"])){
-                    $targetBaseName = $httpVars["targetBaseName"];
-                }
-                if(isSet($httpVars["recycle_restore"]) && !$selection->nodeForPath($destPath)->exists()){
-                    $this->mkDir($selection->nodeForPath(PathUtils::forwardSlashDirname($destPath)), basename($destPath), false, true);
-                }
-                $this->filterUserSelectionToHidden($ctx, [$httpVars["dest"]]);
-
-                $move = ($action == "move" ? true : false);
-                if ($move && isSet($httpVars["force_copy_delete"])) {
-                    $move = false;
-                }
-                $this->copyOrMove($destPath, $selection, $error, $success, $move, $targetBaseName, null);
-
-                if (count($error)) {
-                    throw new PydioException(join("\n", $error));
-                } else {
-                    if (isSet($httpVars["force_copy_delete"])) {
-                        $errorMessage = $this->delete($selection, $logMessages, null);
-                        if($errorMessage) {
-                            throw new PydioException($errorMessage);
-                        }
-                        $this->logInfo("Copy/Delete", ["files"=>$this->addSlugToPath($selection), "destination" => $this->addSlugToPath($destPath)]);
-                    } else {
-                        $this->logInfo(($action=="move"?"Move":"Copy"), ["files"=>$this->addSlugToPath($selection), "destination"=>$this->addSlugToPath($destPath)]);
-                    }
-                    $logMessage = new UserMessage(join("\n", $success));
-                }
-
-                break;
-
 
             //------------------------------------
             //	RENAME

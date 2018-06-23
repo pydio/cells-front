@@ -386,7 +386,7 @@ class S3AccessWrapper extends FsAccessWrapper
             throw $e;
         }
 
-        if (!$node->isLeaf()) {
+        //if (!$node->isLeaf()) {
             Logger::debug(__CLASS__, __FUNCTION__, "S3 Renaming dir $from to $to");
 
             $bucket = $repoObject->getContextOption($ctx, "CONTAINER");
@@ -408,10 +408,10 @@ class S3AccessWrapper extends FsAccessWrapper
             }
             return true;
 
-        } else {
-            Logger::debug(__CLASS__, __FUNCTION__, "S3 Execute standard rename on " . $from . " to " . $to);
-            return parent::rename($from, $to);
-        }
+        //} else {
+        //    Logger::debug(__CLASS__, __FUNCTION__, "S3 Execute standard rename on " . $from . " to " . $to);
+        //    return parent::rename($from, $to);
+        //}
     }
 
 }

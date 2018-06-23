@@ -39,20 +39,6 @@ abstract class AbstractSearchEngineIndexer extends AbstractMetaSource
 {
 
     /**
-     * @param DOMNode $contribNode
-     */
-    public function parseSpecificContributions(ContextInterface $ctx, \DOMNode &$contribNode)
-    {
-        parent::parseSpecificContributions($ctx, $contribNode);
-        if ($this->getContextualOption($ctx, "HIDE_MYSHARES_SECTION") !== true) return;
-        if ($contribNode->nodeName != "client_configs") return;
-        $actionXpath = new DOMXPath($contribNode->ownerDocument);
-        $nodeList = $actionXpath->query('component_config[@component="AjxpPane::navigation_scroller"]', $contribNode);
-        if (!$nodeList->length) return;
-        $contribNode->removeChild($nodeList->item(0));
-    }
-
-    /**
      * @param Node $node
      * @return null|string
      */
