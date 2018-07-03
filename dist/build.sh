@@ -54,7 +54,8 @@ find . -type d -path "./plugins/*/res/react" -exec rm -r "{}" \;
 find . -name ".DS_Store" -exec rm "{}" \;
 rm -rf plugins/res/build/ckeditor/samples
 rm -rf core/vendor/dapphp/securimage/audio
-
+rm -f core/vendor/dapphp/securimage/examples/test.mysql.static.php
+rm -f core/vendor/meenie/javascript-packer/example-inline.php
 
 echo "Removing dist folder"
 rm -rf dist
