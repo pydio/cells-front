@@ -446,16 +446,18 @@ class ShareCenter extends Plugin
         if(!ApplicationState::hasMinisiteHash()) {
             return;
         }
-
-        $hash = ApplicationState::getMinisiteHash();
-        $share = $this->getShareStore()->loadLink($hash);
-        if(!empty($share)){
-            if($share->isExpired()){
-                throw new \Exception('Link is expired');
-            }
-            if($share->hasDownloadLimit() || $share->hasTargetUsers()){
-                $share->incrementDownloadCount($requestInterface->getAttribute('ctx'));
-                $share->save();
+        $httpVars = $requestInterface->getParsedBody();
+        if($httpVars["cmd"] === 'GET'){
+            $hash = ApplicationState::getMinisiteHash();
+            $share = $this->getShareStore()->loadLink($hash);
+            if(!empty($share)){
+                if($share->isExpired()){
+                    throw new \Exception('Link is expired');
+                }
+                if($share->hasDownloadLimit() || $share->hasTargetUsers()){
+                    $share->incrementDownloadCount($requestInterface->getAttribute('ctx'));
+                    $share->save();
+                }
             }
         }
 

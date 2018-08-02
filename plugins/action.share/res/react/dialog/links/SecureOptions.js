@@ -65,12 +65,8 @@ let PublicLinkSecureOptions = React.createClass({
     },
 
     onDateChange: function(event, value){
-        const today = new Date();
-        const date1 = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
         const date2 = Date.UTC(value.getFullYear(), value.getMonth(), value.getDate());
-        const ms = Math.abs(date1-date2);
-        const integerVal = Math.floor(ms/1000/60/60/24); //floor should be unnecessary, but just in case
-        this.updateDaysExpirationField(event, integerVal);
+        this.updateDaysExpirationField(event, Math.floor(date2/1000) + "");
     },
 
     resetPassword: function(){
@@ -173,7 +169,7 @@ let PublicLinkSecureOptions = React.createClass({
         const passContainer = this.renderPasswordContainer();
         const crtLinkDLAllowed = linkModel.hasPermission('Download');
         let dlLimitValue = parseInt(link.MaxDownloads);
-        const expirationDateValue = link.AccessEnd;
+        const expirationDateValue = parseInt(link.AccessEnd);
 
         let calIcon = <FontIcon className="mdi mdi-calendar-clock" style={globStyles.leftIcon}/>;
         let expDate, maxDate, dlCounterString, dateExpired = false, dlExpired = false;
@@ -192,8 +188,8 @@ let PublicLinkSecureOptions = React.createClass({
             if(expirationDateValue < 0){
                 dateExpired = true;
             }
-            expDate = new Date();
-            expDate.setDate(today.getDate() + parseInt(expirationDateValue));
+            expDate = new Date(expirationDateValue * 1000);
+            //expDate.setDate(today.getDate() + parseInt(expirationDateValue));
             calIcon = <IconButton iconStyle={{color:globStyles.leftIcon.color}} style={{marginLeft: -8, marginRight: 8}} iconClassName="mdi mdi-close-circle" onTouchTap={this.resetExpiration.bind(this)}/>;
         }
         if(dlLimitValue){

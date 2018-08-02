@@ -148,7 +148,7 @@
                     <serverCallback methodName="switchAction" developerComment="Clear expired links" restParams="/"/>
                 </processing>
             </action>
-            <action name="download">
+            <action name="presigned">
                 <pre_processing>
                     <serverCallback methodName="preProcessDownload" applyCondition="$apply=\Pydio\Core\Services\SessionService::has(\Pydio\Core\Services\SessionService::CTX_MINISITE_HASH);"/>
                 </pre_processing>
