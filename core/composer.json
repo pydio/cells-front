@@ -8,7 +8,7 @@
     }
   },
   "require": {
-    "aws/aws-sdk-php": "^3.52.29",
+    "aws/aws-sdk-php": "3.64.4",
     "zendframework/zend-diactoros": "~1.0",
     "guzzlehttp/guzzle": "~5",
     "guzzlehttp/command": "~0.7",
