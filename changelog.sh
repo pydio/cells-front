@@ -17,13 +17,13 @@ REPOSITORY_URL=https://github.com/pydio/cells-front
 GIT_TAGS=$(git tag -l --sort=-version:refname)
 
 # Make the tags an array
-TAGS=($GIT_TAGS)
-LATEST_TAG=${TAGS[0]}
-PREVIOUS_TAG=${TAGS[1]}
+#TAGS=($GIT_TAGS)
+#LATEST_TAG=${TAGS[0]}
+#PREVIOUS_TAG=${TAGS[1]}
 
 # If you want to specify your own two tags to compare, uncomment and enter them below
-# LATEST_TAG=HEAD
-# PREVIOUS_TAG=v1.0.0
+LATEST_TAG=HEAD
+PREVIOUS_TAG=v1.0.3
 
 
 # Get a log of commits that occured between two tags
@@ -59,13 +59,13 @@ for COMMIT in $COMMITS; do
 		BODY=$(git log -1 ${COMMIT} --pretty=format:"%b")
 		MARKDOWN+='\n'
 		HTML+='\n'
-		MARKDOWN+=" - [#$PULL_NUM]($REPOSITORY_URL/pull/$PULL_NUM): $BODY"
+		MARKDOWN+="- [#$PULL_NUM]($REPOSITORY_URL/pull/$PULL_NUM): $BODY"
         HTML+="<li><a href="$REPOSITORY_URL/commit/$PULL_NUM">#${PULL_NUM}</a>: $BODY</li>"
     else
         if [ -z "$MERGE_BRANCH" ] && [ -z "$VENDOR_COMMIT" ]; then
             MARKDOWN+='\n'
     		HTML+='\n'
-            MARKDOWN+=" - [#${COMMIT:0:7}]($REPOSITORY_URL/commit/$COMMIT): $SUBJECT"
+            MARKDOWN+="- [#${COMMIT:0:7}]($REPOSITORY_URL/commit/$COMMIT): $SUBJECT"
             HTML+="<li><a href="$REPOSITORY_URL/commit/$COMMIT">#${COMMIT:0:7}</a>: $SUBJECT</li>"
 		fi
 	fi
