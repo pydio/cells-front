@@ -2,9 +2,11 @@
 
 ![License Badge](https://img.shields.io/badge/License-AGPL%203%2B-blue.svg)
 
-# Cells Front
+# Cells Front [Deprecated]
 
-This repository is hosting the PHP frontend for [Pydio Cells](https://github.com/pydio/cells). As such the resulting frontend is depending on a Pydio Cells backend to work properly. Please read the main project README for more information.
+This repository is hosting the PHP frontend for [Pydio Cells](https://github.com/pydio/cells) **version 1.0.0 to 1.0.4**. Please note that starting with **Cells 1.2.0, the frontend is no more relying on PHP** and javascript files are found directly in the main repository.
+
+As such the resulting frontend is depending on a Pydio Cells backend to work properly. Please read the main project README for more information.
 
 ## Setting up your dev environment
 
